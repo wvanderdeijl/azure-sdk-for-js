@@ -1,14 +1,13 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { HttpHeaders } from "@azure/core-http";
+import { createHttpHeaders } from "@azure/core-rest-pipeline";
 
 import { ServiceSubmitBatchResponseModel } from "./generatedModels";
 import {
   HTTP_VERSION_1_1,
   HTTP_LINE_ENDING,
   HeaderConstants,
-  HTTPURLConnection,
 } from "./utils/constants";
 import { getBodyAsText } from "./BatchUtils";
 import { BatchSubRequest } from "./BlobBatch";
@@ -54,11 +53,12 @@ export class BatchResponseParser {
   public async parseBatchResponse(): Promise<ParsedBatchResponse> {
     // When logic reach here, suppose batch request has already succeeded with 202, so we can further parse
     // sub request's response.
-    if (this.batchResponse._response.status !== HTTPURLConnection.HTTP_ACCEPTED) {
-      throw new Error(
-        `Invalid state: batch request failed with status: '${this.batchResponse._response.status}'.`
-      );
-    }
+    // _response pending
+    // if (this.batchResponse._response.status !== HTTPURLConnection.HTTP_ACCEPTED) {
+    //   throw new Error(
+    //     `Invalid state: batch request failed with status: '${this.batchResponse._response.status}'.`
+    //   );
+    // }
 
     const responseBodyAsText = await getBodyAsText(this.batchResponse);
 
@@ -84,7 +84,7 @@ export class BatchResponseParser {
     for (let index = 0; index < subResponseCount; index++) {
       const subResponse = subResponses[index];
       const deserializedSubResponse = {} as BatchSubResponse;
-      deserializedSubResponse.headers = new HttpHeaders();
+      deserializedSubResponse.headers = createHttpHeaders();
 
       const responseLines = subResponse.split(`${HTTP_LINE_ENDING}`);
       let subRespHeaderStartFound = false;

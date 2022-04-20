@@ -1,21 +1,23 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { BaseRequestPolicy, HttpOperationResponse, WebResource } from "@azure/core-http";
+import { PipelinePolicy, PipelineRequest, PipelineResponse, SendRequest } from "@azure/core-rest-pipeline";
 
 /**
  * Credential policy used to sign HTTP(S) requests before sending. This is an
  * abstract class.
  */
-export abstract class CredentialPolicy extends BaseRequestPolicy {
+export abstract class CredentialPolicy implements PipelinePolicy  {
+  public name = "CredentialPolicy";
   /**
-   * Sends out request.
-   *
-   * @param request -
-   */
-  public sendRequest(request: WebResource): Promise<HttpOperationResponse> {
-    return this._nextPolicy.sendRequest(this.signRequest(request));
-  }
+     * The main method to implement that manipulates a request/response.
+     * @param request - The request being performed.
+     * @param next - The next policy in the pipeline. Must be called to continue the pipeline.
+     */
+  public sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse>
+   {
+      return next(this.signRequest(request));
+   }
 
   /**
    * Child classes must implement this method with request signing. This method
@@ -23,7 +25,7 @@ export abstract class CredentialPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  protected signRequest(request: WebResource): WebResource {
+  protected signRequest(request: PipelineRequest): PipelineRequest {
     // Child classes must override this method with request signing. This method
     // will be executed in sendRequest().
     return request;

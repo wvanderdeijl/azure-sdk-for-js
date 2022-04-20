@@ -1,41 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { AbortError } from "@azure/abort-controller";
+import { AbortError, AbortSignalLike } from "@azure/abort-controller";
 
-import {
-  AbortSignalLike,
-  BaseRequestPolicy,
-  HttpOperationResponse,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  RestError,
-  WebResource,
-} from "@azure/core-http";
-
-import { StorageRetryOptions } from "../StorageRetryPolicyFactory";
 import { URLConstants } from "../utils/constants";
 import { delay, setURLHost, setURLParameter } from "../utils/utils.common";
 import { logger } from "../log";
-
-/**
- * A factory method used to generated a RetryPolicy factory.
- *
- * @param retryOptions -
- */
-export function NewRetryPolicyFactory(retryOptions?: StorageRetryOptions): RequestPolicyFactory {
-  return {
-    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageRetryPolicy => {
-      return new StorageRetryPolicy(nextPolicy, options, retryOptions);
-    },
-  };
-}
+import { PipelinePolicy, PipelineRequest, PipelineResponse, RestError, SendRequest } from "@azure/core-rest-pipeline";
 
 /**
  * RetryPolicy types.
  */
-export enum StorageRetryPolicyType {
+ export enum StorageRetryPolicyType {
   /**
    * Exponential retry. Retry time delay grows exponentially.
    */
@@ -44,6 +20,55 @@ export enum StorageRetryPolicyType {
    * Linear retry. Retry time delay grows linearly.
    */
   FIXED,
+}
+
+/**
+ * Storage Blob retry options interface.
+ */
+export interface StorageRetryOptions {
+  /**
+   * Optional. StorageRetryPolicyType, default is exponential retry policy.
+   */
+  readonly retryPolicyType?: StorageRetryPolicyType;
+
+  /**
+   * Optional. Max try number of attempts, default is 4.
+   * A value of 1 means 1 try and no retries.
+   * A value smaller than 1 means default retry number of attempts.
+   */
+  readonly maxTries?: number;
+
+  /**
+   * Optional. Indicates the maximum time in ms allowed for any single try of an HTTP request.
+   * A value of zero or undefined means no default timeout on SDK client, Azure
+   * Storage server's default timeout policy will be used.
+   *
+   * @see https://docs.microsoft.com/en-us/rest/api/storageservices/setting-timeouts-for-blob-service-operations
+   */
+  readonly tryTimeoutInMs?: number;
+
+  /**
+   * Optional. Specifies the amount of delay to use before retrying an operation (default is 4s or 4 * 1000ms).
+   * The delay increases (exponentially or linearly) with each retry up to a maximum specified by
+   * maxRetryDelayInMs. If you specify 0, then you must also specify 0 for maxRetryDelayInMs.
+   */
+  readonly retryDelayInMs?: number;
+
+  /**
+   * Optional. Specifies the maximum delay allowed before retrying an operation (default is 120s or 120 * 1000ms).
+   * If you specify 0, then you must also specify 0 for retryDelayInMs.
+   */
+  readonly maxRetryDelayInMs?: number;
+
+  /**
+   * If a secondaryHost is specified, retries will be tried against this host. If secondaryHost is undefined
+   * (the default) then operations are not retried against another host.
+   *
+   * NOTE: Before setting this field, make sure you understand the issues around
+   * reading stale and potentially-inconsistent data at
+   * {@link https://docs.microsoft.com/en-us/azure/storage/common/storage-designing-ha-apps-with-ragrs}
+   */
+  readonly secondaryHost?: string;
 }
 
 // Default values of StorageRetryOptions
@@ -61,7 +86,8 @@ const RETRY_ABORT_ERROR = new AbortError("The operation was aborted.");
 /**
  * Retry policy with exponential retry and linear retry implemented.
  */
-export class StorageRetryPolicy extends BaseRequestPolicy {
+export class StorageRetryPolicy implements PipelinePolicy {
+  public readonly name = "StorageRetryPolicy";
   /**
    * RetryOptions.
    */
@@ -70,17 +96,11 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
   /**
    * Creates an instance of RetryPolicy.
    *
-   * @param nextPolicy -
-   * @param options -
    * @param retryOptions -
    */
   constructor(
-    nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions,
     retryOptions: StorageRetryOptions = DEFAULT_RETRY_OPTIONS
   ) {
-    super(nextPolicy, options);
-
     // Initialize retry options
     this.retryOptions = {
       retryPolicyType: retryOptions.retryPolicyType
@@ -123,8 +143,8 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
-    return this.attemptSendRequest(request, false, 1);
+  public async sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse> {
+    return this.attemptSendRequest(request, next, false, 1);
   }
 
   /**
@@ -138,11 +158,14 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
    *                                   the attempt will be performed by this method call.
    */
   protected async attemptSendRequest(
-    request: WebResource,
+    request: PipelineRequest,
+    next: SendRequest,
     secondaryHas404: boolean,
     attempt: number
-  ): Promise<HttpOperationResponse> {
-    const newRequest: WebResource = request.clone();
+  ): Promise<PipelineResponse> {
+    const newRequest: PipelineRequest = {
+      ...request
+    };
 
     const isPrimaryRetry =
       secondaryHas404 ||
@@ -163,10 +186,10 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
       );
     }
 
-    let response: HttpOperationResponse | undefined;
+    let response: PipelineResponse | undefined;
     try {
       logger.info(`RetryPolicy: =====> Try=${attempt} ${isPrimaryRetry ? "Primary" : "Secondary"}`);
-      response = await this._nextPolicy.sendRequest(newRequest);
+      response = await next(newRequest);
       if (!this.shouldRetry(isPrimaryRetry, attempt, response)) {
         return response;
       }
@@ -180,7 +203,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
     }
 
     await this.delay(isPrimaryRetry, attempt, request.abortSignal);
-    return this.attemptSendRequest(request, secondaryHas404, ++attempt);
+    return this.attemptSendRequest(request, next, secondaryHas404, ++attempt);
   }
 
   /**
@@ -194,7 +217,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
   protected shouldRetry(
     isPrimaryRetry: boolean,
     attempt: number,
-    response?: HttpOperationResponse,
+    response?: PipelineResponse,
     err?: RestError
   ): boolean {
     if (attempt >= this.retryOptions.maxTries!) {

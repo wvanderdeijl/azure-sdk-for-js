@@ -1,16 +1,65 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { BlobImmutabilityPolicyMode } from "./generatedModels";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
+import { BlobDownloadHeaders, BlobImmutabilityPolicyMode, BlobQueryHeaders } from "./generatedModels";
 import {
   LeaseAccessConditions,
   SequenceNumberAccessConditions,
   AppendPositionAccessConditions,
   AccessTier,
   CpkInfo,
-  BlobDownloadResponseModel,
 } from "./generatedModels";
 import { EncryptionAlgorithmAES25 } from "./utils/constants";
+
+/** Contains response data for the download operation. */
+export type BlobDownloadResponseModel = BlobDownloadHeaders & {
+  /**
+   * BROWSER ONLY
+   *
+   * The response body as a browser Blob.
+   * Always `undefined` in node.js.
+   */
+  blobBody?: Promise<Blob>;
+  /**
+   * NODEJS ONLY
+   *
+   * The response body as a node.js Readable stream.
+   * Always `undefined` in the browser.
+   */
+  readableStreamBody?: NodeJS.ReadableStream;
+
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobDownloadHeaders;
+  };
+};
+
+/** Contains response data for the query operation. */
+export type BlobQueryResponseModel = BlobQueryHeaders & {
+  /**
+   * BROWSER ONLY
+   *
+   * The response body as a browser Blob.
+   * Always `undefined` in node.js.
+   */
+  blobBody?: Promise<Blob>;
+  /**
+   * NODEJS ONLY
+   *
+   * The response body as a node.js Readable stream.
+   * Always `undefined` in the browser.
+   */
+  readableStreamBody?: NodeJS.ReadableStream;
+
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobQueryHeaders;
+  };
+};
+
 
 /**
  * Blob tags.

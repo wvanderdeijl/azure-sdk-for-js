@@ -2,7 +2,9 @@
 // Licensed under the MIT license.
 
 import { AbortSignalLike } from "@azure/abort-controller";
-import { HttpHeaders, isNode, URLBuilder, TokenCredential } from "@azure/core-http";
+import { createHttpHeaders, HttpHeaders } from "@azure/core-rest-pipeline";
+import { TokenCredential } from "@azure/core-auth";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   BlobQueryArrowConfiguration,
@@ -47,6 +49,8 @@ import {
   PageBlobGetPageRangesDiffResponseModel,
   PageRangeInfo,
 } from "../generatedModels";
+import { URLBuilder } from "./url";
+import { isNode } from "./utils.node";
 
 /**
  * Reserved URL characters must be properly escaped for Storage services like Blob or File.
@@ -540,14 +544,14 @@ export function sanitizeURL(url: string): string {
 }
 
 export function sanitizeHeaders(originalHeader: HttpHeaders): HttpHeaders {
-  const headers: HttpHeaders = new HttpHeaders();
-  for (const header of originalHeader.headersArray()) {
-    if (header.name.toLowerCase() === HeaderConstants.AUTHORIZATION.toLowerCase()) {
-      headers.set(header.name, "*****");
-    } else if (header.name.toLowerCase() === HeaderConstants.X_MS_COPY_SOURCE) {
-      headers.set(header.name, sanitizeURL(header.value));
+  const headers: HttpHeaders = createHttpHeaders();
+  for (const header of originalHeader) {
+    if (header[0].toLowerCase() === HeaderConstants.AUTHORIZATION.toLowerCase()) {
+      headers.set(header[0], "*****");
+    } else if (header[0].toLowerCase() === HeaderConstants.X_MS_COPY_SOURCE) {
+      headers.set(header[0], sanitizeURL(header[1]));
     } else {
-      headers.set(header.name, header.value);
+      headers.set(header[0], header[1]);
     }
   }
 
@@ -1065,4 +1069,14 @@ export function* ExtractPageRangeInfoItems(
       isClear: true,
     };
   }
+}
+
+/**
+ * Generated Universally Unique Identifier
+ *
+ * @returns RFC4122 v4 UUID.
+ * @internal
+ */
+ export function generateUuid(): string {
+  return uuidv4();
 }

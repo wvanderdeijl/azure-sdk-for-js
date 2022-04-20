@@ -30,7 +30,7 @@ async function main() {
   let createContainerResponse = await containerClient.create();
   console.log(`Created container ${containerName} successfully,`);
   console.log(
-    `requestId - ${createContainerResponse.requestId}, statusCode - ${createContainerResponse._response.status}\n`
+    `requestId - ${createContainerResponse.requestId}, statusCode - ${(createContainerResponse as any)._response.status}\n`
   );
 
   try {
@@ -63,7 +63,7 @@ async function main() {
     const uploadBlobResponse = await blockBlobClient.upload(content, Buffer.byteLength(content));
     console.log(`Uploaded block blob ${blobName} successfully,`);
     console.log(
-      `requestId - ${uploadBlobResponse.requestId}, statusCode - ${uploadBlobResponse._response.status}\n`
+      `requestId - ${uploadBlobResponse.requestId}, statusCode - ${(uploadBlobResponse as any)._response.status}\n`
     );
   }
 
@@ -75,7 +75,7 @@ async function main() {
     `getProperties() on blob - ${blobName}, blobType = ${blobProperties.blobType}, accessTier = ${blobProperties.accessTier} `
   );
   console.log(
-    `requestId - ${blobProperties.requestId}, statusCode - ${blobProperties._response.status}\n`
+    `requestId - ${blobProperties.requestId}, statusCode - ${(blobProperties as any)._response.status}\n`
   );
 
   try {
@@ -99,7 +99,7 @@ async function main() {
       ).toString()},`
     );
     console.log(
-      `requestId - ${downloadBlockBlobResponse.requestId}, statusCode - ${downloadBlockBlobResponse._response.status}\n`
+      `requestId - ${downloadBlockBlobResponse.requestId}, statusCode - ${(downloadBlockBlobResponse as any)._response.status}\n`
     );
   }
 
@@ -136,7 +136,7 @@ async function main() {
     const deleteContainerResponse = await containerClient.delete();
     console.log("Deleted container successfully -");
     console.log(
-      `requestId - ${deleteContainerResponse.requestId}, statusCode - ${deleteContainerResponse._response.status}\n`
+      `requestId - ${deleteContainerResponse.requestId}, statusCode - ${(deleteContainerResponse as any)._response.status}\n`
     );
   }
 }

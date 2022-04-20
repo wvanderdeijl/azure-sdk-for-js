@@ -1,17 +1,17 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import { generateUuid, HttpResponse } from "@azure/core-http";
-import { StorageClientContext } from "./generated/src/index";
+import { StorageClient as StorageClientContext } from "./generated/src";
 import { ContainerBreakLeaseOptionalParams } from "./generatedModels";
 import { AbortSignalLike } from "@azure/abort-controller";
 import { SpanStatusCode } from "@azure/core-tracing";
-import { Blob as StorageBlob, Container } from "./generated/src/operations";
+import { BlobImpl, ContainerImpl } from "./generated/src/operations";
 import { ModifiedAccessConditions } from "./models";
 import { CommonOptions } from "./StorageClient";
 import { ETagNone } from "./utils/constants";
 import { convertTracingToRequestOptionsBase, createSpan } from "./utils/tracing";
 import { BlobClient } from "./Clients";
 import { ContainerClient } from "./ContainerClient";
+import { generateUuid } from "./utils/utils.common";
 
 /**
  * The details for a specific lease.
@@ -67,17 +67,17 @@ export interface Lease {
  *
  * See {@link BlobLeaseClient}.
  */
-export type LeaseOperationResponse = Lease & {
-  /**
-   * The underlying HTTP response.
-   */
-  _response: HttpResponse & {
-    /**
-     * The parsed HTTP response headers.
-     */
-    parsedHeaders: Lease;
-  };
-};
+export type LeaseOperationResponse = Lease;// & {
+//   /**
+//    * The underlying HTTP response.
+//    */
+//   _response: HttpResponse & {
+//     /**
+//      * The parsed HTTP response headers.
+//      */
+//     parsedHeaders: Lease;
+//   };
+// }; // _response pending
 
 /**
  * Configures lease operations.
@@ -100,7 +100,7 @@ export interface LeaseOperationOptions extends CommonOptions {
 export class BlobLeaseClient {
   private _leaseId: string;
   private _url: string;
-  private _containerOrBlobOperation: Container | StorageBlob;
+  private _containerOrBlobOperation: ContainerImpl | BlobImpl;
   private _isContainer: boolean;
 
   /**
@@ -135,10 +135,10 @@ export class BlobLeaseClient {
 
     if ((client as BlobClient).name === undefined) {
       this._isContainer = true;
-      this._containerOrBlobOperation = new Container(clientContext);
+      this._containerOrBlobOperation = new ContainerImpl(clientContext);
     } else {
       this._isContainer = false;
-      this._containerOrBlobOperation = new StorageBlob(clientContext);
+      this._containerOrBlobOperation = new BlobImpl(clientContext);
     }
 
     if (!leaseId) {

@@ -1,22 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import {
-  BaseRequestPolicy,
-  HttpHeaders,
-  HttpOperationResponse,
-  isNode,
-  RequestPolicy,
-  RequestPolicyOptions,
-  WebResource,
-} from "@azure/core-http";
-
+import { createHttpHeaders, PipelinePolicy, PipelineRequest, PipelineResponse, SendRequest } from "@azure/core-rest-pipeline";
 import { HeaderConstants } from "../utils/constants";
+import { isNode } from "../utils/utils.node";
 
 /**
  * TelemetryPolicy is a policy used to tag user-agent header for every requests.
  */
-export class TelemetryPolicy extends BaseRequestPolicy {
+export class TelemetryPolicy implements PipelinePolicy {
+  public readonly name = "TelemetryPolicy";
+
   /**
    * Telemetry string.
    */
@@ -24,12 +18,9 @@ export class TelemetryPolicy extends BaseRequestPolicy {
 
   /**
    * Creates an instance of TelemetryPolicy.
-   * @param nextPolicy -
-   * @param options -
    * @param telemetry -
    */
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, telemetry: string) {
-    super(nextPolicy, options);
+  constructor(telemetry: string) {
     this.telemetry = telemetry;
   }
 
@@ -38,16 +29,16 @@ export class TelemetryPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse> {
     if (isNode) {
       if (!request.headers) {
-        request.headers = new HttpHeaders();
+        request.headers = createHttpHeaders();
       }
       if (!request.headers.get(HeaderConstants.USER_AGENT)) {
         request.headers.set(HeaderConstants.USER_AGENT, this.telemetry);
       }
     }
 
-    return this._nextPolicy.sendRequest(request);
+    return next(request);
   }
 }

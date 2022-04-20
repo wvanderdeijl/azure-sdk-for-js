@@ -6,7 +6,6 @@ import { readFileSync, unlinkSync, existsSync, mkdirSync } from "fs";
 import { join } from "path";
 
 import { AbortController } from "@azure/abort-controller";
-import { isNode, TokenCredential } from "@azure/core-http";
 import { delay, record, Recorder } from "@azure-tools/test-recorder";
 
 import {
@@ -33,9 +32,10 @@ import {
 } from "../utils";
 import { assertClientUsesTokenCredential } from "../utils/assert";
 import { readStreamToLocalFileWithLogs } from "../utils/testutils.node";
-import { streamToBuffer3 } from "../../src/utils/utils.node";
+import { isNode, streamToBuffer3 } from "../../src/utils/utils.node";
 import { Context } from "mocha";
 import { Test_CPK_INFO } from "../utils/fakeTestSecrets";
+import { TokenCredential } from "@azure/core-auth";
 
 describe("BlobClient Node.js only", () => {
   let containerName: string;

@@ -1,7 +1,5 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { URLBuilder } from "@azure/core-http";
 import { assert } from "chai";
 
 import { AbortController } from "@azure/abort-controller";
@@ -11,6 +9,8 @@ import { getBSU, recorderEnvSetup } from "./utils";
 import { InjectorPolicyFactory } from "./utils/InjectorPolicyFactory";
 import { record, Recorder } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
+import { URLBuilder } from "../src/utils/url";
+import { InjectorPolicy } from "./utils/InjectorPolicy";
 
 describe("RetryPolicy", () => {
   let blobServiceClient: BlobServiceClient;
@@ -37,7 +37,7 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter === 0) {
         injectCounter++;
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+        return new RestError("Server Internal Error", {code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -63,7 +63,7 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter < 2) {
         injectCounter++;
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+        return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -93,8 +93,8 @@ describe("RetryPolicy", () => {
   });
 
   it("Retry Policy should failed when requests always fail with 500", async () => {
-    const injector = new InjectorPolicyFactory(() => {
-      return new RestError("Server Internal Error", "ServerInternalError", 500);
+    const injector = new InjectorPolicy(() => {
+      return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
     });
 
     const credential = (containerClient as any).pipeline.factories[
@@ -102,8 +102,8 @@ describe("RetryPolicy", () => {
     ];
     const factories = newPipeline(credential, {
       retryOptions: { maxTries: 3 },
-    }).factories;
-    factories.push(injector);
+    }).pipelineContext;
+    factories.addPolicy(injector);
     const pipeline = new Pipeline(factories);
     const injectContainerClient = new ContainerClient(containerClient.url, pipeline);
 
@@ -123,9 +123,9 @@ describe("RetryPolicy", () => {
 
   it("Retry Policy should work for secondary endpoint", async () => {
     let injectCounter = 0;
-    const injector = new InjectorPolicyFactory(() => {
+    const injector = new InjectorPolicy(() => {
       if (injectCounter++ < 1) {
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+        return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -144,15 +144,15 @@ describe("RetryPolicy", () => {
     ];
     const factories = newPipeline(credential, {
       retryOptions: { maxTries: 2, secondaryHost },
-    }).factories;
-    factories.push(injector);
+    }).pipelineContext;
+    factories.addPolicy(injector);
     const pipeline = new Pipeline(factories);
     const injectContainerClient = new ContainerClient(containerClient.url, pipeline);
 
     let finalRequestURL = "";
     try {
       const response = await injectContainerClient.getProperties();
-      finalRequestURL = response._response.request.url;
+      finalRequestURL = (response as any)._response.request.url;
     } catch (err: any) {
       finalRequestURL = err.request ? err.request.url : "";
     }
@@ -165,7 +165,7 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter === 0) {
         injectCounter++;
-        return new RestError(`Error "Error: Unclosed root tag`, "PARSE_ERROR");
+        return new RestError(`Error "Error: Unclosed root tag`, { code: "PARSE_ERROR" });
       }
       return;
     });

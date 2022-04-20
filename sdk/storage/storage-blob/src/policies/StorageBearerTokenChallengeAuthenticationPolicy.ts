@@ -1,16 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { AccessToken, GetTokenOptions, TokenCredential, URLBuilder } from "@azure/core-http";
-import {
-  BaseRequestPolicy,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-} from "@azure/core-http";
-import { HttpOperationResponse } from "@azure/core-http";
-import { WebResourceLike } from "@azure/core-http";
-import { delay } from "@azure/core-http";
+import { AccessToken, GetTokenOptions, TokenCredential } from "@azure/core-auth";
+import { PipelinePolicy, PipelineRequest, PipelineResponse, SendRequest } from "@azure/core-rest-pipeline";
+import { URLBuilder } from "../utils/url";
+import { delay } from "../utils/utils.common";
 
 /**
  * A set of constants used internally when processing requests.
@@ -236,7 +230,7 @@ function createTokenCycler(
  * We will retrieve the challenge only if the response status code was 401,
  * and if the response contained the header "WWW-Authenticate" with a non-empty value.
  */
-function getChallenge(response: HttpOperationResponse): string | undefined {
+function getChallenge(response: PipelineResponse): string | undefined {
   const challenge = response.headers.get("WWW-Authenticate");
   if (response.status === 401 && challenge) {
     return challenge;
@@ -281,17 +275,17 @@ function parseChallenge(challenge: string): any {
 export function storageBearerTokenChallengeAuthenticationPolicy(
   credential: TokenCredential,
   scopes: string | string[]
-): RequestPolicyFactory {
+): PipelinePolicy {
   // This simple function encapsulates the entire process of reliably retrieving the token
   let getToken = createTokenCycler(credential, scopes);
 
-  class StorageBearerTokenChallengeAuthenticationPolicy extends BaseRequestPolicy {
-    public constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
-      super(nextPolicy, options);
+  class StorageBearerTokenChallengeAuthenticationPolicy implements PipelinePolicy {
+    public readonly name = "StorageBearerTokenChallengeAuthenticationPolicy";
+    public constructor() {
     }
 
-    public async sendRequest(webResource: WebResourceLike): Promise<HttpOperationResponse> {
-      if (!webResource.url.toLowerCase().startsWith("https://")) {
+    public async sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse> {
+      if (!request.url.toLowerCase().startsWith("https://")) {
         throw new Error(
           "Bearer token authentication is not permitted for non-TLS protected (non-https) URLs."
         );
@@ -300,15 +294,13 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
       const getTokenInternal = getToken;
       const token = (
         await getTokenInternal({
-          abortSignal: webResource.abortSignal,
-          tracingOptions: {
-            tracingContext: webResource.tracingContext,
-          },
+          abortSignal: request.abortSignal,
+          tracingOptions: request.tracingOptions,
         })
       ).token;
-      webResource.headers.set(Constants.HeaderConstants.AUTHORIZATION, `Bearer ${token}`);
+      request.headers.set(Constants.HeaderConstants.AUTHORIZATION, `Bearer ${token}`);
 
-      const response = await this._nextPolicy.sendRequest(webResource);
+      const response = await next(request);
 
       if (response?.status === 401) {
         const challenge = getChallenge(response);
@@ -322,30 +314,24 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
 
           const tokenForChallenge = (
             await getTokenForChallenge({
-              abortSignal: webResource.abortSignal,
-              tracingOptions: {
-                tracingContext: webResource.tracingContext,
-              },
+              abortSignal: request.abortSignal,
+              tracingOptions: request.tracingOptions,
               tenantId: tenantId,
             })
           ).token;
 
           getToken = getTokenForChallenge;
-          webResource.headers.set(
+          request.headers.set(
             Constants.HeaderConstants.AUTHORIZATION,
             `Bearer ${tokenForChallenge}`
           );
-          return this._nextPolicy.sendRequest(webResource);
+          return next(request);
         }
       }
 
       return response;
     }
   }
-
-  return {
-    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptions) => {
-      return new StorageBearerTokenChallengeAuthenticationPolicy(nextPolicy, options);
-    },
-  };
+  
+  return new StorageBearerTokenChallengeAuthenticationPolicy();
 }

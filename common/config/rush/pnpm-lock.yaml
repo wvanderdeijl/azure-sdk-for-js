@@ -9753,7 +9753,7 @@ packages:
     dev: false
 
   file:projects/arm-botservice.tgz:
-    resolution: {integrity: sha512-PQBwddr7cW9SAkQAch2O4+Nt7EaFk3XnbMoZ9SJ/QJ2mQBofqUQRoOZ6DViU6ivC4ExISlxx6wxBDA2IUGluVA==, tarball: file:projects/arm-botservice.tgz}
+    resolution: {integrity: sha512-mF4nCf/qyg/0ATRr3W8ux8ainl4MGXLJ1UsO7lcOTFFf0A1TLYxrmscqQ+tQ6vaawGjWllZEp39p3GymMbZ9Hg==, tarball: file:projects/arm-botservice.tgz}
     name: '@rush-temp/arm-botservice'
     version: 0.0.0
     dependencies:
@@ -10424,7 +10424,7 @@ packages:
     dev: false
 
   file:projects/arm-datafactory.tgz:
-    resolution: {integrity: sha512-j+LTbRhHIaMJMaKmSs/ugOXWowAtP21BK0F8lThUcZ5lOlfbOxY9iU7phGtUPih0dn4HcjjTx8g2j4caUfE4vQ==, tarball: file:projects/arm-datafactory.tgz}
+    resolution: {integrity: sha512-6lPhYBkS1WE4IdreMMzxq4KIEbT/lK+Fm0/yq4bw2+u4BOowi9JsmRF+SmjfDQnflBlVV2T++NCmkeFW0LaMRA==, tarball: file:projects/arm-datafactory.tgz}
     name: '@rush-temp/arm-datafactory'
     version: 0.0.0
     dependencies:
@@ -10647,7 +10647,7 @@ packages:
     dev: false
 
   file:projects/arm-digitaltwins.tgz:
-    resolution: {integrity: sha512-hW849ZUuBqPjs2hSiWFKM2L38jA29tgjpn1HSxr5gdGqSbkh+xJWb10tjhbByoPAGoC/xiLlmFsEzLWoIME2HQ==, tarball: file:projects/arm-digitaltwins.tgz}
+    resolution: {integrity: sha512-UoYxvLJ6lsdjg2ko5jVsLEQQLC1nIjSFPc4lkFkwwUJAMFgceRXpPAcTMs+O0aICUIZSgs3Fw+sVW8m6ZbFsxA==, tarball: file:projects/arm-digitaltwins.tgz}
     name: '@rush-temp/arm-digitaltwins'
     version: 0.0.0
     dependencies:
@@ -16962,7 +16962,7 @@ packages:
     dev: false
 
   file:projects/storage-blob.tgz:
-    resolution: {integrity: sha512-iMmO5ZNOd0dA1xFZrJz2rxOibwdSLggezfDmxZCnURa9KVzl2qm6Y77/04DgF2TeitdDNM3pQGvd5prVKX5xTg==, tarball: file:projects/storage-blob.tgz}
+    resolution: {integrity: sha512-OT4Ma6HLbSlmlQOh/1f1EXAfpYjk48rt9U+tnBE5pG+y8HC1HCVwIS5BhDMxyG4eQfnm/P5HT+Fu3iIoDvjOTw==, tarball: file:projects/storage-blob.tgz}
     name: '@rush-temp/storage-blob'
     version: 0.0.0
     dependencies:
@@ -16974,6 +16974,7 @@ packages:
       '@types/mocha': 7.0.2
       '@types/node': 12.20.47
       '@types/node-fetch': 2.6.1
+      '@types/uuid': 8.3.4
       chai: 4.3.6
       cross-env: 7.0.3
       dotenv: 8.6.0

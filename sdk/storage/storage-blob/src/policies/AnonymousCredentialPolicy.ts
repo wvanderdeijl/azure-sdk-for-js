@@ -1,8 +1,5 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { RequestPolicy, RequestPolicyOptions } from "@azure/core-http";
-
 import { CredentialPolicy } from "./CredentialPolicy";
 
 /**
@@ -10,6 +7,7 @@ import { CredentialPolicy } from "./CredentialPolicy";
  * or for use with Shared Access Signatures (SAS).
  */
 export class AnonymousCredentialPolicy extends CredentialPolicy {
+  public name = "AnonymousCredentialPolicy";
   /**
    * Creates an instance of AnonymousCredentialPolicy.
    * @param nextPolicy -
@@ -17,7 +15,7 @@ export class AnonymousCredentialPolicy extends CredentialPolicy {
    */
   // The base class has a protected constructor. Adding a public one to enable constructing of this class.
   /* eslint-disable-next-line @typescript-eslint/no-useless-constructor*/
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
-    super(nextPolicy, options);
+  constructor() {
+    super();
   }
 }

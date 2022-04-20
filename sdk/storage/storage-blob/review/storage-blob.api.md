@@ -8,30 +8,29 @@
 
 import { AbortSignalLike } from '@azure/abort-controller';
 import { AzureLogger } from '@azure/logger';
-import { BaseRequestPolicy } from '@azure/core-http';
-import * as coreHttp from '@azure/core-http';
-import { deserializationPolicy } from '@azure/core-http';
-import { HttpHeaders } from '@azure/core-http';
-import { HttpOperationResponse } from '@azure/core-http';
-import { HttpRequestBody } from '@azure/core-http';
-import { HttpResponse } from '@azure/core-http';
-import { HttpClient as IHttpClient } from '@azure/core-http';
-import { KeepAliveOptions } from '@azure/core-http';
+import * as coreClient from '@azure/core-client';
+import * as coreHttpCompat from '@azure/core-http-compat';
+import * as coreRestPipeline from '@azure/core-rest-pipeline';
+import { deserializationPolicy } from '@azure/core-client';
+import { HttpClient } from '@azure/core-rest-pipeline';
+import { HttpHeaders } from '@azure/core-rest-pipeline';
+import { KeepAliveOptions } from '@azure/core-http-compat';
 import { OperationTracingOptions } from '@azure/core-tracing';
 import { PagedAsyncIterableIterator } from '@azure/core-paging';
+import { Pipeline as Pipeline_2 } from '@azure/core-rest-pipeline';
+import { PipelinePolicy } from '@azure/core-rest-pipeline';
+import { PipelineRequest } from '@azure/core-rest-pipeline';
+import { PipelineResponse } from '@azure/core-rest-pipeline';
 import { PollerLike } from '@azure/core-lro';
 import { PollOperationState } from '@azure/core-lro';
-import { ProxyOptions } from '@azure/core-http';
+import { ProxySettings } from '@azure/core-rest-pipeline';
 import { Readable } from 'stream';
-import { RequestPolicy } from '@azure/core-http';
-import { RequestPolicyFactory } from '@azure/core-http';
-import { RequestPolicyOptions } from '@azure/core-http';
-import { RestError } from '@azure/core-http';
-import { ServiceClientOptions } from '@azure/core-http';
-import { TokenCredential } from '@azure/core-http';
-import { TransferProgressEvent } from '@azure/core-http';
-import { UserAgentOptions } from '@azure/core-http';
-import { WebResource } from '@azure/core-http';
+import { RequestBodyType } from '@azure/core-rest-pipeline';
+import { RestError } from '@azure/core-rest-pipeline';
+import { SendRequest } from '@azure/core-rest-pipeline';
+import { TokenCredential } from '@azure/core-auth';
+import { TransferProgressEvent } from '@azure/core-rest-pipeline';
+import { UserAgentPolicyOptions } from '@azure/core-rest-pipeline';
 
 // @public
 export interface AccessPolicy {
@@ -117,12 +116,14 @@ export interface AccountSASSignatureValues {
 
 // @public
 export class AnonymousCredential extends Credential_2 {
-    create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): AnonymousCredentialPolicy;
+    create(): AnonymousCredentialPolicy;
 }
 
 // @public
 export class AnonymousCredentialPolicy extends CredentialPolicy {
-    constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions);
+    constructor();
+    // (undocumented)
+    name: string;
 }
 
 // @public
@@ -155,11 +156,7 @@ export interface AppendBlobAppendBlockFromURLOptions extends CommonOptions {
 }
 
 // @public
-export type AppendBlobAppendBlockFromUrlResponse = AppendBlobAppendBlockFromUrlHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: AppendBlobAppendBlockFromUrlHeaders;
-    };
-};
+export type AppendBlobAppendBlockFromUrlResponse = AppendBlobAppendBlockFromUrlHeaders;
 
 // @public
 export interface AppendBlobAppendBlockHeaders {
@@ -191,18 +188,14 @@ export interface AppendBlobAppendBlockOptions extends CommonOptions {
 }
 
 // @public
-export type AppendBlobAppendBlockResponse = AppendBlobAppendBlockHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: AppendBlobAppendBlockHeaders;
-    };
-};
+export type AppendBlobAppendBlockResponse = AppendBlobAppendBlockHeaders;
 
 // @public
 export class AppendBlobClient extends BlobClient {
     constructor(connectionString: string, containerName: string, blobName: string, options?: StoragePipelineOptions);
     constructor(url: string, credential: StorageSharedKeyCredential | AnonymousCredential | TokenCredential, options?: StoragePipelineOptions);
     constructor(url: string, pipeline: PipelineLike);
-    appendBlock(body: HttpRequestBody, contentLength: number, options?: AppendBlobAppendBlockOptions): Promise<AppendBlobAppendBlockResponse>;
+    appendBlock(body: RequestBodyType, contentLength: number, options?: AppendBlobAppendBlockOptions): Promise<AppendBlobAppendBlockResponse>;
     appendBlockFromURL(sourceURL: string, sourceOffset: number, count: number, options?: AppendBlobAppendBlockFromURLOptions): Promise<AppendBlobAppendBlockFromUrlResponse>;
     create(options?: AppendBlobCreateOptions): Promise<AppendBlobCreateResponse>;
     createIfNotExists(options?: AppendBlobCreateIfNotExistsOptions): Promise<AppendBlobCreateIfNotExistsResponse>;
@@ -256,11 +249,7 @@ export interface AppendBlobCreateOptions extends CommonOptions {
 }
 
 // @public
-export type AppendBlobCreateResponse = AppendBlobCreateHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: AppendBlobCreateHeaders;
-    };
-};
+export type AppendBlobCreateResponse = AppendBlobCreateHeaders;
 
 // @public
 export interface AppendBlobRequestConditions extends BlobRequestConditions, AppendPositionAccessConditions {
@@ -280,8 +269,6 @@ export interface AppendPositionAccessConditions {
 
 // @public
 export type ArchiveStatus = "rehydrate-pending-to-hot" | "rehydrate-pending-to-cool";
-
-export { BaseRequestPolicy }
 
 // @public
 export interface BatchSubRequest {
@@ -315,11 +302,7 @@ export interface BlobAbortCopyFromURLOptions extends CommonOptions {
 }
 
 // @public
-export type BlobAbortCopyFromURLResponse = BlobAbortCopyFromURLHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobAbortCopyFromURLHeaders;
-    };
-};
+export type BlobAbortCopyFromURLResponse = BlobAbortCopyFromURLHeaders;
 
 // @public
 export interface BlobAcquireLeaseOptions extends CommonOptions {
@@ -362,11 +345,7 @@ export interface BlobBatchSubmitBatchOptionalParams extends ServiceSubmitBatchOp
 }
 
 // @public
-export type BlobBatchSubmitBatchResponse = ParsedBatchResponse & ServiceSubmitBatchHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ServiceSubmitBatchHeaders;
-    };
-};
+export type BlobBatchSubmitBatchResponse = ParsedBatchResponse & ServiceSubmitBatchHeaders;
 
 // @public
 export interface BlobBeginCopyFromURLOptions extends BlobStartCopyFromURLOptions {
@@ -444,7 +423,7 @@ export interface BlobCopyFromURLHeaders {
     clientRequestId?: string;
     contentMD5?: Uint8Array;
     copyId?: string;
-    copyStatus?: SyncCopyStatusType;
+    copyStatus?: "success";
     date?: Date;
     encryptionScope?: string;
     errorCode?: string;
@@ -457,11 +436,7 @@ export interface BlobCopyFromURLHeaders {
 }
 
 // @public
-export type BlobCopyFromURLResponse = BlobCopyFromURLHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobCopyFromURLHeaders;
-    };
-};
+export type BlobCopyFromURLResponse = BlobCopyFromURLHeaders;
 
 // @public
 export type BlobCopySourceTags = "REPLACE" | "COPY";
@@ -490,11 +465,7 @@ export interface BlobCreateSnapshotOptions extends CommonOptions {
 }
 
 // @public
-export type BlobCreateSnapshotResponse = BlobCreateSnapshotHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobCreateSnapshotHeaders;
-    };
-};
+export type BlobCreateSnapshotResponse = BlobCreateSnapshotHeaders;
 
 // @public
 export interface BlobDeleteHeaders {
@@ -524,11 +495,7 @@ export interface BlobDeleteImmutabilityPolicyOptions extends CommonOptions {
 }
 
 // @public
-export type BlobDeleteImmutabilityPolicyResponse = BlobDeleteImmutabilityPolicyHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobDeleteImmutabilityPolicyHeaders;
-    };
-};
+export type BlobDeleteImmutabilityPolicyResponse = BlobDeleteImmutabilityPolicyHeaders;
 
 // @public
 export interface BlobDeleteOptions extends CommonOptions {
@@ -539,11 +506,7 @@ export interface BlobDeleteOptions extends CommonOptions {
 }
 
 // @public
-export type BlobDeleteResponse = BlobDeleteHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobDeleteHeaders;
-    };
-};
+export type BlobDeleteResponse = BlobDeleteHeaders;
 
 // @public
 export interface BlobDownloadHeaders {
@@ -599,7 +562,7 @@ export interface BlobDownloadHeaders {
 }
 
 // @public
-export interface BlobDownloadOptionalParams extends coreHttp.OperationOptions {
+export interface BlobDownloadOptionalParams extends coreClient.OperationOptions {
     cpkInfo?: CpkInfo;
     leaseAccessConditions?: LeaseAccessConditions;
     modifiedAccessConditions?: ModifiedAccessConditionsModel;
@@ -624,15 +587,8 @@ export interface BlobDownloadOptions extends CommonOptions {
     snapshot?: string;
 }
 
-// @public
-export type BlobDownloadResponseModel = BlobDownloadHeaders & {
-    blobBody?: Promise<Blob>;
-    readableStreamBody?: NodeJS.ReadableStream;
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobDownloadHeaders;
-    };
-};
-
+// Warning: (ae-forgotten-export) The symbol "BlobDownloadResponseModel" needs to be exported by the entry point index.d.ts
+//
 // @public
 export interface BlobDownloadResponseParsed extends BlobDownloadResponseModel {
     objectReplicationDestinationPolicyId?: string;
@@ -747,11 +703,7 @@ export interface BlobGetPropertiesResponse extends BlobGetPropertiesResponseMode
 }
 
 // @public
-export type BlobGetPropertiesResponseModel = BlobGetPropertiesHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobGetPropertiesHeaders;
-    };
-};
+export type BlobGetPropertiesResponseModel = BlobGetPropertiesHeaders;
 
 // @public
 export interface BlobGetTagsHeaders {
@@ -771,13 +723,7 @@ export interface BlobGetTagsOptions extends CommonOptions {
 // @public
 export type BlobGetTagsResponse = {
     tags: Tags;
-} & BlobGetTagsHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: BlobGetTagsHeaders;
-        bodyAsText: string;
-        parsedBody: BlobTags;
-    };
-};
+} & BlobGetTagsHeaders;
 
 // @public
 export interface BlobHierarchyListSegment {
@@ -1047,15 +993,6 @@ export interface BlobQueryParquetConfiguration {
 }
 
 // @public
-export type BlobQueryResponseModel = BlobQueryHeaders & {
-    blobBody?: Promise<Blob>;
-    readableStreamBody?: NodeJS.ReadableStream;
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobQueryHeaders;
-    };
-};
-
-// @public
 export interface BlobReleaseLeaseOptions extends CommonOptions {
     abortSignal?: AbortSignalLike;
     conditions?: ModifiedAccessConditions;
@@ -1189,11 +1126,7 @@ export interface BlobSetHTTPHeadersOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetHTTPHeadersResponse = BlobSetHTTPHeadersHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetHTTPHeadersHeaders;
-    };
-};
+export type BlobSetHTTPHeadersResponse = BlobSetHTTPHeadersHeaders;
 
 // @public
 export interface BlobSetImmutabilityPolicyHeaders {
@@ -1213,11 +1146,7 @@ export interface BlobSetImmutabilityPolicyOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetImmutabilityPolicyResponse = BlobSetImmutabilityPolicyHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetImmutabilityPolicyHeaders;
-    };
-};
+export type BlobSetImmutabilityPolicyResponse = BlobSetImmutabilityPolicyHeaders;
 
 // @public
 export interface BlobSetLegalHoldHeaders {
@@ -1234,11 +1163,7 @@ export interface BlobSetLegalHoldOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetLegalHoldResponse = BlobSetLegalHoldHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetLegalHoldHeaders;
-    };
-};
+export type BlobSetLegalHoldResponse = BlobSetLegalHoldHeaders;
 
 // @public
 export interface BlobSetMetadataHeaders {
@@ -1264,11 +1189,7 @@ export interface BlobSetMetadataOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetMetadataResponse = BlobSetMetadataHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetMetadataHeaders;
-    };
-};
+export type BlobSetMetadataResponse = BlobSetMetadataHeaders;
 
 // @public
 export interface BlobSetTagsHeaders {
@@ -1286,11 +1207,7 @@ export interface BlobSetTagsOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetTagsResponse = BlobSetTagsHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetTagsHeaders;
-    };
-};
+export type BlobSetTagsResponse = BlobSetTagsHeaders;
 
 // @public
 export interface BlobSetTierHeaders {
@@ -1308,11 +1225,7 @@ export interface BlobSetTierOptions extends CommonOptions {
 }
 
 // @public
-export type BlobSetTierResponse = BlobSetTierHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobSetTierHeaders;
-    };
-};
+export type BlobSetTierResponse = BlobSetTierHeaders;
 
 // @public
 export interface BlobStartCopyFromURLHeaders {
@@ -1343,11 +1256,7 @@ export interface BlobStartCopyFromURLOptions extends CommonOptions {
 }
 
 // @public
-export type BlobStartCopyFromURLResponse = BlobStartCopyFromURLHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobStartCopyFromURLHeaders;
-    };
-};
+export type BlobStartCopyFromURLResponse = BlobStartCopyFromURLHeaders;
 
 // @public
 export interface BlobSyncCopyFromURLOptions extends CommonOptions {
@@ -1397,16 +1306,10 @@ export interface BlobUndeleteOptions extends CommonOptions {
 }
 
 // @public
-export type BlobUndeleteResponse = BlobUndeleteHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlobUndeleteHeaders;
-    };
-};
+export type BlobUndeleteResponse = BlobUndeleteHeaders;
 
 // @public
-export type BlobUploadCommonResponse = BlockBlobUploadHeaders & {
-    _response: HttpResponse;
-};
+export type BlobUploadCommonResponse = BlockBlobUploadHeaders;
 
 // @public
 export interface Block {
@@ -1422,10 +1325,10 @@ export class BlockBlobClient extends BlobClient {
     commitBlockList(blocks: string[], options?: BlockBlobCommitBlockListOptions): Promise<BlockBlobCommitBlockListResponse>;
     getBlockList(listType: BlockListType, options?: BlockBlobGetBlockListOptions): Promise<BlockBlobGetBlockListResponse>;
     query(query: string, options?: BlockBlobQueryOptions): Promise<BlobDownloadResponseModel>;
-    stageBlock(blockId: string, body: HttpRequestBody, contentLength: number, options?: BlockBlobStageBlockOptions): Promise<BlockBlobStageBlockResponse>;
+    stageBlock(blockId: string, body: RequestBodyType, contentLength: number, options?: BlockBlobStageBlockOptions): Promise<BlockBlobStageBlockResponse>;
     stageBlockFromURL(blockId: string, sourceURL: string, offset?: number, count?: number, options?: BlockBlobStageBlockFromURLOptions): Promise<BlockBlobStageBlockFromURLResponse>;
     syncUploadFromURL(sourceURL: string, options?: BlockBlobSyncUploadFromURLOptions): Promise<BlockBlobPutBlobFromUrlResponse>;
-    upload(body: HttpRequestBody, contentLength: number, options?: BlockBlobUploadOptions): Promise<BlockBlobUploadResponse>;
+    upload(body: RequestBodyType, contentLength: number, options?: BlockBlobUploadOptions): Promise<BlockBlobUploadResponse>;
     // @deprecated
     uploadBrowserData(browserData: Blob | ArrayBuffer | ArrayBufferView, options?: BlockBlobParallelUploadOptions): Promise<BlobUploadCommonResponse>;
     uploadData(data: Buffer | Blob | ArrayBuffer | ArrayBufferView, options?: BlockBlobParallelUploadOptions): Promise<BlobUploadCommonResponse>;
@@ -1466,11 +1369,7 @@ export interface BlockBlobCommitBlockListOptions extends CommonOptions {
 }
 
 // @public
-export type BlockBlobCommitBlockListResponse = BlockBlobCommitBlockListHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlockBlobCommitBlockListHeaders;
-    };
-};
+export type BlockBlobCommitBlockListResponse = BlockBlobCommitBlockListHeaders;
 
 // @public
 export interface BlockBlobGetBlockListHeaders {
@@ -1492,13 +1391,7 @@ export interface BlockBlobGetBlockListOptions extends CommonOptions {
 }
 
 // @public
-export type BlockBlobGetBlockListResponse = BlockBlobGetBlockListHeaders & BlockList & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: BlockList;
-        parsedHeaders: BlockBlobGetBlockListHeaders;
-    };
-};
+export type BlockBlobGetBlockListResponse = BlockBlobGetBlockListHeaders & BlockList;
 
 // @public
 export interface BlockBlobParallelUploadOptions extends CommonOptions {
@@ -1534,11 +1427,7 @@ export interface BlockBlobPutBlobFromUrlHeaders {
 }
 
 // @public
-export type BlockBlobPutBlobFromUrlResponse = BlockBlobPutBlobFromUrlHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlockBlobPutBlobFromUrlHeaders;
-    };
-};
+export type BlockBlobPutBlobFromUrlResponse = BlockBlobPutBlobFromUrlHeaders;
 
 // @public
 export interface BlockBlobQueryOptions extends CommonOptions {
@@ -1578,11 +1467,7 @@ export interface BlockBlobStageBlockFromURLOptions extends CommonOptions {
 }
 
 // @public
-export type BlockBlobStageBlockFromURLResponse = BlockBlobStageBlockFromURLHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlockBlobStageBlockFromURLHeaders;
-    };
-};
+export type BlockBlobStageBlockFromURLResponse = BlockBlobStageBlockFromURLHeaders;
 
 // @public
 export interface BlockBlobStageBlockHeaders {
@@ -1610,11 +1495,7 @@ export interface BlockBlobStageBlockOptions extends CommonOptions {
 }
 
 // @public
-export type BlockBlobStageBlockResponse = BlockBlobStageBlockHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlockBlobStageBlockHeaders;
-    };
-};
+export type BlockBlobStageBlockResponse = BlockBlobStageBlockHeaders;
 
 // @public
 export interface BlockBlobSyncUploadFromURLOptions extends CommonOptions {
@@ -1673,11 +1554,7 @@ export interface BlockBlobUploadOptions extends CommonOptions {
 }
 
 // @public
-export type BlockBlobUploadResponse = BlockBlobUploadHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: BlockBlobUploadHeaders;
-    };
-};
+export type BlockBlobUploadResponse = BlockBlobUploadHeaders;
 
 // @public
 export interface BlockBlobUploadStreamOptions extends CommonOptions {
@@ -1732,7 +1609,7 @@ export interface ContainerAcquireLeaseOptions extends CommonOptions {
 }
 
 // @public
-export interface ContainerBreakLeaseOptionalParams extends coreHttp.OperationOptions {
+export interface ContainerBreakLeaseOptionalParams extends coreClient.OperationOptions {
     breakPeriod?: number;
     modifiedAccessConditions?: ModifiedAccessConditionsModel;
     requestId?: string;
@@ -1781,7 +1658,7 @@ export class ContainerClient extends StorageClient {
     listBlobsFlat(options?: ContainerListBlobsOptions): PagedAsyncIterableIterator<BlobItem, ContainerListBlobFlatSegmentResponse>;
     setAccessPolicy(access?: PublicAccessType, containerAcl?: SignedIdentifier[], options?: ContainerSetAccessPolicyOptions): Promise<ContainerSetAccessPolicyResponse>;
     setMetadata(metadata?: Metadata, options?: ContainerSetMetadataOptions): Promise<ContainerSetMetadataResponse>;
-    uploadBlockBlob(blobName: string, body: HttpRequestBody, contentLength: number, options?: BlockBlobUploadOptions): Promise<{
+    uploadBlockBlob(blobName: string, body: RequestBodyType, contentLength: number, options?: BlockBlobUploadOptions): Promise<{
         blockBlobClient: BlockBlobClient;
         response: BlockBlobUploadResponse;
     }>;
@@ -1812,11 +1689,7 @@ export interface ContainerCreateOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerCreateResponse = ContainerCreateHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerCreateHeaders;
-    };
-};
+export type ContainerCreateResponse = ContainerCreateHeaders;
 
 // @public
 export interface ContainerDeleteBlobOptions extends BlobDeleteOptions {
@@ -1844,11 +1717,7 @@ export interface ContainerDeleteMethodOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerDeleteResponse = ContainerDeleteHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerDeleteHeaders;
-    };
-};
+export type ContainerDeleteResponse = ContainerDeleteHeaders;
 
 // @public
 export interface ContainerEncryptionScope {
@@ -1875,13 +1744,7 @@ export interface ContainerFindBlobByTagsOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerFindBlobsByTagsSegmentResponse = FilterBlobSegment & ContainerFilterBlobsHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ContainerFilterBlobsHeaders;
-        bodyAsText: string;
-        parsedBody: FilterBlobSegmentModel;
-    };
-};
+export type ContainerFindBlobsByTagsSegmentResponse = FilterBlobSegment & ContainerFilterBlobsHeaders;
 
 // @public
 export interface ContainerGenerateSasUrlOptions extends CommonGenerateSasUrlOptions {
@@ -1909,13 +1772,7 @@ export interface ContainerGetAccessPolicyOptions extends CommonOptions {
 // @public
 export type ContainerGetAccessPolicyResponse = {
     signedIdentifiers: SignedIdentifier[];
-} & ContainerGetAccessPolicyHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ContainerGetAccessPolicyHeaders;
-        bodyAsText: string;
-        parsedBody: SignedIdentifierModel[];
-    };
-};
+} & ContainerGetAccessPolicyHeaders;
 
 // @public
 export interface ContainerGetPropertiesHeaders {
@@ -1948,11 +1805,7 @@ export interface ContainerGetPropertiesOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerGetPropertiesResponse = ContainerGetPropertiesHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerGetPropertiesHeaders;
-    };
-};
+export type ContainerGetPropertiesResponse = ContainerGetPropertiesHeaders;
 
 // @public
 export interface ContainerItem {
@@ -1979,13 +1832,7 @@ export interface ContainerListBlobFlatSegmentHeaders {
 }
 
 // @public
-export type ContainerListBlobFlatSegmentResponse = ListBlobsFlatSegmentResponse & ContainerListBlobFlatSegmentHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ContainerListBlobFlatSegmentHeaders;
-        bodyAsText: string;
-        parsedBody: ListBlobsFlatSegmentResponseModel;
-    };
-};
+export type ContainerListBlobFlatSegmentResponse = ListBlobsFlatSegmentResponse & ContainerListBlobFlatSegmentHeaders;
 
 // @public
 export interface ContainerListBlobHierarchySegmentHeaders {
@@ -1998,13 +1845,7 @@ export interface ContainerListBlobHierarchySegmentHeaders {
 }
 
 // @public
-export type ContainerListBlobHierarchySegmentResponse = ListBlobsHierarchySegmentResponse & ContainerListBlobHierarchySegmentHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ContainerListBlobHierarchySegmentHeaders;
-        bodyAsText: string;
-        parsedBody: ListBlobsHierarchySegmentResponseModel;
-    };
-};
+export type ContainerListBlobHierarchySegmentResponse = ListBlobsHierarchySegmentResponse & ContainerListBlobHierarchySegmentHeaders;
 
 // @public
 export interface ContainerListBlobsOptions extends CommonOptions {
@@ -2067,11 +1908,7 @@ export interface ContainerRenameHeaders {
 }
 
 // @public
-export type ContainerRenameResponse = ContainerRenameHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerRenameHeaders;
-    };
-};
+export type ContainerRenameResponse = ContainerRenameHeaders;
 
 // @public
 export interface ContainerRenewLeaseOptions extends CommonOptions {
@@ -2138,11 +1975,7 @@ export interface ContainerSetAccessPolicyOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerSetAccessPolicyResponse = ContainerSetAccessPolicyHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerSetAccessPolicyHeaders;
-    };
-};
+export type ContainerSetAccessPolicyResponse = ContainerSetAccessPolicyHeaders;
 
 // @public
 export interface ContainerSetMetadataHeaders {
@@ -2162,11 +1995,7 @@ export interface ContainerSetMetadataOptions extends CommonOptions {
 }
 
 // @public
-export type ContainerSetMetadataResponse = ContainerSetMetadataHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerSetMetadataHeaders;
-    };
-};
+export type ContainerSetMetadataResponse = ContainerSetMetadataHeaders;
 
 // @public
 export interface ContainerUndeleteHeaders {
@@ -2178,11 +2007,7 @@ export interface ContainerUndeleteHeaders {
 }
 
 // @public
-export type ContainerUndeleteResponse = ContainerUndeleteHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ContainerUndeleteHeaders;
-    };
-};
+export type ContainerUndeleteResponse = ContainerUndeleteHeaders;
 
 // @public
 export type CopyPollerBlobClient = Pick<BlobClient, "abortCopyFromURL" | "getProperties"> & {
@@ -2209,19 +2034,21 @@ export interface CpkInfo {
 }
 
 // @public
-abstract class Credential_2 implements RequestPolicyFactory {
-    create(_nextPolicy: RequestPolicy, _options: RequestPolicyOptions): RequestPolicy;
+abstract class Credential_2 {
+    create(): PipelinePolicy;
 }
 export { Credential_2 as Credential }
 
 // @public
-export abstract class CredentialPolicy extends BaseRequestPolicy {
-    sendRequest(request: WebResource): Promise<HttpOperationResponse>;
-    protected signRequest(request: WebResource): WebResource;
+export abstract class CredentialPolicy implements PipelinePolicy {
+    // (undocumented)
+    name: string;
+    sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse>;
+    protected signRequest(request: PipelineRequest): PipelineRequest;
 }
 
 // @public
-export type CredentialPolicyCreator = (nextPolicy: RequestPolicy, options: RequestPolicyOptions) => CredentialPolicy;
+export type CredentialPolicyCreator = () => CredentialPolicy;
 
 // @public
 export type DeleteSnapshotsOptionType = "include" | "only";
@@ -2229,7 +2056,7 @@ export type DeleteSnapshotsOptionType = "include" | "only";
 export { deserializationPolicy }
 
 // @public
-export type EncryptionAlgorithmType = "AES256";
+export type EncryptionAlgorithmType = string;
 
 // @public
 export interface FilterBlobItem {
@@ -2297,13 +2124,9 @@ export interface HttpAuthorization {
     value: string;
 }
 
+export { HttpClient }
+
 export { HttpHeaders }
-
-export { HttpOperationResponse }
-
-export { HttpRequestBody }
-
-export { IHttpClient }
 
 // @public
 export function isPipelineLike(pipeline: unknown): pipeline is PipelineLike;
@@ -2335,11 +2158,7 @@ export interface LeaseOperationOptions extends CommonOptions {
 }
 
 // @public
-export type LeaseOperationResponse = Lease & {
-    _response: HttpResponse & {
-        parsedHeaders: Lease;
-    };
-};
+export type LeaseOperationResponse = Lease;
 
 // @public
 export type LeaseStateType = "available" | "leased" | "expired" | "breaking" | "broken";
@@ -2530,11 +2349,7 @@ export interface PageBlobClearPagesOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobClearPagesResponse = PageBlobClearPagesHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobClearPagesHeaders;
-    };
-};
+export type PageBlobClearPagesResponse = PageBlobClearPagesHeaders;
 
 // @public
 export class PageBlobClient extends BlobClient {
@@ -2552,7 +2367,7 @@ export class PageBlobClient extends BlobClient {
     resize(size: number, options?: PageBlobResizeOptions): Promise<PageBlobResizeResponse>;
     startCopyIncremental(copySource: string, options?: PageBlobStartCopyIncrementalOptions): Promise<PageBlobCopyIncrementalResponse>;
     updateSequenceNumber(sequenceNumberAction: SequenceNumberActionType, sequenceNumber?: number, options?: PageBlobUpdateSequenceNumberOptions): Promise<PageBlobUpdateSequenceNumberResponse>;
-    uploadPages(body: HttpRequestBody, offset: number, count: number, options?: PageBlobUploadPagesOptions): Promise<PageBlobUploadPagesResponse>;
+    uploadPages(body: RequestBodyType, offset: number, count: number, options?: PageBlobUploadPagesOptions): Promise<PageBlobUploadPagesResponse>;
     uploadPagesFromURL(sourceURL: string, sourceOffset: number, destOffset: number, count: number, options?: PageBlobUploadPagesFromURLOptions): Promise<PageBlobUploadPagesFromURLResponse>;
     withSnapshot(snapshot: string): PageBlobClient;
 }
@@ -2571,11 +2386,7 @@ export interface PageBlobCopyIncrementalHeaders {
 }
 
 // @public
-export type PageBlobCopyIncrementalResponse = PageBlobCopyIncrementalHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobCopyIncrementalHeaders;
-    };
-};
+export type PageBlobCopyIncrementalResponse = PageBlobCopyIncrementalHeaders;
 
 // @public
 export interface PageBlobCreateHeaders {
@@ -2627,11 +2438,7 @@ export interface PageBlobCreateOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobCreateResponse = PageBlobCreateHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobCreateHeaders;
-    };
-};
+export type PageBlobCreateResponse = PageBlobCreateHeaders;
 
 // @public
 export interface PageBlobGetPageRangesDiffForManagedDisksInPagesOptions extends CommonOptions {
@@ -2663,23 +2470,12 @@ export interface PageBlobGetPageRangesDiffOptions extends CommonOptions {
 
 // @public
 export interface PageBlobGetPageRangesDiffResponse extends PageList, PageBlobGetPageRangesDiffHeaders {
-    _response: HttpResponse & {
-        parsedHeaders: PageBlobGetPageRangesDiffHeaders;
-        bodyAsText: string;
-        parsedBody: PageList;
-    };
 }
 
 // Warning: (ae-forgotten-export) The symbol "PageList" needs to be exported by the entry point index.d.ts
 //
 // @public
-export type PageBlobGetPageRangesDiffResponseModel = PageBlobGetPageRangesDiffHeaders & PageList_2 & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: PageList_2;
-        parsedHeaders: PageBlobGetPageRangesDiffHeaders;
-    };
-};
+export type PageBlobGetPageRangesDiffResponseModel = PageBlobGetPageRangesDiffHeaders & PageList_2;
 
 // @public
 export interface PageBlobGetPageRangesHeaders {
@@ -2701,21 +2497,10 @@ export interface PageBlobGetPageRangesOptions extends CommonOptions {
 
 // @public
 export interface PageBlobGetPageRangesResponse extends PageList, PageBlobGetPageRangesHeaders {
-    _response: HttpResponse & {
-        parsedHeaders: PageBlobGetPageRangesHeaders;
-        bodyAsText: string;
-        parsedBody: PageList;
-    };
 }
 
 // @public
-export type PageBlobGetPageRangesResponseModel = PageBlobGetPageRangesHeaders & PageList_2 & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: PageList_2;
-        parsedHeaders: PageBlobGetPageRangesHeaders;
-    };
-};
+export type PageBlobGetPageRangesResponseModel = PageBlobGetPageRangesHeaders & PageList_2;
 
 // @public
 export interface PageBlobListPageRangesDiffOptions extends CommonOptions {
@@ -2753,11 +2538,7 @@ export interface PageBlobResizeOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobResizeResponse = PageBlobResizeHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobResizeHeaders;
-    };
-};
+export type PageBlobResizeResponse = PageBlobResizeHeaders;
 
 // @public
 export interface PageBlobStartCopyIncrementalOptions extends CommonOptions {
@@ -2784,11 +2565,7 @@ export interface PageBlobUpdateSequenceNumberOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobUpdateSequenceNumberResponse = PageBlobUpdateSequenceNumberHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobUpdateSequenceNumberHeaders;
-    };
-};
+export type PageBlobUpdateSequenceNumberResponse = PageBlobUpdateSequenceNumberHeaders;
 
 // @public
 export interface PageBlobUploadPagesFromURLHeaders {
@@ -2819,11 +2596,7 @@ export interface PageBlobUploadPagesFromURLOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobUploadPagesFromURLResponse = PageBlobUploadPagesFromURLHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobUploadPagesFromURLHeaders;
-    };
-};
+export type PageBlobUploadPagesFromURLResponse = PageBlobUploadPagesFromURLHeaders;
 
 // @public
 export interface PageBlobUploadPagesHeaders {
@@ -2854,11 +2627,7 @@ export interface PageBlobUploadPagesOptions extends CommonOptions {
 }
 
 // @public
-export type PageBlobUploadPagesResponse = PageBlobUploadPagesHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: PageBlobUploadPagesHeaders;
-    };
-};
+export type PageBlobUploadPagesResponse = PageBlobUploadPagesHeaders;
 
 // @public
 export interface PageList {
@@ -2885,23 +2654,30 @@ export interface ParsedBatchResponse {
 
 // @public
 export class Pipeline implements PipelineLike {
-    constructor(factories: RequestPolicyFactory[], options?: PipelineOptions);
-    readonly factories: RequestPolicyFactory[];
+    constructor(pipelineContext: Pipeline_2, options?: PipelineOptions);
     readonly options: PipelineOptions;
-    toServiceClientOptions(): ServiceClientOptions;
+    readonly pipelineContext: Pipeline_2;
+    // Warning: (ae-forgotten-export) The symbol "StorageClientOptionalParams" needs to be exported by the entry point index.d.ts
+    toServiceClientOptions(): StorageClientOptionalParams;
 }
 
 // @public
 export interface PipelineLike {
-    readonly factories: RequestPolicyFactory[];
-    readonly options: PipelineOptions;
-    toServiceClientOptions(): ServiceClientOptions;
+    options: PipelineOptions;
+    pipelineContext: Pipeline_2;
+    toServiceClientOptions(): StorageClientOptionalParams;
 }
 
 // @public
 export interface PipelineOptions {
-    httpClient?: IHttpClient;
+    httpClient?: HttpClient;
 }
+
+export { PipelinePolicy }
+
+export { PipelineRequest }
+
+export { PipelineResponse }
 
 export { PollerLike }
 
@@ -2935,11 +2711,7 @@ export { Range_2 as Range }
 // @public
 export type RehydratePriority = "High" | "Standard";
 
-export { RequestPolicy }
-
-export { RequestPolicyFactory }
-
-export { RequestPolicyOptions }
+export { RequestBodyType }
 
 export { RestError }
 
@@ -3034,13 +2806,7 @@ export interface ServiceFindBlobByTagsOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceFindBlobsByTagsSegmentResponse = FilterBlobSegment & ServiceFilterBlobsHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ServiceFilterBlobsHeaders;
-        bodyAsText: string;
-        parsedBody: FilterBlobSegmentModel;
-    };
-};
+export type ServiceFindBlobsByTagsSegmentResponse = FilterBlobSegment & ServiceFilterBlobsHeaders;
 
 // @public
 export interface ServiceGenerateAccountSasUrlOptions {
@@ -3069,11 +2835,7 @@ export interface ServiceGetAccountInfoOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceGetAccountInfoResponse = ServiceGetAccountInfoHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ServiceGetAccountInfoHeaders;
-    };
-};
+export type ServiceGetAccountInfoResponse = ServiceGetAccountInfoHeaders;
 
 // @public
 export interface ServiceGetPropertiesHeaders {
@@ -3089,13 +2851,7 @@ export interface ServiceGetPropertiesOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceGetPropertiesResponse = ServiceGetPropertiesHeaders & BlobServiceProperties & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: BlobServiceProperties;
-        parsedHeaders: ServiceGetPropertiesHeaders;
-    };
-};
+export type ServiceGetPropertiesResponse = ServiceGetPropertiesHeaders & BlobServiceProperties;
 
 // @public
 export interface ServiceGetStatisticsHeaders {
@@ -3112,13 +2868,7 @@ export interface ServiceGetStatisticsOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceGetStatisticsResponse = ServiceGetStatisticsHeaders & BlobServiceStatistics & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: BlobServiceStatistics;
-        parsedHeaders: ServiceGetStatisticsHeaders;
-    };
-};
+export type ServiceGetStatisticsResponse = ServiceGetStatisticsHeaders & BlobServiceStatistics;
 
 // @public
 export interface ServiceGetUserDelegationKeyHeaders {
@@ -3135,13 +2885,7 @@ export interface ServiceGetUserDelegationKeyOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceGetUserDelegationKeyResponse = UserDelegationKey & ServiceGetUserDelegationKeyHeaders & {
-    _response: HttpResponse & {
-        parsedHeaders: ServiceGetUserDelegationKeyHeaders;
-        bodyAsText: string;
-        parsedBody: UserDelegationKeyModel;
-    };
-};
+export type ServiceGetUserDelegationKeyResponse = UserDelegationKey & ServiceGetUserDelegationKeyHeaders;
 
 // @public
 export interface ServiceListContainersOptions extends CommonOptions {
@@ -3161,13 +2905,7 @@ export interface ServiceListContainersSegmentHeaders {
 }
 
 // @public
-export type ServiceListContainersSegmentResponse = ServiceListContainersSegmentHeaders & ListContainersSegmentResponse & {
-    _response: coreHttp.HttpResponse & {
-        bodyAsText: string;
-        parsedBody: ListContainersSegmentResponse;
-        parsedHeaders: ServiceListContainersSegmentHeaders;
-    };
-};
+export type ServiceListContainersSegmentResponse = ServiceListContainersSegmentHeaders & ListContainersSegmentResponse;
 
 // @public
 export interface ServiceRenameContainerOptions extends CommonOptions {
@@ -3189,11 +2927,7 @@ export interface ServiceSetPropertiesOptions extends CommonOptions {
 }
 
 // @public
-export type ServiceSetPropertiesResponse = ServiceSetPropertiesHeaders & {
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ServiceSetPropertiesHeaders;
-    };
-};
+export type ServiceSetPropertiesResponse = ServiceSetPropertiesHeaders;
 
 // @public
 export interface ServiceSubmitBatchHeaders {
@@ -3205,7 +2939,7 @@ export interface ServiceSubmitBatchHeaders {
 }
 
 // @public
-export interface ServiceSubmitBatchOptionalParamsModel extends coreHttp.OperationOptions {
+export interface ServiceSubmitBatchOptionalParamsModel extends coreClient.OperationOptions {
     requestId?: string;
     timeoutInSeconds?: number;
 }
@@ -3214,9 +2948,6 @@ export interface ServiceSubmitBatchOptionalParamsModel extends coreHttp.Operatio
 export type ServiceSubmitBatchResponseModel = ServiceSubmitBatchHeaders & {
     blobBody?: Promise<Blob>;
     readableStreamBody?: NodeJS.ReadableStream;
-    _response: coreHttp.HttpResponse & {
-        parsedHeaders: ServiceSubmitBatchHeaders;
-    };
 };
 
 // @public
@@ -3260,14 +2991,11 @@ export enum StorageBlobAudience {
 }
 
 // @public
-export class StorageBrowserPolicy extends BaseRequestPolicy {
-    constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions);
-    sendRequest(request: WebResource): Promise<HttpOperationResponse>;
-}
-
-// @public
-export class StorageBrowserPolicyFactory implements RequestPolicyFactory {
-    create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageBrowserPolicy;
+export class StorageBrowserPolicy implements PipelinePolicy {
+    constructor();
+    // (undocumented)
+    name: string;
+    sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse>;
 }
 
 // @public
@@ -3276,11 +3004,11 @@ export const StorageOAuthScopes: string | string[];
 // @public
 export interface StoragePipelineOptions {
     audience?: string | string[];
-    httpClient?: IHttpClient;
+    httpClient?: HttpClient;
     keepAliveOptions?: KeepAliveOptions;
-    proxyOptions?: ProxyOptions;
+    proxyOptions?: ProxySettings;
     retryOptions?: StorageRetryOptions;
-    userAgentOptions?: UserAgentOptions;
+    userAgentOptions?: UserAgentPolicyOptions;
 }
 
 // @public
@@ -3294,17 +3022,13 @@ export interface StorageRetryOptions {
 }
 
 // @public
-export class StorageRetryPolicy extends BaseRequestPolicy {
-    constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, retryOptions?: StorageRetryOptions);
-    protected attemptSendRequest(request: WebResource, secondaryHas404: boolean, attempt: number): Promise<HttpOperationResponse>;
-    sendRequest(request: WebResource): Promise<HttpOperationResponse>;
-    protected shouldRetry(isPrimaryRetry: boolean, attempt: number, response?: HttpOperationResponse, err?: RestError): boolean;
-}
-
-// @public
-export class StorageRetryPolicyFactory implements RequestPolicyFactory {
+export class StorageRetryPolicy implements PipelinePolicy {
     constructor(retryOptions?: StorageRetryOptions);
-    create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageRetryPolicy;
+    protected attemptSendRequest(request: PipelineRequest, next: SendRequest, secondaryHas404: boolean, attempt: number): Promise<PipelineResponse>;
+    // (undocumented)
+    readonly name = "StorageRetryPolicy";
+    sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse>;
+    protected shouldRetry(isPrimaryRetry: boolean, attempt: number, response?: PipelineResponse, err?: RestError): boolean;
 }
 
 // @public
@@ -3318,17 +3042,17 @@ export class StorageSharedKeyCredential extends Credential_2 {
     constructor(accountName: string, accountKey: string);
     readonly accountName: string;
     computeHMACSHA256(stringToSign: string): string;
-    create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageSharedKeyCredentialPolicy;
+    create(): StorageSharedKeyCredentialPolicy;
 }
 
 // @public
 export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
-    constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, factory: StorageSharedKeyCredential);
-    protected signRequest(request: WebResource): WebResource;
+    constructor(crediential: StorageSharedKeyCredential);
+    readonly credential: StorageSharedKeyCredential;
+    // (undocumented)
+    readonly name = "StorageSharedKeyCredentialPolicy";
+    protected signRequest(request: PipelineRequest): PipelineRequest;
 }
-
-// @public
-export type SyncCopyStatusType = "success";
 
 // @public
 export interface TagConditions {
@@ -3359,8 +3083,6 @@ export interface UserDelegationKeyModel {
     signedVersion: string;
     value: string;
 }
-
-export { WebResource }
 
 // (No @packageDocumentation comment for this package)
 

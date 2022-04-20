@@ -1,12 +1,5 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import {
-  TokenCredential,
-  isTokenCredential,
-  isNode,
-  HttpResponse,
-  getDefaultProxySettings,
-} from "@azure/core-http";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AbortSignalLike } from "@azure/abort-controller";
 import {
@@ -20,16 +13,14 @@ import {
   ServiceGetAccountInfoResponse,
   ServiceListContainersSegmentResponse,
   ContainerItem,
-  UserDelegationKeyModel,
   ContainerUndeleteResponse,
-  FilterBlobSegmentModel,
   ServiceFilterBlobsHeaders,
   ContainerRenameResponse,
   LeaseAccessConditions,
   FilterBlobSegment,
   FilterBlobItem,
 } from "./generatedModels";
-import { Container, Service } from "./generated/src/operations";
+import { ContainerImpl, ServiceImpl } from "./generated/src/operations";
 import { newPipeline, StoragePipelineOptions, PipelineLike, isPipelineLike } from "./Pipeline";
 import {
   ContainerClient,
@@ -56,6 +47,9 @@ import { SasIPRange } from "./sas/SasIPRange";
 import { generateAccountSASQueryParameters } from "./sas/AccountSASSignatureValues";
 import { AccountSASServices } from "./sas/AccountSASServices";
 import { ListContainersIncludeType } from "./generated/src";
+import { isNode } from "./utils/utils.node";
+import { getDefaultProxySettings } from "@azure/core-rest-pipeline";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
 
 /**
  * Options to configure the {@link BlobServiceClient.getProperties} operation.
@@ -210,27 +204,27 @@ export interface ServiceFindBlobByTagsOptions extends CommonOptions {
  * The response of {@link BlobServiceClient.findBlobsByTags} operation.
  */
 export type ServiceFindBlobsByTagsSegmentResponse = FilterBlobSegment &
-  ServiceFilterBlobsHeaders & {
+  ServiceFilterBlobsHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ServiceFilterBlobsHeaders;
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ServiceFilterBlobsHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: FilterBlobSegmentModel;
-    };
-  };
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: FilterBlobSegmentModel;
+  //   };
+  // }; // _response pending
 
 /**
  * A user delegation key.
@@ -270,27 +264,27 @@ export interface UserDelegationKey {
  * Contains response data for the {@link getUserDelegationKey} operation.
  */
 export declare type ServiceGetUserDelegationKeyResponse = UserDelegationKey &
-  ServiceGetUserDelegationKeyHeaders & {
+  ServiceGetUserDelegationKeyHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ServiceGetUserDelegationKeyHeaders;
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ServiceGetUserDelegationKeyHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: UserDelegationKeyModel;
-    };
-  };
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: UserDelegationKeyModel;
+  //   };
+  // }; // _response pending
 
 /**
  * Options to configure {@link BlobServiceClient.undeleteContainer} operation.
@@ -362,7 +356,7 @@ export class BlobServiceClient extends StorageClient {
   /**
    * serviceContext provided by protocol layer.
    */
-  private serviceContext: Service;
+  private serviceContext: ServiceImpl;
 
   /**
    *
@@ -486,7 +480,7 @@ export class BlobServiceClient extends StorageClient {
       pipeline = newPipeline(new AnonymousCredential(), options);
     }
     super(url, pipeline);
-    this.serviceContext = new Service(this.storageClientContext);
+    this.serviceContext = new ServiceImpl(this.storageClientContext);
   }
 
   /**
@@ -590,7 +584,7 @@ export class BlobServiceClient extends StorageClient {
         options.destinationContainerName || deletedContainerName
       );
       // Hack to access a protected member.
-      const containerContext = new Container(containerClient["storageClientContext"]);
+      const containerContext = new ContainerImpl(containerClient["storageClientContext"]);
       const containerUndeleteResponse = await containerContext.restore({
         deletedContainerName,
         deletedContainerVersion,
@@ -629,7 +623,7 @@ export class BlobServiceClient extends StorageClient {
     try {
       const containerClient = this.getContainerClient(destinationContainerName);
       // Hack to access a protected member.
-      const containerContext = new Container(containerClient["storageClientContext"]);
+      const containerContext = new ContainerImpl(containerClient["storageClientContext"]);
       const containerRenameResponse = await containerContext.rename(sourceContainerName, {
         ...updatedOptions,
         sourceLeaseId: options.sourceCondition?.leaseId,
@@ -841,7 +835,7 @@ export class BlobServiceClient extends StorageClient {
 
       const wrappedResponse: ServiceFindBlobsByTagsSegmentResponse = {
         ...response,
-        _response: response._response, // _response is made non-enumerable
+        //_response: response._response, // _response is made non-enumerable // _response pending
         blobs: response.blobs.map((blob) => {
           let tagValue = "";
           if (blob.tags?.blobTagSet.length === 1) {
@@ -1237,7 +1231,7 @@ export class BlobServiceClient extends StorageClient {
       };
 
       const res: ServiceGetUserDelegationKeyResponse = {
-        _response: response._response,
+        // _response: response._response, // _response pending
         requestId: response.requestId,
         clientRequestId: response.clientRequestId,
         version: response.version,

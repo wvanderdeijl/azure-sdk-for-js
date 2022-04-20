@@ -1,11 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { TokenCredential } from "@azure/core-auth";
 import { AnonymousCredential } from "../../src";
 import { BlobServiceClient } from "../../src";
 import { newPipeline } from "../../src";
 import { SimpleTokenCredential } from "./testutils.common";
-import { TokenCredential } from "@azure/core-http";
 
 export * from "./testutils.common";
 

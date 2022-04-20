@@ -13,12 +13,12 @@ import { utf8ByteLength } from "./BatchUtils";
 import { BlobBatch } from "./BlobBatch";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { convertTracingToRequestOptionsBase, createSpan } from "./utils/tracing";
-import { HttpResponse, TokenCredential } from "@azure/core-http";
-import { Service, Container } from "./generated/src/operations";
+import { TokenCredential } from "@azure/core-auth";
+import { ServiceImpl, ContainerImpl } from "./generated/src/operations";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { BlobDeleteOptions, BlobClient, BlobSetTierOptions } from "./Clients";
-import { StorageClientContext } from "./generated/src/storageClientContext";
+import { StorageClient } from "./generated/src/storageClient";
 import { PipelineLike, StoragePipelineOptions, newPipeline, isPipelineLike } from "./Pipeline";
 import { getURLPath } from "./utils/utils.common";
 
@@ -31,17 +31,17 @@ export interface BlobBatchSubmitBatchOptionalParams extends ServiceSubmitBatchOp
  * Contains response data for blob batch operations.
  */
 export declare type BlobBatchSubmitBatchResponse = ParsedBatchResponse &
-  ServiceSubmitBatchHeaders & {
-    /**
-     * The underlying HTTP response.
-     */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ServiceSubmitBatchHeaders;
-    };
-  };
+  ServiceSubmitBatchHeaders;// & {
+  //   /**
+  //    * The underlying HTTP response.
+  //    */
+  //   _response: PipelineResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ServiceSubmitBatchHeaders;
+  //   };
+  // };  // _response pending
 
 /**
  * Contains response data for the {@link deleteBlobs} operation.
@@ -59,7 +59,7 @@ export declare type BlobBatchSetBlobsAccessTierResponse = BlobBatchSubmitBatchRe
  * @see https://docs.microsoft.com/en-us/rest/api/storageservices/blob-batch
  */
 export class BlobBatchClient {
-  private serviceOrContainerContext: Service | Container;
+  private serviceOrContainerContext: ServiceImpl | ContainerImpl;
 
   /**
    * Creates an instance of BlobBatchClient.
@@ -109,14 +109,14 @@ export class BlobBatchClient {
       pipeline = newPipeline(credentialOrPipeline, options);
     }
 
-    const storageClientContext = new StorageClientContext(url, pipeline.toServiceClientOptions());
+    const storageClientContext = new StorageClient(url, pipeline.toServiceClientOptions());
 
     const path = getURLPath(url);
     if (path && path !== "/") {
       // Container scoped.
-      this.serviceOrContainerContext = new Container(storageClientContext);
+      this.serviceOrContainerContext = new ContainerImpl(storageClientContext);
     } else {
-      this.serviceOrContainerContext = new Service(storageClientContext);
+      this.serviceOrContainerContext = new ServiceImpl(storageClientContext);
     }
   }
 
@@ -334,7 +334,7 @@ export class BlobBatchClient {
       const responseSummary = await batchResponseParser.parseBatchResponse();
 
       const res: BlobBatchSubmitBatchResponse = {
-        _response: rawBatchResponse._response,
+        // _response: rawBatchResponse._response, // _response pending
         contentType: rawBatchResponse.contentType,
         errorCode: rawBatchResponse.errorCode,
         requestId: rawBatchResponse.requestId,

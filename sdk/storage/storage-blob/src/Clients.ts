@@ -1,17 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 import { AbortSignalLike } from "@azure/abort-controller";
-import {
-  generateUuid,
-  getDefaultProxySettings,
-  HttpRequestBody,
-  HttpResponse,
-  isNode,
-  isTokenCredential,
-  TokenCredential,
-  TransferProgressEvent,
-  URLBuilder,
-} from "@azure/core-http";
 import { PollerLike, PollOperationState } from "@azure/core-lro";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { Readable } from "stream";
@@ -20,7 +9,7 @@ import { BlobDownloadResponse } from "./BlobDownloadResponse";
 import { BlobQueryResponse } from "./BlobQueryResponse";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
-import { AppendBlob, Blob as StorageBlob, BlockBlob, PageBlob } from "./generated/src/operations";
+import { AppendBlobImpl as AppendBlob, BlobImpl as StorageBlob, BlockBlobImpl as BlockBlob, PageBlobImpl as PageBlob } from "./generated/src/operations";
 import {
   AppendBlobAppendBlockFromUrlResponse,
   AppendBlobAppendBlockResponse,
@@ -30,7 +19,6 @@ import {
   BlobCreateSnapshotResponse,
   BlobDeleteResponse,
   BlobDownloadOptionalParams,
-  BlobDownloadResponseModel,
   BlobGetPropertiesResponseModel,
   BlobGetTagsHeaders,
   BlobSetHTTPHeadersResponse,
@@ -38,7 +26,6 @@ import {
   BlobSetTagsResponse,
   BlobSetTierResponse,
   BlobStartCopyFromURLResponse,
-  BlobTags,
   BlobUndeleteResponse,
   BlockBlobCommitBlockListResponse,
   BlockBlobGetBlockListResponse,
@@ -68,6 +55,7 @@ import {
 } from "./generatedModels";
 import {
   AppendBlobRequestConditions,
+  BlobDownloadResponseModel,
   BlobDownloadResponseParsed,
   BlobRequestConditions,
   BlockBlobTier,
@@ -120,6 +108,7 @@ import {
   extractConnectionStringParts,
   ExtractPageRangeInfoItems,
   generateBlockID,
+  generateUuid,
   getURLParameter,
   httpAuthorizationToString,
   isIpEndpointStyle,
@@ -133,6 +122,7 @@ import {
 import {
   fsCreateReadStream,
   fsStat,
+  isNode,
   readStreamToLocalFile,
   streamToBuffer,
 } from "./utils/utils.node";
@@ -147,6 +137,9 @@ import {
   BlobSetLegalHoldResponse,
 } from "./generatedModels";
 import { PagedAsyncIterableIterator, PageSettings } from "@azure/core-paging";
+import { getDefaultProxySettings, RequestBodyType, TransferProgressEvent } from "@azure/core-rest-pipeline";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { URLBuilder } from "./utils/url";
 
 /**
  * Options to configure the {@link BlobClient.beginCopyFromURL} operation.
@@ -389,27 +382,27 @@ export interface BlobGetTagsOptions extends CommonOptions {
 /**
  * Contains response data for the {@link BlobClient.getTags} operation.
  */
-export type BlobGetTagsResponse = { tags: Tags } & BlobGetTagsHeaders & {
+export type BlobGetTagsResponse = { tags: Tags } & BlobGetTagsHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: BlobGetTagsHeaders;
+    // _response: HttpResponse & {
+    //   /**
+    //    * The parsed HTTP response headers.
+    //    */
+    //   parsedHeaders: BlobGetTagsHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+    //   /**
+    //    * The response body as text (string format)
+    //    */
+    //   bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: BlobTags;
-    };
-  };
+    //   /**
+    //    * The response body as parsed JSON or XML
+    //    */
+    //   parsedBody: BlobTags;
+    // };
+  //}; // _response pending
 
 /**
  * Options to configure Blob - Acquire Lease operation.
@@ -1164,7 +1157,7 @@ export class BlobClient extends StorageClient {
     const { span, updatedOptions } = createSpan("BlobClient-download", options);
 
     try {
-      const res = await this.blobContext.download({
+      const res: any = await this.blobContext.download({
         abortSignal: options.abortSignal,
         leaseAccessConditions: options.conditions,
         modifiedAccessConditions: {
@@ -1184,9 +1177,10 @@ export class BlobClient extends StorageClient {
 
       const wrappedRes = {
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
         objectReplicationDestinationPolicyId: res.objectReplicationPolicyId,
         objectReplicationSourceProperties: parseObjectReplicationRecord(res.objectReplicationRules),
+        _response: res._response,
       };
       // Return browser response immediately
       if (!isNode) {
@@ -1340,7 +1334,7 @@ export class BlobClient extends StorageClient {
 
       return {
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
         objectReplicationDestinationPolicyId: res.objectReplicationPolicyId,
         objectReplicationSourceProperties: parseObjectReplicationRecord(res.objectReplicationRules),
       };
@@ -1407,7 +1401,7 @@ export class BlobClient extends StorageClient {
       return {
         succeeded: true,
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
       };
     } catch (e: any) {
       if (e.details?.errorCode === "BlobNotFound") {
@@ -1596,7 +1590,7 @@ export class BlobClient extends StorageClient {
       });
       const wrappedResponse: BlobGetTagsResponse = {
         ...response,
-        _response: response._response, // _response is made non-enumerable
+        // _response: response._response, // _response is made non-enumerable // _response pending
         tags: toTags({ blobTagSet: response.blobTagSet }) || {},
       };
       return wrappedResponse;
@@ -2783,7 +2777,7 @@ export class AppendBlobClient extends BlobClient {
       return {
         succeeded: true,
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
       };
     } catch (e: any) {
       if (e.details?.errorCode === "BlobAlreadyExists") {
@@ -2863,7 +2857,7 @@ export class AppendBlobClient extends BlobClient {
    * ```
    */
   public async appendBlock(
-    body: HttpRequestBody,
+    body: RequestBodyType,
     contentLength: number,
     options: AppendBlobAppendBlockOptions = {}
   ): Promise<AppendBlobAppendBlockResponse> {
@@ -3530,12 +3524,12 @@ export interface BlockBlobParallelUploadOptions extends CommonOptions {
  * Response type for {@link BlockBlobClient.uploadFile}, {@link BlockBlobClient.uploadStream}, and
  * {@link BlockBlobClient.uploadBrowserDate}.
  */
-export type BlobUploadCommonResponse = BlockBlobUploadHeaders & {
+export type BlobUploadCommonResponse = BlockBlobUploadHeaders;// & {
   /**
    * The underlying HTTP response.
    */
-  _response: HttpResponse;
-};
+//   _response: HttpResponse;
+// }; // _response pending
 
 /**
  * BlockBlobClient defines a set of operations applicable to block blobs.
@@ -3787,8 +3781,12 @@ export class BlockBlobClient extends BlobClient {
         cpkInfo: options.customerProvidedKey,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
-      return new BlobQueryResponse(response, {
-        abortSignal: options.abortSignal,
+      return new BlobQueryResponse(
+        {
+          ...response,
+          _response: (response as any)._response
+        }, 
+        {abortSignal: options.abortSignal,
         onProgress: options.onProgress,
         onError: options.onError,
       });
@@ -3831,7 +3829,7 @@ export class BlockBlobClient extends BlobClient {
    * ```
    */
   public async upload(
-    body: HttpRequestBody,
+    body: RequestBodyType,
     contentLength: number,
     options: BlockBlobUploadOptions = {}
   ): Promise<BlockBlobUploadResponse> {
@@ -3944,7 +3942,7 @@ export class BlockBlobClient extends BlobClient {
    */
   public async stageBlock(
     blockId: string,
-    body: HttpRequestBody,
+    body: RequestBodyType,
     contentLength: number,
     options: BlockBlobStageBlockOptions = {}
   ): Promise<BlockBlobStageBlockResponse> {
@@ -4241,7 +4239,7 @@ export class BlockBlobClient extends BlobClient {
    * @returns Response data for the Blob Upload operation.
    */
   private async uploadSeekableInternal(
-    bodyFactory: (offset: number, size: number) => HttpRequestBody,
+    bodyFactory: (offset: number, size: number) => RequestBodyType,
     size: number,
     options: BlockBlobParallelUploadOptions = {}
   ): Promise<BlobUploadCommonResponse> {
@@ -5165,7 +5163,7 @@ export class PageBlobClient extends BlobClient {
       return {
         succeeded: true,
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
       };
     } catch (e: any) {
       if (e.details?.errorCode === "BlobAlreadyExists") {
@@ -5201,7 +5199,7 @@ export class PageBlobClient extends BlobClient {
    * @returns Response data for the Page Blob Upload Pages operation.
    */
   public async uploadPages(
-    body: HttpRequestBody,
+    body: RequestBodyType,
     offset: number,
     count: number,
     options: PageBlobUploadPagesOptions = {}

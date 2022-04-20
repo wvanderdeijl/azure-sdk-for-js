@@ -1,21 +1,21 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptions } from "@azure/core-http";
+import { PipelinePolicy } from "@azure/core-rest-pipeline";
 import { CredentialPolicy } from "../policies/CredentialPolicy";
 
 /**
  * Credential is an abstract class for Azure Storage HTTP requests signing. This
  * class will host an credentialPolicyCreator factory which generates CredentialPolicy.
  */
-export abstract class Credential implements RequestPolicyFactory {
+export abstract class Credential {
   /**
    * Creates a RequestPolicy object.
    *
    * @param _nextPolicy -
    * @param _options -
    */
-  public create(_nextPolicy: RequestPolicy, _options: RequestPolicyOptions): RequestPolicy {
+  public create(): PipelinePolicy {
     throw new Error("Method should be implemented in children classes.");
   }
 }
@@ -24,6 +24,4 @@ export abstract class Credential implements RequestPolicyFactory {
  * A factory function that creates a new CredentialPolicy that uses the provided nextPolicy.
  */
 export type CredentialPolicyCreator = (
-  nextPolicy: RequestPolicy,
-  options: RequestPolicyOptions
 ) => CredentialPolicy;

@@ -52,3 +52,8 @@ export const fsStat = function stat(): void {
 export const fsCreateReadStream = function createReadStream(): void {
   /* empty */
 };
+
+/**
+ * A constant that indicates whether the environment the code is running is Node.JS.
+ */
+ export const isNode = false;

@@ -1,22 +1,16 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import {
-  isNode,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  UserAgentOptions,
-} from "@azure/core-http";
+import { UserAgentPolicyOptions } from "@azure/core-rest-pipeline";
 import * as os from "os";
 
 import { TelemetryPolicy } from "./policies/TelemetryPolicy";
 import { SDK_VERSION } from "./utils/constants";
+import { isNode } from "./utils/utils.node";
 
 /**
  * TelemetryPolicyFactory is a factory class helping generating {@link TelemetryPolicy} objects.
  */
-export class TelemetryPolicyFactory implements RequestPolicyFactory {
+export class TelemetryPolicyFactory {
   /**
    * @internal
    */
@@ -26,7 +20,7 @@ export class TelemetryPolicyFactory implements RequestPolicyFactory {
    * Creates an instance of TelemetryPolicyFactory.
    * @param telemetry -
    */
-  constructor(telemetry?: UserAgentOptions) {
+  constructor(telemetry?: UserAgentPolicyOptions) {
     const userAgentInfo: string[] = [];
 
     if (isNode) {
@@ -59,7 +53,7 @@ export class TelemetryPolicyFactory implements RequestPolicyFactory {
    * @param nextPolicy -
    * @param options -
    */
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): TelemetryPolicy {
-    return new TelemetryPolicy(nextPolicy, options, this.telemetryString);
+  public create(): TelemetryPolicy {
+    return new TelemetryPolicy(this.telemetryString);
   }
 }

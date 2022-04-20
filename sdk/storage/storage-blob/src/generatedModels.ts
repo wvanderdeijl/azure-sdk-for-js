@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Tags } from ".";
-import { BlobTags, BlobPropertiesInternal as BlobProperties } from "./generated/src/models";
+import { BlobTags, BlobPropertiesInternal as BlobProperties } from "./generated/src/models/index";
 
 export {
   AccessPolicy,
@@ -48,7 +48,6 @@ export {
   BlobSetTierResponse,
   BlobSetTagsHeaders,
   BlobDownloadHeaders,
-  BlobDownloadResponse as BlobDownloadResponseModel,
   BlobType,
   BlobTags,
   BlobUndeleteHeaders,
@@ -145,18 +144,17 @@ export {
   ServiceSubmitBatchResponse as ServiceSubmitBatchResponseModel,
   ServiceSubmitBatchOptionalParams as ServiceSubmitBatchOptionalParamsModel,
   SignedIdentifier as SignedIdentifierModel,
-  SyncCopyStatusType,
+  // SyncCopyStatusType,
   UserDelegationKey as UserDelegationKeyModel,
   ContainerEncryptionScope,
   BlobQueryHeaders,
-  BlobQueryResponse as BlobQueryResponseModel,
   ContainerRestoreResponse as ContainerUndeleteResponse,
   ContainerRestoreHeaders as ContainerUndeleteHeaders,
   BlockBlobPutBlobFromUrlResponse,
   BlockBlobPutBlobFromUrlHeaders,
   ContainerRenameResponse,
   ContainerRenameHeaders,
-} from "./generated/src/models";
+} from "./generated/src/models/index";
 
 // Following definitions are to avoid breaking change.
 export interface BlobPrefix {

@@ -1,20 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 import { AbortSignalLike } from "@azure/abort-controller";
-import {
-  getDefaultProxySettings,
-  HttpRequestBody,
-  HttpResponse,
-  isNode,
-  isTokenCredential,
-  TokenCredential,
-  URLBuilder,
-} from "@azure/core-http";
 import { PagedAsyncIterableIterator, PageSettings } from "@azure/core-paging";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
-import { Container } from "./generated/src/operations";
+import { ContainerImpl as Container } from "./generated/src/operations";
 import {
   BlobDeleteResponse,
   BlobPrefix,
@@ -32,10 +23,7 @@ import {
   ContainerSetMetadataResponse,
   FilterBlobItem,
   FilterBlobSegment,
-  FilterBlobSegmentModel,
   LeaseAccessConditions,
-  ListBlobsFlatSegmentResponseModel,
-  ListBlobsHierarchySegmentResponseModel,
   PublicAccessType,
   SignedIdentifierModel,
 } from "./generatedModels";
@@ -53,8 +41,6 @@ import {
   appendToURLPath,
   appendToURLQuery,
   BlobNameToString,
-  ConvertInternalResponseOfListBlobFlat,
-  ConvertInternalResponseOfListBlobHierarchy,
   extractConnectionStringParts,
   isIpEndpointStyle,
   parseObjectReplicationRecord,
@@ -77,6 +63,10 @@ import {
 } from "./Clients";
 import { BlobBatchClient } from "./BlobBatchClient";
 import { ListBlobsIncludeItem } from "./generated/src";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { isNode } from "./utils/utils.node";
+import { getDefaultProxySettings, RequestBodyType } from "@azure/core-rest-pipeline";
+import { URLBuilder } from "./utils/url";
 
 /**
  * Options to configure {@link ContainerClient.create} operation.
@@ -210,25 +200,25 @@ export interface SignedIdentifier {
  */
 export declare type ContainerGetAccessPolicyResponse = {
   signedIdentifiers: SignedIdentifier[];
-} & ContainerGetAccessPolicyHeaders & {
+} & ContainerGetAccessPolicyHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ContainerGetAccessPolicyHeaders;
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: SignedIdentifierModel[];
-    };
-  };
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ContainerGetAccessPolicyHeaders;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: SignedIdentifierModel[];
+  //   };
+  // }; // _response pending
 
 /**
  * Options to configure {@link ContainerClient.setAccessPolicy} operation.
@@ -395,27 +385,27 @@ export interface ListBlobsHierarchySegmentResponse {
  * Contains response data for the listBlobHierarchySegment operation.
  */
 export type ContainerListBlobHierarchySegmentResponse = ListBlobsHierarchySegmentResponse &
-  ContainerListBlobHierarchySegmentHeaders & {
+  ContainerListBlobHierarchySegmentHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ContainerListBlobHierarchySegmentHeaders;
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ContainerListBlobHierarchySegmentHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: ListBlobsHierarchySegmentResponseModel;
-    };
-  };
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: ListBlobsHierarchySegmentResponseModel;
+  //   };
+  // }; // _response pending
 
 /**
  * An Azure Storage blob
@@ -457,27 +447,27 @@ export interface ListBlobsFlatSegmentResponse {
  * Contains response data for the listBlobFlatSegment operation.
  */
 export type ContainerListBlobFlatSegmentResponse = ListBlobsFlatSegmentResponse &
-  ContainerListBlobFlatSegmentHeaders & {
+  ContainerListBlobFlatSegmentHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ContainerListBlobFlatSegmentHeaders;
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ContainerListBlobFlatSegmentHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: ListBlobsFlatSegmentResponseModel;
-    };
-  };
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: ListBlobsFlatSegmentResponseModel;
+  //   };
+  // }; // _response pending
 
 /**
  * Options to configure Container - List Blobs operations.
@@ -606,27 +596,27 @@ export interface ContainerFindBlobByTagsOptions extends CommonOptions {
  * The response of {@link BlobServiceClient.findBlobsByTags} operation.
  */
 export type ContainerFindBlobsByTagsSegmentResponse = FilterBlobSegment &
-  ContainerFilterBlobsHeaders & {
+  ContainerFilterBlobsHeaders;// & {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
-      /**
-       * The parsed HTTP response headers.
-       */
-      parsedHeaders: ContainerFilterBlobsHeaders;
+  //   _response: HttpResponse & {
+  //     /**
+  //      * The parsed HTTP response headers.
+  //      */
+  //     parsedHeaders: ContainerFilterBlobsHeaders;
 
-      /**
-       * The response body as text (string format)
-       */
-      bodyAsText: string;
+  //     /**
+  //      * The response body as text (string format)
+  //      */
+  //     bodyAsText: string;
 
-      /**
-       * The response body as parsed JSON or XML
-       */
-      parsedBody: FilterBlobSegmentModel;
-    };
-  };
+  //     /**
+  //      * The response body as parsed JSON or XML
+  //      */
+  //     parsedBody: FilterBlobSegmentModel;
+  //   };
+  // }; // _response pending
 
 /**
  * A ContainerClient represents a URL to the Azure Storage container allowing you to manipulate its blobs.
@@ -825,7 +815,7 @@ export class ContainerClient extends StorageClient {
       return {
         succeeded: true,
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        // _response: res._response, // _response is made non-enumerable // _response pending
       };
     } catch (e: any) {
       if (e.details?.errorCode === "ContainerAlreadyExists") {
@@ -1029,7 +1019,7 @@ export class ContainerClient extends StorageClient {
       return {
         succeeded: true,
         ...res,
-        _response: res._response, // _response is made non-enumerable
+        //_response: res._response, // _response is made non-enumerable // _response pending
       };
     } catch (e: any) {
       if (e.details?.errorCode === "ContainerNotFound") {
@@ -1128,7 +1118,7 @@ export class ContainerClient extends StorageClient {
       });
 
       const res: ContainerGetAccessPolicyResponse = {
-        _response: response._response,
+        // _response: response._response, // _response pending
         blobPublicAccess: response.blobPublicAccess,
         date: response.date,
         etag: response.etag,
@@ -1268,7 +1258,7 @@ export class ContainerClient extends StorageClient {
    */
   public async uploadBlockBlob(
     blobName: string,
-    body: HttpRequestBody,
+    body: RequestBodyType,
     contentLength: number,
     options: BlockBlobUploadOptions = {}
   ): Promise<{ blockBlobClient: BlockBlobClient; response: BlockBlobUploadResponse }> {
@@ -1353,10 +1343,10 @@ export class ContainerClient extends StorageClient {
 
       const wrappedResponse: ContainerListBlobFlatSegmentResponse = {
         ...response,
-        _response: {
-          ...response._response,
-          parsedBody: ConvertInternalResponseOfListBlobFlat(response._response.parsedBody),
-        }, // _response is made non-enumerable
+        // _response: {
+        //   ...response._response,
+        //   parsedBody: ConvertInternalResponseOfListBlobFlat(response._response.parsedBody),
+        // }, // _response is made non-enumerable // _response pending
         segment: {
           ...response.segment,
           blobItems: response.segment.blobItems.map((blobItemInteral) => {
@@ -1425,10 +1415,10 @@ export class ContainerClient extends StorageClient {
 
       const wrappedResponse: ContainerListBlobHierarchySegmentResponse = {
         ...response,
-        _response: {
-          ...response._response,
-          parsedBody: ConvertInternalResponseOfListBlobHierarchy(response._response.parsedBody),
-        }, // _response is made non-enumerable
+        // _response: {
+        //   ...response._response,
+        //   parsedBody: ConvertInternalResponseOfListBlobHierarchy(response._response.parsedBody),
+        // }, // _response is made non-enumerable // _response pending
         segment: {
           ...response.segment,
           blobItems: response.segment.blobItems.map((blobItemInteral) => {
@@ -1895,7 +1885,7 @@ export class ContainerClient extends StorageClient {
 
       const wrappedResponse: ContainerFindBlobsByTagsSegmentResponse = {
         ...response,
-        _response: response._response, // _response is made non-enumerable
+        // _response: response._response, // _response is made non-enumerable // _response pending
         blobs: response.blobs.map((blob) => {
           let tagValue = "";
           if (blob.tags?.blobTagSet.length === 1) {

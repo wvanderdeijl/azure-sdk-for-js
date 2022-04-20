@@ -12,10 +12,10 @@ import {
   ContainerSASPermissions,
   BlobServiceClient,
 } from "../../src";
-import { TokenCredential } from "@azure/core-http";
 import { assertClientUsesTokenCredential } from "../utils/assert";
 import { record, Recorder } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
+import { TokenCredential } from "@azure/core-auth";
 
 describe("ContainerClient Node.js only", () => {
   let containerName: string;

@@ -1,19 +1,19 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { HttpResponse } from "@azure/core-http";
-
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 import {
-  BlobDownloadResponseModel,
   BlobType,
   CopyStatusType,
   LeaseDurationType,
   LeaseStateType,
   LeaseStatusType,
   BlobDownloadHeaders,
-  BlobQueryResponseModel,
 } from "./generatedModels";
-import { Metadata } from "./models";
+import { 
+  Metadata, 
+  BlobDownloadResponseModel, 
+  BlobQueryResponseModel, 
+} from "./models";
 import { BlobQuickQueryStreamOptions } from "./utils/BlobQuickQueryStream";
 
 /**
@@ -397,11 +397,11 @@ export class BlobQueryResponse implements BlobDownloadResponseModel {
   /**
    * The HTTP response.
    */
-  public get _response(): HttpResponse & {
+  public get _response(): PipelineResponse & {
     parsedHeaders: BlobDownloadHeaders;
   } {
     return this.originalResponse._response;
-  }
+  } // _response pending
 
   private originalResponse: BlobQueryResponseModel;
 

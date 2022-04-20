@@ -1,28 +1,31 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import {
-  BaseRequestPolicy,
-  deserializationPolicy,
-  generateUuid,
-  HttpHeaders,
-  HttpOperationResponse,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  WebResource,
-  TokenCredential,
-  isTokenCredential,
-  bearerTokenAuthenticationPolicy,
-  isNode,
-} from "@azure/core-http";
+// import {
+//   BaseRequestPolicy,
+//   deserializationPolicy,
+//   generateUuid,
+//   HttpHeaders,
+//   HttpOperationResponse,
+//   RequestPolicy,
+//   RequestPolicyFactory,
+//   RequestPolicyOptions,
+//   WebResource,
+//   TokenCredential,
+//   isTokenCredential,
+//   bearerTokenAuthenticationPolicy,
+//   isNode,
+// } from "@azure/core-http";
+import { bearerTokenAuthenticationPolicy, createHttpHeaders, createPipelineFromOptions, createPipelineRequest, PipelinePolicy, PipelineRequest, PipelineResponse, SendRequest } from "@azure/core-rest-pipeline"
+import { TokenCredential, isTokenCredential } from "@azure/core-auth";
+
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { BlobClient, BlobDeleteOptions, BlobSetTierOptions } from "./Clients";
 import { AccessTier } from "./generatedModels";
 import { Mutex } from "./utils/Mutex";
 import { Pipeline } from "./Pipeline";
-import { attachCredential, getURLPath, getURLPathAndQuery, iEqual } from "./utils/utils.common";
+import { attachCredential, generateUuid, getURLPath, getURLPathAndQuery, iEqual } from "./utils/utils.common";
 import {
   HeaderConstants,
   BATCH_MAX_REQUEST,
@@ -32,6 +35,9 @@ import {
 } from "./utils/constants";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
 import { createSpan } from "./utils/tracing";
+import { isNode } from "./utils/utils.node";
+import { deserializationPolicy } from "@azure/core-client";
+import { StorageSharedKeyCredentialPolicy } from "./policies/StorageSharedKeyCredentialPolicy";
 
 /**
  * A request associated with a batch operation.
@@ -370,26 +376,27 @@ class InnerBatchRequest {
   public createPipeline(
     credential: StorageSharedKeyCredential | AnonymousCredential | TokenCredential
   ): Pipeline {
+
+    const pipeline = createPipelineFromOptions({});
     const isAnonymousCreds = credential instanceof AnonymousCredential;
-    const policyFactoryLength = 3 + (isAnonymousCreds ? 0 : 1); // [deserializationPolicy, BatchHeaderFilterPolicyFactory, (Optional)Credential, BatchRequestAssemblePolicyFactory]
-    const factories: RequestPolicyFactory[] = new Array(policyFactoryLength);
+    pipeline.addPolicy(deserializationPolicy()); // Default deserializationPolicy is provided by protocol layer
+    pipeline.addPolicy(new BatchHeaderFilterPolicy()); // Use batch header filter policy to exclude unnecessary headers
 
-    factories[0] = deserializationPolicy(); // Default deserializationPolicy is provided by protocol layer
-    factories[1] = new BatchHeaderFilterPolicyFactory(); // Use batch header filter policy to exclude unnecessary headers
+
     if (!isAnonymousCreds) {
-      factories[2] = isTokenCredential(credential)
-        ? attachCredential(
-            bearerTokenAuthenticationPolicy(credential, StorageOAuthScopes),
-            credential
-          )
-        : credential;
+      const credentialPolicy = isTokenCredential(credential)
+        ? attachCredential(bearerTokenAuthenticationPolicy({
+               credential, 
+               scopes: StorageOAuthScopes}), credential) : new StorageSharedKeyCredentialPolicy(credential as StorageSharedKeyCredential);
+      
+      pipeline.addPolicy(credentialPolicy);
     }
-    factories[policyFactoryLength - 1] = new BatchRequestAssemblePolicyFactory(this); // Use batch assemble policy to assemble request and intercept request from going to wire
+    pipeline.addPolicy(new BatchRequestAssemblePolicy(this)); // Use batch assemble policy to assemble request and intercept request from going to wire
 
-    return new Pipeline(factories, {});
+    return new Pipeline(pipeline);
   }
 
-  public appendSubRequestToBody(request: WebResource) {
+  public appendSubRequestToBody(request: PipelineRequest) {
     // Start to assemble sub request
     this.body += [
       this.subRequestPrefix, // sub request constant prefix
@@ -400,8 +407,8 @@ class InnerBatchRequest {
       )} ${HTTP_VERSION_1_1}${HTTP_LINE_ENDING}`, // sub request start line with method
     ].join(HTTP_LINE_ENDING);
 
-    for (const header of request.headers.headersArray()) {
-      this.body += `${header.name}: ${header.value}${HTTP_LINE_ENDING}`;
+    for (const header of request.headers) {
+      this.body += `${header[0]}: ${header[1]}${HTTP_LINE_ENDING}`;
     }
 
     this.body += HTTP_LINE_ENDING; // sub request's headers need be ending with an empty line
@@ -440,72 +447,44 @@ class InnerBatchRequest {
   }
 }
 
-class BatchRequestAssemblePolicy extends BaseRequestPolicy {
+class BatchRequestAssemblePolicy implements PipelinePolicy {
+  public name = "BatchRequestAssemblePolicy";
   private batchRequest: InnerBatchRequest;
-  private readonly dummyResponse: HttpOperationResponse = {
-    request: new WebResource(),
+  private readonly dummyResponse: PipelineResponse = {
+    request: createPipelineRequest({ url: "" }),
     status: 200,
-    headers: new HttpHeaders(),
+    headers: createHttpHeaders(),
   };
 
   constructor(
     batchRequest: InnerBatchRequest,
-    nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
   ) {
-    super(nextPolicy, options);
-
     this.batchRequest = batchRequest;
   }
 
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: PipelineRequest, _next: SendRequest): Promise<PipelineResponse> {
     await this.batchRequest.appendSubRequestToBody(request);
 
     return this.dummyResponse; // Intercept request from going to wire
   }
 }
 
-class BatchRequestAssemblePolicyFactory implements RequestPolicyFactory {
-  private batchRequest: InnerBatchRequest;
-
-  constructor(batchRequest: InnerBatchRequest) {
-    this.batchRequest = batchRequest;
-  }
-
-  public create(
-    nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
-  ): BatchRequestAssemblePolicy {
-    return new BatchRequestAssemblePolicy(this.batchRequest, nextPolicy, options);
-  }
-}
-
-class BatchHeaderFilterPolicy extends BaseRequestPolicy {
-  // The base class has a protected constructor. Adding a public one to enable constructing of this class.
-  /* eslint-disable-next-line @typescript-eslint/no-useless-constructor*/
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
-    super(nextPolicy, options);
-  }
-
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+class BatchHeaderFilterPolicy implements PipelinePolicy {
+  public name = "BatchHeaderFilterPolicy";
+  constructor() {}
+  public sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse>
+  {
     let xMsHeaderName = "";
 
-    for (const header of request.headers.headersArray()) {
-      if (iEqual(header.name, HeaderConstants.X_MS_VERSION)) {
-        xMsHeaderName = header.name;
+    for (const header of request.headers) {
+      if (iEqual(header[0], HeaderConstants.X_MS_VERSION)) {
+        xMsHeaderName = header[0];
       }
     }
-
+    
     if (xMsHeaderName !== "") {
-      request.headers.remove(xMsHeaderName); // The subrequests should not have the x-ms-version header.
+      request.headers.delete(xMsHeaderName); // The subrequests should not have the x-ms-version header.
     }
-
-    return this._nextPolicy.sendRequest(request);
-  }
-}
-
-class BatchHeaderFilterPolicyFactory implements RequestPolicyFactory {
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): BatchHeaderFilterPolicy {
-    return new BatchHeaderFilterPolicy(nextPolicy, options);
+    return next(request);
   }
 }

@@ -6,6 +6,17 @@
  * Changes may cause incorrect behavior and will be lost if the code is regenerated.
  */
 
+import * as coreClient from "@azure/core-client";
+import * as coreHttpCompat from "@azure/core-http-compat";
+import * as coreRestPipeline from "@azure/core-rest-pipeline";
+import {
+  ServiceImpl,
+  ContainerImpl,
+  BlobImpl,
+  PageBlobImpl,
+  AppendBlobImpl,
+  BlockBlobImpl
+} from "./operations";
 import {
   Service,
   Container,
@@ -13,11 +24,13 @@ import {
   PageBlob,
   AppendBlob,
   BlockBlob
-} from "./operations";
-import { StorageClientContext } from "./storageClientContext";
+} from "./operationsInterfaces";
 import { StorageClientOptionalParams } from "./models";
 
-export class StorageClient extends StorageClientContext {
+export class StorageClient extends coreHttpCompat.ExtendedServiceClient {
+  url: string;
+  version: string;
+
   /**
    * Initializes a new instance of the StorageClient class.
    * @param url The URL of the service account, container, or blob that is the target of the desired
@@ -25,13 +38,67 @@ export class StorageClient extends StorageClientContext {
    * @param options The parameter options
    */
   constructor(url: string, options?: StorageClientOptionalParams) {
-    super(url, options);
-    this.service = new Service(this);
-    this.container = new Container(this);
-    this.blob = new Blob(this);
-    this.pageBlob = new PageBlob(this);
-    this.appendBlob = new AppendBlob(this);
-    this.blockBlob = new BlockBlob(this);
+    if (url === undefined) {
+      throw new Error("'url' cannot be null");
+    }
+
+    // Initializing default values for options
+    if (!options) {
+      options = {};
+    }
+    const defaults: StorageClientOptionalParams = {
+      requestContentType: "application/json; charset=utf-8"
+    };
+
+    const packageDetails = `azsdk-js-azure-storage-blob/12.10.0-beta.1`;
+    const userAgentPrefix =
+      options.userAgentOptions && options.userAgentOptions.userAgentPrefix
+        ? `${options.userAgentOptions.userAgentPrefix} ${packageDetails}`
+        : `${packageDetails}`;
+
+    const optionsWithDefaults = {
+      ...defaults,
+      ...options,
+      userAgentOptions: {
+        userAgentPrefix
+      },
+      baseUri: options.endpoint ?? options.baseUri ?? "{url}"
+    };
+    super(optionsWithDefaults);
+
+    if (options?.pipeline && options.pipeline.getOrderedPolicies().length > 0) {
+      const pipelinePolicies: coreRestPipeline.PipelinePolicy[] = options.pipeline.getOrderedPolicies();
+      const bearerTokenAuthenticationPolicyFound = pipelinePolicies.some(
+        (pipelinePolicy) =>
+          pipelinePolicy.name ===
+          coreRestPipeline.bearerTokenAuthenticationPolicyName
+      );
+      if (!bearerTokenAuthenticationPolicyFound) {
+        this.pipeline.removePolicy({
+          name: coreRestPipeline.bearerTokenAuthenticationPolicyName
+        });
+        this.pipeline.addPolicy(
+          coreRestPipeline.bearerTokenAuthenticationPolicy({
+            scopes: `${optionsWithDefaults.baseUri}/.default`,
+            challengeCallbacks: {
+              authorizeRequestOnChallenge:
+                coreClient.authorizeRequestOnClaimChallenge
+            }
+          })
+        );
+      }
+    }
+    // Parameter assignments
+    this.url = url;
+
+    // Assigning values to Constant parameters
+    this.version = options.version || "2021-06-08";
+    this.service = new ServiceImpl(this);
+    this.container = new ContainerImpl(this);
+    this.blob = new BlobImpl(this);
+    this.pageBlob = new PageBlobImpl(this);
+    this.appendBlob = new AppendBlobImpl(this);
+    this.blockBlob = new BlockBlobImpl(this);
   }
 
   service: Service;

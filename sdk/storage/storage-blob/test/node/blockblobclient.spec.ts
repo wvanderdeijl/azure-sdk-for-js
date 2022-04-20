@@ -24,13 +24,13 @@ import {
   generateBlobSASQueryParameters,
   BlobSASPermissions,
 } from "../../src";
-import { TokenCredential } from "@azure/core-http";
 import { assertClientUsesTokenCredential } from "../utils/assert";
 import { record, Recorder } from "@azure-tools/test-recorder";
 import { streamToBuffer3 } from "../../src/utils/utils.node";
 import * as crypto from "crypto";
 import { BLOCK_BLOB_MAX_UPLOAD_BLOB_BYTES } from "../../src/utils/constants";
 import { Context } from "mocha";
+import { TokenCredential } from "@azure/core-auth";
 
 describe("BlockBlobClient Node.js only", () => {
   let containerName: string;

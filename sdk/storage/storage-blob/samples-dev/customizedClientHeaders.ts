@@ -13,45 +13,30 @@
  * @azsdk-weight 10
  **/
 
+import { PipelineResponse, SendRequest } from "@azure/core-rest-pipeline";
 import {
   newPipeline,
   AnonymousCredential,
   BlobServiceClient,
-  BaseRequestPolicy,
-  WebResource,
-  RequestPolicy,
-  RequestPolicyOptions,
+  PipelinePolicy,
+  PipelineRequest,
 } from "@azure/storage-blob";
 
 // Load the .env file if it exists
 import * as dotenv from "dotenv";
 dotenv.config();
 
-// Create a policy factory with create() method provided
-class RequestIDPolicyFactory {
-  prefix: string;
-  // Constructor to accept parameters
-  constructor(prefix: string) {
-    this.prefix = prefix;
-  }
-
-  // create() method needs to create a new RequestIDPolicy object
-  create(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
-    return new RequestIDPolicy(nextPolicy, options, this.prefix);
-  }
-}
-
 // Create a policy by extending from BaseRequestPolicy
-class RequestIDPolicy extends BaseRequestPolicy {
+class RequestIDPolicy implements PipelinePolicy {
+  public readonly name = "RequestIDPolicy";
   prefix: string;
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, prefix: string) {
-    super(nextPolicy, options);
+  constructor(prefix: string) {
     this.prefix = prefix;
   }
 
   // Customize HTTP requests and responses by overriding sendRequest
   // Parameter request is WebResource type
-  async sendRequest(request: WebResource) {
+  async sendRequest(request: PipelineRequest, next: SendRequest): Promise<PipelineResponse> {
     // Customize client request ID header
     request.headers.set(
       "x-ms-client-request-id",
@@ -59,7 +44,7 @@ class RequestIDPolicy extends BaseRequestPolicy {
     );
 
     // response is HttpOperationResponse type
-    const response = await this._nextPolicy.sendRequest(request);
+    const response = await next(request);
 
     // Modify response here if needed
 
@@ -75,8 +60,8 @@ async function main() {
   // Create a default pipeline with newPipeline
   const pipeline = newPipeline(new AnonymousCredential());
 
-  // Inject customized factory into default pipeline
-  pipeline.factories.unshift(new RequestIDPolicyFactory("Prefix"));
+  // Inject customized policy into default pipeline
+  pipeline.pipelineContext.addPolicy(new RequestIDPolicy("Prefix"));
 
   const blobServiceClient = new BlobServiceClient(
     `https://${account}.blob.core.windows.net${accountSas}`,
@@ -90,7 +75,7 @@ async function main() {
   }
 
   // Extract the raw response from the result.
-  const { _response } = result.value;
+  const _response = (result.value as any)._response;
 
   // Check customized client request ID
   console.log(_response.request.headers.get("x-ms-client-request-id"));

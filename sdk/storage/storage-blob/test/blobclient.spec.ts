@@ -4,7 +4,6 @@
 import { assert } from "chai";
 import * as fs from "fs";
 import { AbortController } from "@azure/abort-controller";
-import { isNode, URLBuilder, URLQuery } from "@azure/core-http";
 import { SpanGraph, setTracer } from "@azure/test-utils";
 import {
   bodyToString,
@@ -30,6 +29,8 @@ import { Test_CPK_INFO } from "./utils/fakeTestSecrets";
 import { base64encode } from "../src/utils/utils.common";
 import { context, setSpan } from "@azure/core-tracing";
 import { Context } from "mocha";
+import { isNode } from "../src/utils/utils.node";
+import { URLBuilder, URLQuery } from "../src/utils/url";
 
 describe("BlobClient", () => {
   let blobServiceClient: BlobServiceClient;
@@ -46,8 +47,10 @@ describe("BlobClient", () => {
     recorder = record(this, recorderEnvSetup);
     blobServiceClient = getBSU();
     containerName = recorder.getUniqueName("container");
-    containerClient = blobServiceClient.getContainerClient(containerName);
-    await containerClient.create();
+    // const result = await blobServiceClient.getProperties();
+    // result;
+    containerClient = blobServiceClient.getContainerClient("containername");
+    await containerClient.createIfNotExists();
     blobName = recorder.getUniqueName("blob");
     blobClient = containerClient.getBlobClient(blobName);
     blockBlobClient = blobClient.getBlockBlobClient();
@@ -61,7 +64,7 @@ describe("BlobClient", () => {
     }
   });
 
-  it("Set and get blob tags should work with lease condition", async function () {
+  it.only("Set and get blob tags should work with lease condition", async function () {
     const guid = "ca761232ed4211cebacd00aa0057b223";
     const leaseClient = blockBlobClient.getBlobLeaseClient(guid);
     await leaseClient.acquireLease(-1);

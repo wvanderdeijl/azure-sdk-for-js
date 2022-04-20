@@ -14,8 +14,8 @@ import {
   PollerLike,
   PollOperationState,
 } from "../src";
-import { URLBuilder, URLQuery } from "@azure/core-http";
 import { Context } from "mocha";
+import { URLBuilder, URLQuery } from "../src/utils/url";
 
 describe("BlobClient beginCopyFromURL Poller", () => {
   let containerName: string;

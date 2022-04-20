@@ -18,9 +18,9 @@ import {
   AccountSASServices,
 } from "../../src";
 import { extractConnectionStringParts } from "../../src/utils/utils.common";
-import { AccessToken, TokenCredential } from "@azure/core-http";
 import { env } from "@azure-tools/test-recorder";
 import { DefaultAzureCredential } from "@azure/identity";
+import { AccessToken, TokenCredential } from "@azure/core-auth";
 
 export * from "./testutils.common";
 
