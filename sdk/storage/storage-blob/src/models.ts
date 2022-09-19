@@ -2,17 +2,252 @@
 // Licensed under the MIT license.
 
 import { AbortSignalLike } from "@azure/abort-controller";
+import { CompatResponse, HttpPipelineLogLevel, RequestPolicy, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
 import { CancelOnProgress, PollOperationState } from "@azure/core-lro";
-import { BlobImmutabilityPolicyMode } from "./generatedModels";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
+import { AppendBlobCreateHeaders, BlobDeleteHeaders, BlobGetPropertiesHeaders, BlockBlobUploadHeaders, ContainerCreateHeaders, ContainerDeleteHeaders, ListContainersSegmentResponse, PageBlobCreateHeaders, PageBlobGetPageRangesDiffHeaders, PageList, ServiceListContainersSegmentHeaders } from "./generated/src/models";
+import { BlobDownloadHeaders, BlobImmutabilityPolicyMode, BlobQueryHeaders, ContainerGetPropertiesHeaders, PageBlobGetPageRangesHeaders, ServiceSubmitBatchHeaders } from "./generatedModels";
 import {
   LeaseAccessConditions,
   SequenceNumberAccessConditions,
   AppendPositionAccessConditions,
   AccessTier,
   CpkInfo,
-  BlobDownloadResponseModel,
 } from "./generatedModels";
 import { EncryptionAlgorithmAES25 } from "./utils/constants";
+
+/**
+ * The base class from which all request policies derive.
+ */
+ export abstract class BaseRequestPolicy implements RequestPolicy {
+  /**
+   * The main method to implement that manipulates a request/response.
+   */
+  protected constructor(
+    /**
+     * The next policy in the pipeline. Each policy is responsible for executing the next one if the request is to continue through the pipeline.
+     */
+    readonly _nextPolicy: RequestPolicy,
+    /**
+     * The options that can be passed to a given request policy.
+     */
+    readonly _options: RequestPolicyOptionsLike
+  ) {}
+
+  /**
+   * Sends a network request based on the given web resource.
+   * @param webResource - A {@link WebResourceLike} that describes a HTTP request to be made.
+   */
+  public abstract sendRequest(webResource: WebResourceLike): Promise<CompatResponse>;
+
+  /**
+   * Get whether or not a log with the provided log level should be logged.
+   * @param logLevel - The log level of the log that will be logged.
+   * @returns Whether or not a log with the provided log level should be logged.
+   */
+  public shouldLog(logLevel: HttpPipelineLogLevel): boolean {
+    return this._options.shouldLog(logLevel);
+  }
+
+  /**
+   * Attempt to log the provided message to the provided logger. If no logger was provided or if
+   * the log level does not meat the logger's threshold, then nothing will be logged.
+   * @param logLevel - The log level of this log.
+   * @param message - The message of this log.
+   */
+  public log(logLevel: HttpPipelineLogLevel, message: string): void {
+    this._options.log(logLevel, message);
+  }
+}
+
+/** Contains response data for the download operation. */
+export type BlobDownloadResponseModel = BlobDownloadHeaders & {
+  /**
+   * BROWSER ONLY
+   *
+   * The response body as a browser Blob.
+   * Always `undefined` in node.js.
+   */
+  blobBody?: Promise<Blob>;
+  /**
+   * NODEJS ONLY
+   *
+   * The response body as a node.js Readable stream.
+   * Always `undefined` in the browser.
+   */
+  readableStreamBody?: NodeJS.ReadableStream;
+
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobDownloadHeaders;
+  };
+};
+
+/** Contains response data for the query operation. */
+export type BlobQueryResponseModel = BlobQueryHeaders & {
+  /**
+   * BROWSER ONLY
+   *
+   * The response body as a browser Blob.
+   * Always `undefined` in node.js.
+   */
+  blobBody?: Promise<Blob>;
+  /**
+   * NODEJS ONLY
+   *
+   * The response body as a node.js Readable stream.
+   * Always `undefined` in the browser.
+   */
+  readableStreamBody?: NodeJS.ReadableStream;
+
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobQueryHeaders;
+  };
+};
+
+export type PageBlobGetPageRangesResponseModel = PageBlobGetPageRangesHeaders &
+  PageList & {
+    /** The underlying HTTP response. */
+    _response: PipelineResponse & {
+      /** The response body as text (string format) */
+      bodyAsText: string;
+
+      /** The response body as parsed JSON or XML */
+      parsedBody: PageList;
+      /** The parsed HTTP response headers. */
+      parsedHeaders: PageBlobGetPageRangesHeaders;
+    };
+  };
+  
+  /** Contains response data for the getPageRangesDiff operation. */
+  export type PageBlobGetPageRangesDiffResponseModel = PageBlobGetPageRangesDiffHeaders &
+    PageList & {
+      /** The underlying HTTP response. */
+      _response: PipelineResponse & {
+        /** The response body as text (string format) */
+        bodyAsText: string;
+  
+        /** The response body as parsed JSON or XML */
+        parsedBody: PageList;
+        /** The parsed HTTP response headers. */
+        parsedHeaders: PageBlobGetPageRangesDiffHeaders;
+      };
+};
+
+
+/** Contains response data for the upload operation. */
+export type BlockBlobUploadResponse = BlockBlobUploadHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlockBlobUploadHeaders;
+  };
+};
+
+/** Contains response data for the listContainersSegment operation. */
+export type ServiceListContainersSegmentResponse = ServiceListContainersSegmentHeaders &
+  ListContainersSegmentResponse & {
+    /** The underlying HTTP response. */
+    _response: PipelineResponse & {
+      /** The response body as text (string format) */
+      bodyAsText: string;
+
+      /** The response body as parsed JSON or XML */
+      parsedBody: ListContainersSegmentResponse;
+      /** The parsed HTTP response headers. */
+      parsedHeaders: ServiceListContainersSegmentHeaders;
+    };
+  };
+
+/** Contains response data for the delete operation. */
+export type ContainerDeleteResponse = ContainerDeleteHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: ContainerDeleteHeaders;
+  };
+};
+
+/** Contains response data for the create operation. */
+export type ContainerCreateResponse = ContainerCreateHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: ContainerCreateHeaders;
+  };
+};
+
+/** Contains response data for the getProperties operation. */
+export type ContainerGetPropertiesResponse = ContainerGetPropertiesHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: ContainerGetPropertiesHeaders;
+  };
+};
+
+/** Contains response data for the delete operation. */
+export type BlobDeleteResponse = BlobDeleteHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobDeleteHeaders;
+  };
+};
+
+/** Contains response data for the create operation. */
+export type PageBlobCreateResponse = PageBlobCreateHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: PageBlobCreateHeaders;
+  };
+};
+
+/** Contains response data for the create operation. */
+export type AppendBlobCreateResponse = AppendBlobCreateHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: AppendBlobCreateHeaders;
+  };
+};
+
+/** Contains response data for the getProperties operation. */
+export type BlobGetPropertiesResponseModel = BlobGetPropertiesHeaders & {
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: BlobGetPropertiesHeaders;
+  };
+};
+
+/** Contains response data for the submitBatch operation. */
+export type ServiceSubmitBatchResponseModel = ServiceSubmitBatchHeaders & {
+  /**
+   * BROWSER ONLY
+   *
+   * The response body as a browser Blob.
+   * Always `undefined` in node.js.
+   */
+  blobBody?: Promise<Blob>;
+  /**
+   * NODEJS ONLY
+   *
+   * The response body as a node.js Readable stream.
+   * Always `undefined` in the browser.
+   */
+  readableStreamBody?: NodeJS.ReadableStream;
+
+  /** The underlying HTTP response. */
+  _response: PipelineResponse & {
+    /** The parsed HTTP response headers. */
+    parsedHeaders: ServiceSubmitBatchHeaders;
+  };
+};
 
 /**
  * Blob tags.
@@ -331,7 +566,7 @@ export enum StorageBlobAudience {
 /**
  * Abstract representation of a poller, intended to expose just the minimal API that the user needs to work with.
  */
-export interface PollerLikeWithCancellation<TState extends PollOperationState<TResult>, TResult> {
+export interface PollerLikeWithCancellation<TState extends PollOperationState<TTResult>, TTResult> {
   /**
    * Returns a promise that will resolve once a single polling request finishes.
    * It does this by calling the update method of the Poller's operation.
@@ -340,7 +575,7 @@ export interface PollerLikeWithCancellation<TState extends PollOperationState<TR
   /**
    * Returns a promise that will resolve once the underlying operation is completed.
    */
-  pollUntilDone(): Promise<TResult>;
+  pollUntilDone(): Promise<TTResult>;
   /**
    * Invokes the provided callback after each polling is completed,
    * sending the current state of the poller's operation.
@@ -376,7 +611,7 @@ export interface PollerLikeWithCancellation<TState extends PollOperationState<TR
    * It can return undefined or an incomplete form of the final TResult value
    * depending on the implementation.
    */
-  getResult(): TResult | undefined;
+  getResult(): TTResult | undefined;
   /**
    * Returns a serialized version of the poller's operation
    * by invoking the operation's toString method.

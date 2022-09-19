@@ -2,14 +2,14 @@
 // Licensed under the MIT license.
 
 import { assert } from "chai";
-import { HttpHeaders } from "../src";
 import {
   sanitizeHeaders,
   sanitizeURL,
   extractConnectionStringParts,
   isIpEndpointStyle,
 } from "../src/utils/utils.common";
-import { URLBuilder } from "@azure/core-http";
+import { URLBuilder } from "../src/utils/url";
+import { createHttpHeaders } from "@azure/core-rest-pipeline";
 
 describe("Utility Helpers", () => {
   const protocol = "https";
@@ -47,7 +47,7 @@ describe("Utility Helpers", () => {
 
   it("sanitizeHeaders redacts SAS token", () => {
     const url = "https://some.url.com/container/blob?sig=sasstring";
-    const headers = new HttpHeaders();
+    const headers = createHttpHeaders();
     headers.set("authorization", "Bearer abcdefg");
     headers.set("x-ms-copy-source", url);
     headers.set("otherheader", url);

@@ -1,20 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { HttpResponse, isNode } from "@azure/core-http";
-
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 import {
-  BlobDownloadResponseModel,
   BlobType,
   CopyStatusType,
   LeaseDurationType,
   LeaseStateType,
   LeaseStatusType,
   BlobDownloadHeaders,
-  BlobQueryResponseModel,
 } from "./generatedModels";
-import { Metadata } from "./models";
+import { BlobDownloadResponseModel, BlobQueryResponseModel, Metadata } from "./models";
 import { BlobQuickQueryStream, BlobQuickQueryStreamOptions } from "./utils/BlobQuickQueryStream";
+import { isNode } from "./utils/utils.node";
 
 /**
  * ONLY AVAILABLE IN NODE.JS RUNTIME.
@@ -399,7 +397,7 @@ export class BlobQueryResponse implements BlobDownloadResponseModel {
   /**
    * The HTTP response.
    */
-  public get _response(): HttpResponse & {
+  public get _response(): PipelineResponse & {
     parsedHeaders: BlobDownloadHeaders;
   } {
     return this.originalResponse._response;

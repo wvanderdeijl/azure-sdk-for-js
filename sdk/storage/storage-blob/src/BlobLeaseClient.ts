@@ -1,17 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import { generateUuid, HttpResponse } from "@azure/core-http";
-import { StorageClientContext } from "./generated/src/index";
+import { StorageClient as StorageClientContext } from "./generated/src/index";
 import { ContainerBreakLeaseOptionalParams } from "./generatedModels";
 import { AbortSignalLike } from "@azure/abort-controller";
 import { SpanStatusCode } from "@azure/core-tracing";
-import { Blob as StorageBlob, Container } from "./generated/src/operations";
+import { BlobImpl as StorageBlob, ContainerImpl as Container } from "./generated/src/operations";
 import { ModifiedAccessConditions } from "./models";
 import { CommonOptions } from "./StorageClient";
 import { ETagNone } from "./utils/constants";
 import { convertTracingToRequestOptionsBase, createSpan } from "./utils/tracing";
 import { BlobClient } from "./Clients";
 import { ContainerClient } from "./ContainerClient";
+import { generateUuid } from "./utils/utils.common";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 
 /**
  * The details for a specific lease.
@@ -71,7 +72,7 @@ export type LeaseOperationResponse = Lease & {
   /**
    * The underlying HTTP response.
    */
-  _response: HttpResponse & {
+  _response: PipelineResponse & {
     /**
      * The parsed HTTP response headers.
      */
@@ -177,7 +178,7 @@ export class BlobLeaseClient {
     }
 
     try {
-      return await this._containerOrBlobOperation.acquireLease({
+      const response = await this._containerOrBlobOperation.acquireLease({
         abortSignal: options.abortSignal,
         duration,
         modifiedAccessConditions: {
@@ -187,6 +188,10 @@ export class BlobLeaseClient {
         proposedLeaseId: this._leaseId,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response,
+      };
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -239,7 +244,10 @@ export class BlobLeaseClient {
         }
       );
       this._leaseId = proposedLeaseId;
-      return response;
+      return {
+        ...response,
+        _response: (response as any)._response,
+      };
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -276,7 +284,7 @@ export class BlobLeaseClient {
     }
 
     try {
-      return await this._containerOrBlobOperation.releaseLease(this._leaseId, {
+      const response = await this._containerOrBlobOperation.releaseLease(this._leaseId, {
         abortSignal: options.abortSignal,
         modifiedAccessConditions: {
           ...options.conditions,
@@ -284,6 +292,10 @@ export class BlobLeaseClient {
         },
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response,
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -376,7 +388,11 @@ export class BlobLeaseClient {
         },
         ...convertTracingToRequestOptionsBase(updatedOptions),
       };
-      return await this._containerOrBlobOperation.breakLease(operationOptions);
+      const response = await this._containerOrBlobOperation.breakLease(operationOptions);
+      return {
+        ...response,
+        _response: (response as any)._response,
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,

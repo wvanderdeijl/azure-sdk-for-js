@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { RequestPolicy, RequestPolicyOptions } from "@azure/core-http";
-
+import { RequestPolicy, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { CredentialPolicy } from "./CredentialPolicy";
 
 /**
@@ -17,7 +15,7 @@ export class AnonymousCredentialPolicy extends CredentialPolicy {
    */
   // The base class has a protected constructor. Adding a public one to enable constructing of this class.
   /* eslint-disable-next-line @typescript-eslint/no-useless-constructor*/
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
+  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) {
     super(nextPolicy, options);
   }
 }

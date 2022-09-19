@@ -5,7 +5,6 @@ import {
   AccessTier,
   ServiceSubmitBatchHeaders,
   ServiceSubmitBatchOptionalParamsModel,
-  ServiceSubmitBatchResponseModel,
 } from "./generatedModels";
 import { ParsedBatchResponse } from "./BatchResponse";
 import { BatchResponseParser } from "./BatchResponseParser";
@@ -13,14 +12,16 @@ import { utf8ByteLength } from "./BatchUtils";
 import { BlobBatch } from "./BlobBatch";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { convertTracingToRequestOptionsBase, createSpan } from "./utils/tracing";
-import { HttpResponse, TokenCredential } from "@azure/core-http";
-import { Service, Container } from "./generated/src/operations";
+import { ServiceImpl as Service, ContainerImpl as Container } from "./generated/src/operations";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { BlobDeleteOptions, BlobClient, BlobSetTierOptions } from "./Clients";
-import { StorageClientContext } from "./generated/src/storageClientContext";
+import { StorageClient as StorageClientContext } from "./generated/src/storageClient";
 import { PipelineLike, StoragePipelineOptions, newPipeline, isPipelineLike } from "./Pipeline";
 import { getURLPath } from "./utils/utils.common";
+import { TokenCredential } from "@azure/core-auth";
+import { ServiceSubmitBatchResponseModel } from "./models";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 
 /**
  * Options to configure the Service - Submit Batch Optional Params.
@@ -35,7 +36,7 @@ export declare type BlobBatchSubmitBatchResponse = ParsedBatchResponse &
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -315,7 +316,7 @@ export class BlobBatchClient {
       const batchRequestBody = batchRequest.getHttpRequestBody();
 
       // ServiceSubmitBatchResponseModel and ContainerSubmitBatchResponse are compatible for now.
-      const rawBatchResponse: ServiceSubmitBatchResponseModel =
+      const response =
         await this.serviceOrContainerContext.submitBatch(
           utf8ByteLength(batchRequestBody),
           batchRequest.getMultiPartContentType(),
@@ -325,6 +326,11 @@ export class BlobBatchClient {
             ...convertTracingToRequestOptionsBase(updatedOptions),
           }
         );
+
+      const rawBatchResponse: ServiceSubmitBatchResponseModel = {
+        ...response,
+        _response: (response as any)._response
+      };
 
       // Parse the sub responses result, if logic reaches here(i.e. the batch request succeeded with status code 202).
       const batchResponseParser = new BatchResponseParser(

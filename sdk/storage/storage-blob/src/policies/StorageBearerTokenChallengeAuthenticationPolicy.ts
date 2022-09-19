@@ -1,16 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { AccessToken, GetTokenOptions, TokenCredential, URLBuilder } from "@azure/core-http";
-import {
-  BaseRequestPolicy,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-} from "@azure/core-http";
-import { HttpOperationResponse } from "@azure/core-http";
-import { WebResourceLike } from "@azure/core-http";
-import { delay } from "@azure/core-http";
+import { AccessToken, GetTokenOptions, TokenCredential } from "@azure/core-auth";
+import { CompatResponse, RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { BaseRequestPolicy } from "../models";
+import { URLBuilder } from "../utils/url";
+import { delay } from "../utils/utils.common";
 
 /**
  * A set of constants used internally when processing requests.
@@ -236,7 +231,7 @@ function createTokenCycler(
  * We will retrieve the challenge only if the response status code was 401,
  * and if the response contained the header "WWW-Authenticate" with a non-empty value.
  */
-function getChallenge(response: HttpOperationResponse): string | undefined {
+function getChallenge(response: CompatResponse): string | undefined {
   const challenge = response.headers.get("WWW-Authenticate");
   if (response.status === 401 && challenge) {
     return challenge;
@@ -286,11 +281,11 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
   let getToken = createTokenCycler(credential, scopes);
 
   class StorageBearerTokenChallengeAuthenticationPolicy extends BaseRequestPolicy {
-    public constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
+    public constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) {
       super(nextPolicy, options);
     }
 
-    public async sendRequest(webResource: WebResourceLike): Promise<HttpOperationResponse> {
+    public async sendRequest(webResource: WebResourceLike): Promise<CompatResponse> {
       if (!webResource.url.toLowerCase().startsWith("https://")) {
         throw new Error(
           "Bearer token authentication is not permitted for non-TLS protected (non-https) URLs."
@@ -301,9 +296,6 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
       const token = (
         await getTokenInternal({
           abortSignal: webResource.abortSignal,
-          tracingOptions: {
-            tracingContext: webResource.tracingContext,
-          },
         })
       ).token;
       webResource.headers.set(Constants.HeaderConstants.AUTHORIZATION, `Bearer ${token}`);
@@ -323,9 +315,6 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
           const tokenForChallenge = (
             await getTokenForChallenge({
               abortSignal: webResource.abortSignal,
-              tracingOptions: {
-                tracingContext: webResource.tracingContext,
-              },
               tenantId: tenantId,
             })
           ).token;
@@ -344,7 +333,7 @@ export function storageBearerTokenChallengeAuthenticationPolicy(
   }
 
   return {
-    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptions) => {
+    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) => {
       return new StorageBearerTokenChallengeAuthenticationPolicy(nextPolicy, options);
     },
   };

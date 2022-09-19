@@ -1,14 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { CompatResponse, RequestPolicy, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
 import {
-  BaseRequestPolicy,
-  HttpOperationResponse,
-  RequestPolicy,
-  RequestPolicyOptions,
-  WebResource,
   RestError,
 } from "../../src";
+import { BaseRequestPolicy } from "../../src/models";
 
 export interface NextInjectErrorHolder {
   nextInjectError?: RestError;
@@ -26,7 +23,7 @@ export class InjectorPolicy extends BaseRequestPolicy {
    * @param nextPolicy -
    * @param options -
    */
-  public constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, injector: Injector) {
+  public constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike, injector: Injector) {
     super(nextPolicy, options);
     this.injector = injector;
   }
@@ -36,7 +33,7 @@ export class InjectorPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: WebResourceLike): Promise<CompatResponse> {
     const error = this.injector();
     if (error) {
       throw error;

@@ -1,17 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import {
-  BaseRequestPolicy,
-  HttpOperationResponse,
-  isNode,
-  RequestPolicy,
-  RequestPolicyOptions,
-  WebResource,
-} from "@azure/core-http";
-
+import { CompatResponse, RequestPolicy, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { BaseRequestPolicy } from "../models";
 import { HeaderConstants, URLConstants } from "../utils/constants";
 import { setURLParameter } from "../utils/utils.common";
+import { isNode } from "../utils/utils.node";
 
 /**
  * StorageBrowserPolicy will handle differences between Node.js and browser runtime, including:
@@ -32,7 +26,7 @@ export class StorageBrowserPolicy extends BaseRequestPolicy {
    */
   // The base class has a protected constructor. Adding a public one to enable constructing of this class.
   /* eslint-disable-next-line @typescript-eslint/no-useless-constructor*/
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
+  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) {
     super(nextPolicy, options);
   }
 
@@ -41,7 +35,7 @@ export class StorageBrowserPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: WebResourceLike): Promise<CompatResponse> {
     if (isNode) {
       return this._nextPolicy.sendRequest(request);
     }

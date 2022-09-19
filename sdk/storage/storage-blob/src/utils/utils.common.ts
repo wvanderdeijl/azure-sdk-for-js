@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 import { AbortSignalLike } from "@azure/abort-controller";
-import { HttpHeaders, isNode, URLBuilder, TokenCredential } from "@azure/core-http";
 
 import {
   BlobQueryArrowConfiguration,
@@ -44,15 +43,23 @@ import {
   ObjectReplicationRule,
   ObjectReplicationStatus,
   HttpAuthorization,
+  PageBlobGetPageRangesDiffResponseModel,
+  BaseRequestPolicy,
 } from "../models";
 import {
   ListBlobsFlatSegmentResponseModel,
   BlobItemInternal as BlobItemInternalModel,
   ListBlobsHierarchySegmentResponseModel,
   BlobPrefix as BlobPrefixModel,
-  PageBlobGetPageRangesDiffResponseModel,
   PageRangeInfo,
 } from "../generatedModels";
+import { isNode } from "@azure/test-utils";
+import { TokenCredential } from "@azure/core-auth";
+import { URLBuilder } from "./url";
+import { createHttpHeaders, createPipelineRequest, HttpHeaders, PipelinePolicy, PipelineRequest, PipelineResponse } from "@azure/core-rest-pipeline";
+import { v4 as uuidv4 } from "uuid";
+import { CompatResponse, HttpHeader, HttpHeadersLike, RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { FullOperationResponse } from "@azure/core-client";
 
 /**
  * Reserved URL characters must be properly escaped for Storage services like Blob or File.
@@ -546,14 +553,14 @@ export function sanitizeURL(url: string): string {
 }
 
 export function sanitizeHeaders(originalHeader: HttpHeaders): HttpHeaders {
-  const headers: HttpHeaders = new HttpHeaders();
-  for (const header of originalHeader.headersArray()) {
-    if (header.name.toLowerCase() === HeaderConstants.AUTHORIZATION.toLowerCase()) {
-      headers.set(header.name, "*****");
-    } else if (header.name.toLowerCase() === HeaderConstants.X_MS_COPY_SOURCE) {
-      headers.set(header.name, sanitizeURL(header.value));
+  const headers: HttpHeaders = createHttpHeaders();
+  for (const header of originalHeader) {
+    if (header[0].toLowerCase() === HeaderConstants.AUTHORIZATION.toLowerCase()) {
+      headers.set(header[0], "*****");
+    } else if (header[0].toLowerCase() === HeaderConstants.X_MS_COPY_SOURCE) {
+      headers.set(header[0], sanitizeURL(header[1]));
     } else {
-      headers.set(header.name, header.value);
+      headers.set(header[0], header[1]);
     }
   }
 
@@ -1249,4 +1256,323 @@ export function* ExtractPageRangeInfoItems(
       isClear: true,
     };
   }
+}
+
+/**
+ * Generated Universally Unique Identifier
+ *
+ * @returns RFC4122 v4 UUID.
+ * @internal
+ */
+ export function generateUuid(): string {
+  return uuidv4();
+}
+
+const originalRequest = Symbol("Original PipelineRequest");
+type CompatWebResourceLike = WebResourceLike & { [originalRequest]?: PipelineRequest };
+
+export function toPipelineRequest(webResource: WebResourceLike): PipelineRequest {
+  const compatWebResource = webResource as CompatWebResourceLike;
+  const request = compatWebResource[originalRequest];
+  const headers = createHttpHeaders(webResource.headers.toJson({ preserveCase: true }));
+  if (request) {
+    request.headers = headers;
+    return request;
+  } else {
+    return createPipelineRequest({
+      url: webResource.url,
+      method: webResource.method,
+      headers,
+      withCredentials: webResource.withCredentials,
+      timeout: webResource.timeout,
+      requestId: webResource.requestId,
+    });
+  }
+}
+
+export function toWebResourceLike(
+  request: PipelineRequest,
+  options?: { createProxy?: boolean }
+): WebResourceLike {
+  const webResource: WebResourceLike = {
+    url: request.url,
+    method: request.method,
+    headers: toHttpHeaderLike(request.headers),
+    withCredentials: request.withCredentials,
+    timeout: request.timeout,
+    requestId: request.headers.get("x-ms-client-request-id") || request.requestId,
+  };
+
+  if (options?.createProxy) {
+    return new Proxy(webResource, {
+      get(target, prop, receiver) {
+        if (prop === originalRequest) {
+          return request;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+      set(target: any, prop, value, receiver) {
+        if (prop === "url") {
+          request.url = value;
+        } else if (prop === "method") {
+          request.method = value;
+        } else if (prop === "withCredentials") {
+          request.withCredentials = value;
+        } else if (prop === "timeout") {
+          request.timeout = value;
+        } else if (prop === "requestId") {
+          request.requestId = value;
+        }
+        return Reflect.set(target, prop, value, receiver);
+      },
+    });
+  } else {
+    return webResource;
+  }
+}
+
+export function toHttpHeaderLike(headers: HttpHeaders): HttpHeadersLike {
+  return new HttpHeadersV1(headers.toJSON({ preserveCase: true }));
+}
+
+/**
+ * A collection of HttpHeaders that can be sent with a HTTP request.
+ */
+function getHeaderKey(headerName: string): string {
+  return headerName.toLowerCase();
+}
+
+/**
+ * A HttpHeaders collection represented as a simple JSON object.
+ */
+export type RawHttpHeaders = { [headerName: string]: string };
+
+/**
+ * A collection of HTTP header key/value pairs.
+ */
+export class HttpHeadersV1 implements HttpHeadersLike {
+  private readonly _headersMap: { [headerKey: string]: HttpHeader };
+
+  constructor(rawHeaders?: RawHttpHeaders) {
+    this._headersMap = {};
+    if (rawHeaders) {
+      for (const headerName in rawHeaders) {
+        this.set(headerName, rawHeaders[headerName]);
+      }
+    }
+  }
+
+  /**
+   * Set a header in this collection with the provided name and value. The name is
+   * case-insensitive.
+   * @param headerName - The name of the header to set. This value is case-insensitive.
+   * @param headerValue - The value of the header to set.
+   */
+  public set(headerName: string, headerValue: string | number): void {
+    this._headersMap[getHeaderKey(headerName)] = {
+      name: headerName,
+      value: headerValue.toString(),
+    };
+  }
+
+  /**
+   * Get the header value for the provided header name, or undefined if no header exists in this
+   * collection with the provided name.
+   * @param headerName - The name of the header.
+   */
+  public get(headerName: string): string | undefined {
+    const header: HttpHeader = this._headersMap[getHeaderKey(headerName)];
+    return !header ? undefined : header.value;
+  }
+
+  /**
+   * Get whether or not this header collection contains a header entry for the provided header name.
+   */
+  public contains(headerName: string): boolean {
+    return !!this._headersMap[getHeaderKey(headerName)];
+  }
+
+  /**
+   * Remove the header with the provided headerName. Return whether or not the header existed and
+   * was removed.
+   * @param headerName - The name of the header to remove.
+   */
+  public remove(headerName: string): boolean {
+    const result: boolean = this.contains(headerName);
+    delete this._headersMap[getHeaderKey(headerName)];
+    return result;
+  }
+
+  /**
+   * Get the headers that are contained this collection as an object.
+   */
+  public rawHeaders(): RawHttpHeaders {
+    return this.toJson({ preserveCase: true });
+  }
+
+  /**
+   * Get the headers that are contained in this collection as an array.
+   */
+  public headersArray(): HttpHeader[] {
+    const headers: HttpHeader[] = [];
+    for (const headerKey in this._headersMap) {
+      headers.push(this._headersMap[headerKey]);
+    }
+    return headers;
+  }
+
+  /**
+   * Get the header names that are contained in this collection.
+   */
+  public headerNames(): string[] {
+    const headerNames: string[] = [];
+    const headers: HttpHeader[] = this.headersArray();
+    for (let i = 0; i < headers.length; ++i) {
+      headerNames.push(headers[i].name);
+    }
+    return headerNames;
+  }
+
+  /**
+   * Get the header values that are contained in this collection.
+   */
+  public headerValues(): string[] {
+    const headerValues: string[] = [];
+    const headers: HttpHeader[] = this.headersArray();
+    for (let i = 0; i < headers.length; ++i) {
+      headerValues.push(headers[i].value);
+    }
+    return headerValues;
+  }
+
+  /**
+   * Get the JSON object representation of this HTTP header collection.
+   */
+  public toJson(options: { preserveCase?: boolean } = {}): RawHttpHeaders {
+    const result: RawHttpHeaders = {};
+    if (options.preserveCase) {
+      for (const headerKey in this._headersMap) {
+        const header: HttpHeader = this._headersMap[headerKey];
+        result[header.name] = header.value;
+      }
+    } else {
+      for (const headerKey in this._headersMap) {
+        const header: HttpHeader = this._headersMap[headerKey];
+        result[getHeaderKey(header.name)] = header.value;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Get the string representation of this HTTP header collection.
+   */
+  public toString(): string {
+    return JSON.stringify(this.toJson({ preserveCase: true }));
+  }
+
+  /**
+   * Create a deep clone/copy of this HttpHeaders collection.
+   */
+  public clone(): HttpHeadersV1 {
+    const resultPreservingCasing: RawHttpHeaders = {};
+    for (const headerKey in this._headersMap) {
+      const header: HttpHeader = this._headersMap[headerKey];
+      resultPreservingCasing[header.name] = header.value;
+    }
+    return new HttpHeadersV1(resultPreservingCasing);
+  }
+}
+
+const originalResponse = Symbol("Original FullOperationResponse");
+type ExtendedCompatResponse = CompatResponse & { [originalResponse]?: FullOperationResponse };
+
+/**
+ * A helper to convert response objects from the new pipeline back to the old one.
+ * @param response - A response object from core-client.
+ * @returns A response compatible with `HttpOperationResponse` from core-http.
+ */
+export function toCompatResponse(
+  response: FullOperationResponse,
+  options?: { createProxy?: boolean }
+): CompatResponse {
+  let request = toWebResourceLike(response.request);
+  let headers = toHttpHeaderLike(response.headers);
+  if (options?.createProxy) {
+    return new Proxy(response, {
+      get(target, prop, receiver) {
+        if (prop === "headers") {
+          return headers;
+        } else if (prop === "request") {
+          return request;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+      set(target, prop, value, receiver) {
+        if (prop === "headers") {
+          headers = value;
+        } else if (prop === "request") {
+          request = value;
+        }
+        return Reflect.set(target, prop, value, receiver);
+      },
+    }) as unknown as CompatResponse;
+  } else {
+    return {
+      ...response,
+      request,
+      headers,
+    };
+  }
+}
+
+/**
+ * A helper to convert back to a PipelineResponse
+ * @param compatResponse - A response compatible with `HttpOperationResponse` from core-http.
+ */
+export function toPipelineResponse(compatResponse: CompatResponse): PipelineResponse {
+  const extendedCompatResponse = compatResponse as ExtendedCompatResponse;
+  const response = extendedCompatResponse[originalResponse];
+  const headers = createHttpHeaders(compatResponse.headers.toJson({ preserveCase: true }));
+  if (response) {
+    response.headers = headers;
+    return response;
+  } else {
+    return {
+      ...compatResponse,
+      headers,
+      request: toPipelineRequest(compatResponse.request),
+    };
+  }
+}
+
+export function ToRequestPolicyFactory(pipelinePolicy: PipelinePolicy) : RequestPolicyFactory
+{
+  class RequestPolicyInternal extends BaseRequestPolicy {
+  public async sendRequest(webResource: WebResourceLike): Promise<CompatResponse> {
+    const request = toPipelineRequest(webResource)
+    const response = await this.pipelinePolicyInternal.sendRequest(request, 
+    async (request)=>
+    {
+      return toPipelineResponse(await this._nextPolicy.sendRequest(toWebResourceLike(request)));
+    });
+
+    return toCompatResponse(response);
+  }
+  public readonly pipelinePolicyInternal: PipelinePolicy;
+  public constructor(
+    nextPolicy: RequestPolicy, 
+    options: RequestPolicyOptionsLike) {
+    super(nextPolicy, options);
+    this.pipelinePolicyInternal = pipelinePolicy;
+    }
+  }
+
+  class RequestPolicyFactoryInternal implements RequestPolicyFactory {
+    public create(_nextPolicy: RequestPolicy, _options: RequestPolicyOptionsLike): RequestPolicyInternal {
+      return new RequestPolicyInternal(_nextPolicy, _options);
+    }
+  }
+
+  return new RequestPolicyFactoryInternal();
 }

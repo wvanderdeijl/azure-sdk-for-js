@@ -1,18 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import {
-  TokenCredential,
-  isTokenCredential,
-  isNode,
-  HttpResponse,
-  getDefaultProxySettings,
-} from "@azure/core-http";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AbortSignalLike } from "@azure/abort-controller";
 import {
   ServiceGetUserDelegationKeyHeaders,
-  ContainerCreateResponse,
-  ContainerDeleteResponse,
   ServiceGetPropertiesResponse,
   BlobServiceProperties,
   ServiceSetPropertiesResponse,
@@ -29,7 +20,7 @@ import {
   FilterBlobSegment,
   FilterBlobItem,
 } from "./generatedModels";
-import { Container, Service } from "./generated/src/operations";
+import { ContainerImpl as Container, ServiceImpl as Service } from "./generated/src/operations";
 import { newPipeline, StoragePipelineOptions, PipelineLike, isPipelineLike } from "./Pipeline";
 import {
   ContainerClient,
@@ -56,6 +47,10 @@ import { SasIPRange } from "./sas/SasIPRange";
 import { generateAccountSASQueryParameters } from "./sas/AccountSASSignatureValues";
 import { AccountSASServices } from "./sas/AccountSASServices";
 import { ListContainersIncludeType } from "./generated/src";
+import { ContainerCreateResponse, ContainerDeleteResponse } from "./models";
+import { isNode } from "./utils/utils.node";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { getDefaultProxySettings, PipelineResponse } from "@azure/core-rest-pipeline";
 
 /**
  * Options to configure the {@link BlobServiceClient.getProperties} operation.
@@ -214,7 +209,7 @@ export type ServiceFindBlobsByTagsSegmentResponse = FilterBlobSegment &
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -274,7 +269,7 @@ export declare type ServiceGetUserDelegationKeyResponse = UserDelegationKey &
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -459,6 +454,7 @@ export class BlobServiceClient extends StorageClient {
    *                     if using AnonymousCredential, such as "https://myaccount.blob.core.windows.net?sasString".
    * @param pipeline - Call newPipeline() to create a default
    *                            pipeline, or provide a customized pipeline.
+   * @deprecated PipelineLike is not used any more.
    */
   constructor(url: string, pipeline: PipelineLike);
   constructor(
@@ -784,13 +780,17 @@ export class BlobServiceClient extends StorageClient {
     const { span, updatedOptions } = createSpan("BlobServiceClient-listContainersSegment", options);
 
     try {
-      return await this.serviceContext.listContainersSegment({
+      const response = await this.serviceContext.listContainersSegment({
         abortSignal: options.abortSignal,
         marker,
         ...options,
         include: typeof options.include === "string" ? [options.include] : options.include,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -841,7 +841,7 @@ export class BlobServiceClient extends StorageClient {
 
       const wrappedResponse: ServiceFindBlobsByTagsSegmentResponse = {
         ...response,
-        _response: response._response, // _response is made non-enumerable
+        _response: (response as any)._response, // _response is made non-enumerable
         blobs: response.blobs.map((blob) => {
           let tagValue = "";
           if (blob.tags?.blobTagSet.length === 1) {
@@ -1237,7 +1237,7 @@ export class BlobServiceClient extends StorageClient {
       };
 
       const res: ServiceGetUserDelegationKeyResponse = {
-        _response: response._response,
+        _response: (response as any)._response,
         requestId: response.requestId,
         clientRequestId: response.clientRequestId,
         version: response.version,

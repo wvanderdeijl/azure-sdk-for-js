@@ -1,13 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { HttpResponse } from "@azure/core-http";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 import {
   PageBlobGetPageRangesHeaders,
   PageBlobGetPageRangesDiffHeaders,
-  PageBlobGetPageRangesResponseModel,
-  PageBlobGetPageRangesDiffResponseModel,
 } from "./generatedModels";
+import { PageBlobGetPageRangesDiffResponseModel, PageBlobGetPageRangesResponseModel } from "./models";
 import { Range } from "./Range";
 
 /**
@@ -32,7 +31,7 @@ export interface PageBlobGetPageRangesResponse extends PageList, PageBlobGetPage
   /**
    * The underlying HTTP response.
    */
-  _response: HttpResponse & {
+  _response: PipelineResponse & {
     /**
      * The parsed HTTP response headers.
      */
@@ -59,7 +58,7 @@ export interface PageBlobGetPageRangesDiffResponse
   /**
    * The underlying HTTP response.
    */
-  _response: HttpResponse & {
+  _response: PipelineResponse & {
     /**
      * The parsed HTTP response headers.
      */
@@ -86,12 +85,12 @@ export interface PageBlobGetPageRangesDiffResponse
 export function rangeResponseFromModel(
   response: PageBlobGetPageRangesResponseModel | PageBlobGetPageRangesDiffResponseModel
 ): PageBlobGetPageRangesResponse | PageBlobGetPageRangesDiffResponse {
-  const pageRange = (response._response.parsedBody.pageRange || []).map((x) => ({
+  const pageRange = (response._response.parsedBody.pageRange || []).map((x: any) => ({
     offset: x.start,
     count: x.end - x.start,
   }));
 
-  const clearRange = (response._response.parsedBody.clearRange || []).map((x) => ({
+  const clearRange = (response._response.parsedBody.clearRange || []).map((x: any) => ({
     offset: x.start,
     count: x.end - x.start,
   }));

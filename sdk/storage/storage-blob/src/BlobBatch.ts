@@ -1,28 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import {
-  BaseRequestPolicy,
-  deserializationPolicy,
-  generateUuid,
-  HttpHeaders,
-  HttpOperationResponse,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  WebResource,
-  TokenCredential,
-  isTokenCredential,
-  bearerTokenAuthenticationPolicy,
-  isNode,
-} from "@azure/core-http";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { BlobClient, BlobDeleteOptions, BlobSetTierOptions } from "./Clients";
 import { AccessTier } from "./generatedModels";
 import { Mutex } from "./utils/Mutex";
-import { Pipeline } from "./Pipeline";
-import { attachCredential, getURLPath, getURLPathAndQuery, iEqual } from "./utils/utils.common";
+import { attachCredential, generateUuid, getURLPath, getURLPathAndQuery, HttpHeadersV1, iEqual, ToRequestPolicyFactory, toWebResourceLike } from "./utils/utils.common";
 import {
   HeaderConstants,
   BATCH_MAX_REQUEST,
@@ -32,6 +16,13 @@ import {
 } from "./utils/constants";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
 import { createSpan } from "./utils/tracing";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { bearerTokenAuthenticationPolicy, createPipelineRequest } from "@azure/core-rest-pipeline";
+import { isNode } from "./utils/utils.node";
+import { deserializationPolicy as createDeserializationPolicy } from "@azure/core-client";
+import { Pipeline } from "./Pipeline";
+import { CompatResponse, RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { BaseRequestPolicy } from "./models";
 
 /**
  * A request associated with a batch operation.
@@ -374,12 +365,14 @@ class InnerBatchRequest {
     const policyFactoryLength = 3 + (isAnonymousCreds ? 0 : 1); // [deserializationPolicy, BatchHeaderFilterPolicyFactory, (Optional)Credential, BatchRequestAssemblePolicyFactory]
     const factories: RequestPolicyFactory[] = new Array(policyFactoryLength);
 
-    factories[0] = deserializationPolicy(); // Default deserializationPolicy is provided by protocol layer
+    factories[0] = ToRequestPolicyFactory(createDeserializationPolicy()); // Default deserializationPolicy is provided by protocol layer
     factories[1] = new BatchHeaderFilterPolicyFactory(); // Use batch header filter policy to exclude unnecessary headers
     if (!isAnonymousCreds) {
       factories[2] = isTokenCredential(credential)
         ? attachCredential(
-            bearerTokenAuthenticationPolicy(credential, StorageOAuthScopes),
+            ToRequestPolicyFactory(bearerTokenAuthenticationPolicy({
+              credential: credential, 
+              scopes: StorageOAuthScopes})),
             credential
           )
         : credential;
@@ -389,7 +382,7 @@ class InnerBatchRequest {
     return new Pipeline(factories, {});
   }
 
-  public appendSubRequestToBody(request: WebResource) {
+  public appendSubRequestToBody(request: WebResourceLike) {
     // Start to assemble sub request
     this.body += [
       this.subRequestPrefix, // sub request constant prefix
@@ -442,23 +435,23 @@ class InnerBatchRequest {
 
 class BatchRequestAssemblePolicy extends BaseRequestPolicy {
   private batchRequest: InnerBatchRequest;
-  private readonly dummyResponse: HttpOperationResponse = {
-    request: new WebResource(),
+  private readonly dummyResponse: CompatResponse = {
+    request: toWebResourceLike(createPipelineRequest({url: ""})),
     status: 200,
-    headers: new HttpHeaders(),
+    headers: new HttpHeadersV1(),
   };
 
   constructor(
     batchRequest: InnerBatchRequest,
     nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
+    options: RequestPolicyOptionsLike
   ) {
     super(nextPolicy, options);
 
     this.batchRequest = batchRequest;
   }
 
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: WebResourceLike): Promise<CompatResponse> {
     await this.batchRequest.appendSubRequestToBody(request);
 
     return this.dummyResponse; // Intercept request from going to wire
@@ -474,7 +467,7 @@ class BatchRequestAssemblePolicyFactory implements RequestPolicyFactory {
 
   public create(
     nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
+    options: RequestPolicyOptionsLike
   ): BatchRequestAssemblePolicy {
     return new BatchRequestAssemblePolicy(this.batchRequest, nextPolicy, options);
   }
@@ -483,11 +476,11 @@ class BatchRequestAssemblePolicyFactory implements RequestPolicyFactory {
 class BatchHeaderFilterPolicy extends BaseRequestPolicy {
   // The base class has a protected constructor. Adding a public one to enable constructing of this class.
   /* eslint-disable-next-line @typescript-eslint/no-useless-constructor*/
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
+  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) {
     super(nextPolicy, options);
   }
 
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: WebResourceLike): Promise<CompatResponse> {
     let xMsHeaderName = "";
 
     for (const header of request.headers.headersArray()) {
@@ -505,7 +498,7 @@ class BatchHeaderFilterPolicy extends BaseRequestPolicy {
 }
 
 class BatchHeaderFilterPolicyFactory implements RequestPolicyFactory {
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): BatchHeaderFilterPolicy {
+  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike): BatchHeaderFilterPolicy {
     return new BatchHeaderFilterPolicy(nextPolicy, options);
   }
 }

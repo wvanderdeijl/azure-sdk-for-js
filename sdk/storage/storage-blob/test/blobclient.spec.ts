@@ -4,8 +4,7 @@
 import { assert } from "chai";
 import * as fs from "fs";
 import { AbortController } from "@azure/abort-controller";
-import { isNode, URLBuilder, URLQuery } from "@azure/core-http";
-import { SpanGraph, setTracer } from "@azure/test-utils";
+import { SpanGraph, setTracer, isNode } from "@azure/test-utils";
 import {
   bodyToString,
   getBSU,
@@ -30,6 +29,7 @@ import { Test_CPK_INFO } from "./utils/fakeTestSecrets";
 import { base64encode } from "../src/utils/utils.common";
 import { context, setSpan } from "@azure/core-tracing";
 import { Context } from "mocha";
+import { URLBuilder, URLQuery } from "../src/utils/url";
 
 describe("BlobClient", () => {
   let blobServiceClient: BlobServiceClient;

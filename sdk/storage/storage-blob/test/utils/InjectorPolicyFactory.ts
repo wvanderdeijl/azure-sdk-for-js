@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptions } from "../../src";
+import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { InjectorPolicy, Injector } from "./InjectorPolicy";
 
 /**
@@ -14,7 +14,7 @@ export class InjectorPolicyFactory implements RequestPolicyFactory {
     this.injector = injector;
   }
 
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): InjectorPolicy {
+  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike): InjectorPolicy {
     return new InjectorPolicy(nextPolicy, options, this.injector);
   }
 }

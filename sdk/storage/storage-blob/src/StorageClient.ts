@@ -1,13 +1,14 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { StorageClientContext } from "./generated/src/storageClientContext";
+import { StorageClient as StorageClientContext } from "./generated/src/storageClient";
 import { PipelineLike } from "./Pipeline";
 import { escapeURLPath, getURLScheme, iEqual, getAccountNameFromUrl } from "./utils/utils.common";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
-import { TokenCredential, isTokenCredential, isNode } from "@azure/core-http";
 import { OperationTracingOptions } from "@azure/core-tracing";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { isNode } from "./utils/utils.node";
 
 /**
  * An interface for options common to every remote operation.
@@ -36,7 +37,7 @@ export abstract class StorageClient {
    */
   protected readonly pipeline: PipelineLike;
   /**
-   * Such as AnonymousCredential, StorageSharedKeyCredential or any credential from the `@azure/identity` package to authenticate requests to the service. You can also provide an object that implements the TokenCredential interface. If not specified, AnonymousCredential is used.
+   * Such as AnonymousCredential, StorageSharedKeyCredential or any credential from the `@azure/core-auth` package to authenticate requests to the service. You can also provide an object that implements the TokenCredential interface. If not specified, AnonymousCredential is used.
    */
   public readonly credential: StorageSharedKeyCredential | AnonymousCredential | TokenCredential;
   /**

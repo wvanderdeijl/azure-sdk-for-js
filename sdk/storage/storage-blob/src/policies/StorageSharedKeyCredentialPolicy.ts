@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RequestPolicy, RequestPolicyOptions, WebResource } from "@azure/core-http";
+import { RequestPolicy, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
 import { StorageSharedKeyCredential } from "../credentials/StorageSharedKeyCredential";
 import { HeaderConstants } from "../utils/constants";
 import { getURLPath, getURLQueries } from "../utils/utils.common";
@@ -11,10 +11,11 @@ import { CredentialPolicy } from "./CredentialPolicy";
  * StorageSharedKeyCredentialPolicy is a policy used to sign HTTP request with a shared key.
  */
 export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
+  public readonly name = "StorageSharedKeyCredentialPolicy";
   /**
    * Reference to StorageSharedKeyCredential which generates StorageSharedKeyCredentialPolicy
    */
-  private readonly factory: StorageSharedKeyCredential;
+  public readonly factory: StorageSharedKeyCredential;
 
   /**
    * Creates an instance of StorageSharedKeyCredentialPolicy.
@@ -22,11 +23,10 @@ export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
    * @param options -
    * @param factory -
    */
-  constructor(
-    nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions,
-    factory: StorageSharedKeyCredential
-  ) {
+   public constructor(
+    nextPolicy: RequestPolicy, 
+    options: RequestPolicyOptionsLike, 
+    factory: StorageSharedKeyCredential) {
     super(nextPolicy, options);
     this.factory = factory;
   }
@@ -36,15 +36,26 @@ export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
    *
    * @param request -
    */
-  protected signRequest(request: WebResource): WebResource {
+  protected signRequest(request: WebResourceLike): WebResourceLike {
     request.headers.set(HeaderConstants.X_MS_DATE, new Date().toUTCString());
 
-    if (
-      request.body &&
-      (typeof request.body === "string" || (request.body as Buffer) !== undefined) &&
-      request.body.length > 0
-    ) {
-      request.headers.set(HeaderConstants.CONTENT_LENGTH, Buffer.byteLength(request.body));
+    if (request.body)
+    {
+      if ((typeof request.body === "string"))
+      {
+        if (Buffer.byteLength(request.body) > 0)
+        {
+        request.headers.set(HeaderConstants.CONTENT_LENGTH, Buffer.byteLength(request.body));
+        }
+      }
+      else if ((request.body as Buffer) !== undefined)
+      {
+        const bufferBody = request.body as Buffer;
+        if (Buffer.byteLength(bufferBody) > 0)
+        {
+        request.headers.set(HeaderConstants.CONTENT_LENGTH, Buffer.byteLength(bufferBody));
+        }
+      }
     }
 
     const stringToSign: string =
@@ -86,7 +97,7 @@ export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
    * @param request -
    * @param headerName -
    */
-  private getHeaderValueToSign(request: WebResource, headerName: string): string {
+  private getHeaderValueToSign(request: WebResourceLike, headerName: string): string {
     const value = request.headers.get(headerName);
 
     if (!value) {
@@ -116,7 +127,7 @@ export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
    *
    * @param request -
    */
-  private getCanonicalizedHeadersString(request: WebResource): string {
+  private getCanonicalizedHeadersString(request: WebResourceLike): string {
     let headersArray = request.headers.headersArray().filter((value) => {
       return value.name.toLowerCase().startsWith(HeaderConstants.PREFIX_FOR_STORAGE);
     });
@@ -148,7 +159,7 @@ export class StorageSharedKeyCredentialPolicy extends CredentialPolicy {
    *
    * @param request -
    */
-  private getCanonicalizedResourceString(request: WebResource): string {
+  private getCanonicalizedResourceString(request: WebResourceLike): string {
     const path = getURLPath(request.url) || "/";
 
     let canonicalizedResourceString: string = "";

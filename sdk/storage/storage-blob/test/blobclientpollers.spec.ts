@@ -6,9 +6,14 @@ import { assert } from "chai";
 import { getBSU } from "./utils";
 import { record, Recorder, isRecordMode, isPlaybackMode } from "@azure-tools/test-recorder";
 import { recorderEnvSetup, testPollerProperties } from "./utils/testutils.common";
-import { BlobClient, BlockBlobClient, ContainerClient, BlobBeginCopyFromURLResponse } from "../src";
-import { URLBuilder, URLQuery } from "@azure/core-http";
+import {
+  BlobClient,
+  BlockBlobClient,
+  ContainerClient,
+  BlobBeginCopyFromURLResponse,
+} from "../src";
 import { Context } from "mocha";
+import { URLBuilder, URLQuery } from "../src/utils/url";
 
 describe("BlobClient beginCopyFromURL Poller", () => {
   let containerName: string;

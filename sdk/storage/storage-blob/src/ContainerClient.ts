@@ -1,31 +1,18 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 import { AbortSignalLike } from "@azure/abort-controller";
-import {
-  getDefaultProxySettings,
-  HttpRequestBody,
-  HttpResponse,
-  isNode,
-  isTokenCredential,
-  TokenCredential,
-  URLBuilder,
-} from "@azure/core-http";
 import { PagedAsyncIterableIterator, PageSettings } from "@azure/core-paging";
 import { SpanStatusCode } from "@azure/core-tracing";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
 import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
-import { Container } from "./generated/src/operations";
+import { ContainerImpl } from "./generated/src/operations";
 import {
-  BlobDeleteResponse,
   BlobPrefix,
   BlobProperties,
   BlockBlobUploadResponse,
-  ContainerCreateResponse,
-  ContainerDeleteResponse,
   ContainerEncryptionScope,
   ContainerFilterBlobsHeaders,
   ContainerGetAccessPolicyHeaders,
-  ContainerGetPropertiesResponse,
   ContainerListBlobFlatSegmentHeaders,
   ContainerListBlobHierarchySegmentHeaders,
   ContainerSetAccessPolicyResponse,
@@ -45,6 +32,10 @@ import {
   Tags,
   ContainerRequestConditions,
   ModifiedAccessConditions,
+  ContainerGetPropertiesResponse,
+  ContainerDeleteResponse,
+  ContainerCreateResponse,
+  BlobDeleteResponse,
 } from "./models";
 import { newPipeline, PipelineLike, isPipelineLike, StoragePipelineOptions } from "./Pipeline";
 import { CommonOptions, StorageClient } from "./StorageClient";
@@ -77,6 +68,10 @@ import {
 } from "./Clients";
 import { BlobBatchClient } from "./BlobBatchClient";
 import { ListBlobsIncludeItem } from "./generated/src";
+import { URLBuilder } from "./utils/url";
+import { getDefaultProxySettings, PipelineResponse, RequestBodyType } from "@azure/core-rest-pipeline";
+import { isNode } from "./utils/utils.node";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
 
 /**
  * Options to configure {@link ContainerClient.create} operation.
@@ -214,7 +209,7 @@ export declare type ContainerGetAccessPolicyResponse = {
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -399,7 +394,7 @@ export type ContainerListBlobHierarchySegmentResponse = ListBlobsHierarchySegmen
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -461,7 +456,7 @@ export type ContainerListBlobFlatSegmentResponse = ListBlobsFlatSegmentResponse 
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -610,7 +605,7 @@ export type ContainerFindBlobsByTagsSegmentResponse = FilterBlobSegment &
     /**
      * The underlying HTTP response.
      */
-    _response: HttpResponse & {
+    _response: PipelineResponse & {
       /**
        * The parsed HTTP response headers.
        */
@@ -635,7 +630,7 @@ export class ContainerClient extends StorageClient {
   /**
    * containerContext provided by protocol layer.
    */
-  private containerContext: Container;
+  private containerContext: ContainerImpl;
 
   private _containerName: string;
 
@@ -770,7 +765,7 @@ export class ContainerClient extends StorageClient {
     }
     super(url, pipeline);
     this._containerName = this.getContainerNameFromUrl();
-    this.containerContext = new Container(this.storageClientContext);
+    this.containerContext = new ContainerImpl(this.storageClientContext);
   }
 
   /**
@@ -794,10 +789,14 @@ export class ContainerClient extends StorageClient {
     try {
       // Spread operator in destructuring assignments,
       // this will filter out unwanted properties from the response object into result object
-      return await this.containerContext.create({
+      const response = await this.containerContext.create({
         ...options,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response,
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -963,11 +962,15 @@ export class ContainerClient extends StorageClient {
 
     const { span, updatedOptions } = createSpan("ContainerClient-getProperties", options);
     try {
-      return await this.containerContext.getProperties({
+      const response = await this.containerContext.getProperties({
         abortSignal: options.abortSignal,
         ...options.conditions,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response,
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -995,12 +998,16 @@ export class ContainerClient extends StorageClient {
 
     const { span, updatedOptions } = createSpan("ContainerClient-delete", options);
     try {
-      return await this.containerContext.delete({
+      const response = await this.containerContext.delete({
         abortSignal: options.abortSignal,
         leaseAccessConditions: options.conditions,
         modifiedAccessConditions: options.conditions,
         ...convertTracingToRequestOptionsBase(updatedOptions),
       });
+      return {
+        ...response,
+        _response: (response as any)._response
+      }
     } catch (e: any) {
       span.setStatus({
         code: SpanStatusCode.ERROR,
@@ -1128,7 +1135,7 @@ export class ContainerClient extends StorageClient {
       });
 
       const res: ContainerGetAccessPolicyResponse = {
-        _response: response._response,
+        _response: (response as any)._response,
         blobPublicAccess: response.blobPublicAccess,
         date: response.date,
         etag: response.etag,
@@ -1268,7 +1275,7 @@ export class ContainerClient extends StorageClient {
    */
   public async uploadBlockBlob(
     blobName: string,
-    body: HttpRequestBody,
+    body: RequestBodyType,
     contentLength: number,
     options: BlockBlobUploadOptions = {}
   ): Promise<{ blockBlobClient: BlockBlobClient; response: BlockBlobUploadResponse }> {
@@ -1354,8 +1361,8 @@ export class ContainerClient extends StorageClient {
       const wrappedResponse: ContainerListBlobFlatSegmentResponse = {
         ...response,
         _response: {
-          ...response._response,
-          parsedBody: ConvertInternalResponseOfListBlobFlat(response._response.parsedBody),
+          ...(response as any)._response,
+          parsedBody: ConvertInternalResponseOfListBlobFlat((response as any)._response.parsedBody),
         }, // _response is made non-enumerable
         segment: {
           ...response.segment,
@@ -1426,8 +1433,8 @@ export class ContainerClient extends StorageClient {
       const wrappedResponse: ContainerListBlobHierarchySegmentResponse = {
         ...response,
         _response: {
-          ...response._response,
-          parsedBody: ConvertInternalResponseOfListBlobHierarchy(response._response.parsedBody),
+          ...(response as any)._response,
+          parsedBody: ConvertInternalResponseOfListBlobHierarchy((response as any)._response.parsedBody),
         }, // _response is made non-enumerable
         segment: {
           ...response.segment,
@@ -1895,7 +1902,7 @@ export class ContainerClient extends StorageClient {
 
       const wrappedResponse: ContainerFindBlobsByTagsSegmentResponse = {
         ...response,
-        _response: response._response, // _response is made non-enumerable
+        _response: (response as any)._response, // _response is made non-enumerable
         blobs: response.blobs.map((blob) => {
           let tagValue = "";
           if (blob.tags?.blobTagSet.length === 1) {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { OperationOptions, RequestOptionsBase } from "@azure/core-http";
+import { OperationOptions } from "@azure/core-client";
 import { createSpanFunction } from "@azure/core-tracing";
 
 /**
@@ -22,10 +22,6 @@ export const createSpan = createSpanFunction({
  */
 export function convertTracingToRequestOptionsBase(
   options?: OperationOptions
-): Pick<RequestOptionsBase, "spanOptions" | "tracingContext"> {
-  return {
-    // By passing spanOptions if they exist at runtime, we're backwards compatible with @azure/core-tracing@preview.13 and earlier.
-    spanOptions: (options?.tracingOptions as any)?.spanOptions,
-    tracingContext: options?.tracingOptions?.tracingContext,
-  };
-}
+): OperationOptions | undefined {
+  return options;
+} // TODO: convertTracingToRequestOptionsBase

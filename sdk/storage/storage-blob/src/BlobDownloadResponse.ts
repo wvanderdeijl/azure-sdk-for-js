@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-import { HttpResponse, isNode } from "@azure/core-http";
+import { PipelineResponse } from "@azure/core-rest-pipeline";
 import { BlobImmutabilityPolicyMode } from "./generatedModels";
 
 import {
@@ -17,6 +17,7 @@ import {
   RetriableReadableStream,
   RetriableReadableStreamOptions,
 } from "./utils/RetriableReadableStream";
+import { isNode } from "./utils/utils.node";
 
 /**
  * ONLY AVAILABLE IN NODE.JS RUNTIME.
@@ -496,7 +497,7 @@ export class BlobDownloadResponse implements BlobDownloadResponseParsed {
   /**
    * The HTTP response.
    */
-  public get _response(): HttpResponse & {
+  public get _response(): PipelineResponse & {
     parsedHeaders: BlobDownloadHeaders;
   } {
     return this.originalResponse._response;

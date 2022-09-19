@@ -29,8 +29,9 @@ describe("BlobServiceClient", () => {
     await recorder.stop();
   });
 
-  it("ListContainers with default parameters", async () => {
+  it.only("ListContainers with default parameters", async () => {
     const blobServiceClient = getBSU();
+    await blobServiceClient.getProperties();
     const result = (await blobServiceClient.listContainers().byPage().next()).value;
     assert.ok(typeof result.requestId);
     assert.ok(result.requestId!.length > 0);

@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { RequestPolicy, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { createHmac } from "crypto";
-import { RequestPolicy, RequestPolicyOptions } from "@azure/core-http";
 
 import { StorageSharedKeyCredentialPolicy } from "../policies/StorageSharedKeyCredentialPolicy";
 import { Credential } from "./Credential";
@@ -40,9 +40,9 @@ export class StorageSharedKeyCredential extends Credential {
    * @param nextPolicy -
    * @param options -
    */
-  public create(
+   public create(
     nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
+    options: RequestPolicyOptionsLike
   ): StorageSharedKeyCredentialPolicy {
     return new StorageSharedKeyCredentialPolicy(nextPolicy, options, this);
   }

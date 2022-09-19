@@ -1,9 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { HttpHeaders } from "@azure/core-http";
-
-import { ServiceSubmitBatchResponseModel } from "./generatedModels";
 import {
   HTTP_VERSION_1_1,
   HTTP_LINE_ENDING,
@@ -14,6 +11,8 @@ import { getBodyAsText } from "./BatchUtils";
 import { BatchSubRequest } from "./BlobBatch";
 import { BatchSubResponse, ParsedBatchResponse } from "./BatchResponse";
 import { logger } from "./log";
+import { ServiceSubmitBatchResponseModel } from "./models";
+import { createHttpHeaders } from "@azure/core-rest-pipeline";
 
 const HTTP_HEADER_DELIMITER = ": ";
 const SPACE_DELIMITER = " ";
@@ -84,7 +83,7 @@ export class BatchResponseParser {
     for (let index = 0; index < subResponseCount; index++) {
       const subResponse = subResponses[index];
       const deserializedSubResponse = {} as BatchSubResponse;
-      deserializedSubResponse.headers = new HttpHeaders();
+      deserializedSubResponse.headers = createHttpHeaders();
 
       const responseLines = subResponse.split(`${HTTP_LINE_ENDING}`);
       let subRespHeaderStartFound = false;

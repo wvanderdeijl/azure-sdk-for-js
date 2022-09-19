@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RequestPolicy, RequestPolicyOptions } from "@azure/core-http";
-
+import { RequestPolicy, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { AnonymousCredentialPolicy } from "../policies/AnonymousCredentialPolicy";
 import { Credential } from "./Credential";
 
@@ -21,7 +20,7 @@ export class AnonymousCredential extends Credential {
    */
   public create(
     nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions
+    options: RequestPolicyOptionsLike
   ): AnonymousCredentialPolicy {
     return new AnonymousCredentialPolicy(nextPolicy, options);
   }

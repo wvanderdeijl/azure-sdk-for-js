@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptions } from "@azure/core-http";
+import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { StorageBrowserPolicy } from "./policies/StorageBrowserPolicy";
 export { StorageBrowserPolicy };
 
@@ -15,7 +15,7 @@ export class StorageBrowserPolicyFactory implements RequestPolicyFactory {
    * @param nextPolicy -
    * @param options -
    */
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageBrowserPolicy {
+  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike): StorageBrowserPolicy {
     return new StorageBrowserPolicy(nextPolicy, options);
   }
 }

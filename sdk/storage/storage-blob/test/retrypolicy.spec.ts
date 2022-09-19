@@ -1,16 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { URLBuilder } from "@azure/core-http";
 import { assert } from "chai";
 
 import { AbortController } from "@azure/abort-controller";
-import { ContainerClient, RestError, BlobServiceClient } from "../src";
-import { newPipeline, Pipeline } from "../src";
+import { ContainerClient, RestError, BlobServiceClient, Pipeline } from "../src";
+import { newPipeline } from "../src";
 import { getBSU, recorderEnvSetup } from "./utils";
-import { InjectorPolicyFactory } from "./utils/InjectorPolicyFactory";
 import { record, Recorder } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
+import { URLBuilder } from "../src/utils/url";
+import { InjectorPolicyFactory } from "./utils/InjectorPolicyFactory";
 
 describe("RetryPolicy", () => {
   let blobServiceClient: BlobServiceClient;
@@ -37,7 +36,7 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter === 0) {
         injectCounter++;
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+        return new RestError("Server Internal Error", {code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -63,7 +62,7 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter < 2) {
         injectCounter++;
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+        return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -94,17 +93,17 @@ describe("RetryPolicy", () => {
 
   it("Retry Policy should failed when requests always fail with 500", async () => {
     const injector = new InjectorPolicyFactory(() => {
-      return new RestError("Server Internal Error", "ServerInternalError", 500);
+      return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
     });
 
     const credential = (containerClient as any).pipeline.factories[
       (containerClient as any).pipeline.factories.length - 1
     ];
-    const factories = newPipeline(credential, {
+    const pipeline = newPipeline(credential, {
       retryOptions: { maxTries: 3 },
-    }).factories;
+    });
+    const factories = pipeline.factories.slice(); // clone factories array
     factories.push(injector);
-    const pipeline = new Pipeline(factories);
     const injectContainerClient = new ContainerClient(containerClient.url, pipeline);
 
     let hasError = false;
@@ -124,8 +123,9 @@ describe("RetryPolicy", () => {
   it("Retry Policy should work for secondary endpoint", async () => {
     let injectCounter = 0;
     const injector = new InjectorPolicyFactory(() => {
-      if (injectCounter++ < 1) {
-        return new RestError("Server Internal Error", "ServerInternalError", 500);
+      if (injectCounter === 0) {
+        injectCounter++;
+        return new RestError("Server Internal Error", { code: "ServerInternalError", statusCode: 500 });
       }
       return;
     });
@@ -142,11 +142,10 @@ describe("RetryPolicy", () => {
     const credential = (containerClient as any).pipeline.factories[
       (containerClient as any).pipeline.factories.length - 1
     ];
-    const factories = newPipeline(credential, {
+    const pipeline = newPipeline(credential, {
       retryOptions: { maxTries: 2, secondaryHost },
-    }).factories;
-    factories.push(injector);
-    const pipeline = new Pipeline(factories);
+    });
+    pipeline.factories.unshift(injector);
     const injectContainerClient = new ContainerClient(containerClient.url, pipeline);
 
     let finalRequestURL = "";
@@ -165,14 +164,14 @@ describe("RetryPolicy", () => {
     const injector = new InjectorPolicyFactory(() => {
       if (injectCounter === 0) {
         injectCounter++;
-        return new RestError(`Error "Error: Unclosed root tag`, "PARSE_ERROR");
+        return new RestError(`Error "Error: Unclosed root tag`, { code: "PARSE_ERROR" });
       }
       return;
     });
     const factories = (containerClient as any).pipeline.factories.slice(); // clone factories array
     factories.push(injector);
-    const pipeline = new Pipeline(factories);
-    const injectContainerClient = new ContainerClient(containerClient.url, pipeline);
+    const storagePipeline = new Pipeline(factories);
+    const injectContainerClient = new ContainerClient(containerClient.url, storagePipeline);
 
     const metadata = {
       key0: "val0",

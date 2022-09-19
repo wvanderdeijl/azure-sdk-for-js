@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
+import { HttpHeaders } from "@azure/core-rest-pipeline";
 import { BatchSubRequest } from "./BlobBatch";
-import { HttpHeaders } from "@azure/core-http";
 
 /**
  * The response data associated with a single request within a batch operation.

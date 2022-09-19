@@ -1,23 +1,15 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { AbortError } from "@azure/abort-controller";
-
-import {
-  AbortSignalLike,
-  BaseRequestPolicy,
-  HttpOperationResponse,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  RestError,
-  WebResource,
-} from "@azure/core-http";
+import { AbortError, AbortSignalLike } from "@azure/abort-controller";
 
 import { StorageRetryOptions } from "../StorageRetryPolicyFactory";
 import { URLConstants } from "../utils/constants";
 import { delay, setURLHost, setURLParameter } from "../utils/utils.common";
 import { logger } from "../log";
+import { CompatResponse, RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { BaseRequestPolicy } from "../models";
+import { RestError } from "@azure/core-rest-pipeline";
 
 /**
  * A factory method used to generated a RetryPolicy factory.
@@ -26,7 +18,7 @@ import { logger } from "../log";
  */
 export function NewRetryPolicyFactory(retryOptions?: StorageRetryOptions): RequestPolicyFactory {
   return {
-    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageRetryPolicy => {
+    create: (nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike): StorageRetryPolicy => {
       return new StorageRetryPolicy(nextPolicy, options, retryOptions);
     },
   };
@@ -76,7 +68,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
    */
   constructor(
     nextPolicy: RequestPolicy,
-    options: RequestPolicyOptions,
+    options: RequestPolicyOptionsLike,
     retryOptions: StorageRetryOptions = DEFAULT_RETRY_OPTIONS
   ) {
     super(nextPolicy, options);
@@ -123,7 +115,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
    *
    * @param request -
    */
-  public async sendRequest(request: WebResource): Promise<HttpOperationResponse> {
+  public async sendRequest(request: WebResourceLike): Promise<CompatResponse> {
     return this.attemptSendRequest(request, false, 1);
   }
 
@@ -138,11 +130,11 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
    *                                   the attempt will be performed by this method call.
    */
   protected async attemptSendRequest(
-    request: WebResource,
+    request: WebResourceLike,
     secondaryHas404: boolean,
     attempt: number
-  ): Promise<HttpOperationResponse> {
-    const newRequest: WebResource = request.clone();
+  ): Promise<CompatResponse> {
+    const newRequest: WebResourceLike = request; // TODO: CoreV2, Needs to add a clone method here.
 
     const isPrimaryRetry =
       secondaryHas404 ||
@@ -163,7 +155,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
       );
     }
 
-    let response: HttpOperationResponse | undefined;
+    let response: CompatResponse | undefined;
     try {
       logger.info(`RetryPolicy: =====> Try=${attempt} ${isPrimaryRetry ? "Primary" : "Secondary"}`);
       response = await this._nextPolicy.sendRequest(newRequest);
@@ -194,7 +186,7 @@ export class StorageRetryPolicy extends BaseRequestPolicy {
   protected shouldRetry(
     isPrimaryRetry: boolean,
     attempt: number,
-    response?: HttpOperationResponse,
+    response?: CompatResponse,
     err?: RestError
   ): boolean {
     if (attempt >= this.retryOptions.maxTries!) {

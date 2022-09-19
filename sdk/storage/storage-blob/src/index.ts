@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { RestError } from "@azure/core-http";
+import { RestError } from "@azure/core-rest-pipeline";
 
 export { PollOperationState, PollerLike } from "@azure/core-lro";
 export * from "./BlobServiceClient";
@@ -17,7 +17,7 @@ export * from "./BlobBatchClient";
 export * from "./BatchResponse";
 export * from "./sas/BlobSASPermissions";
 export * from "./sas/BlobSASSignatureValues";
-export * from "./StorageBrowserPolicyFactory";
+export * from "./policies/StorageBrowserPolicy";
 export * from "./sas/ContainerSASPermissions";
 export * from "./credentials/AnonymousCredential";
 export * from "./credentials/Credential";
@@ -42,7 +42,7 @@ export {
 export * from "./Pipeline";
 export * from "./policies/AnonymousCredentialPolicy";
 export * from "./policies/CredentialPolicy";
-export * from "./StorageRetryPolicyFactory";
+export * from "./policies/StorageRetryPolicy";
 export * from "./policies/StorageSharedKeyCredentialPolicy";
 export * from "./sas/SASQueryParameters";
 export { CommonOptions } from "./StorageClient";

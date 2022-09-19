@@ -18,9 +18,9 @@ import {
   AnonymousCredential,
   BlobServiceClient,
   BaseRequestPolicy,
-  WebResource,
+  WebResourceLike,
   RequestPolicy,
-  RequestPolicyOptions,
+  RequestPolicyOptionsLike,
 } from "@azure/storage-blob";
 
 // Load the .env file if it exists
@@ -36,7 +36,7 @@ class RequestIDPolicyFactory {
   }
 
   // create() method needs to create a new RequestIDPolicy object
-  create(nextPolicy: RequestPolicy, options: RequestPolicyOptions) {
+  create(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike) {
     return new RequestIDPolicy(nextPolicy, options, this.prefix);
   }
 }
@@ -44,14 +44,14 @@ class RequestIDPolicyFactory {
 // Create a policy by extending from BaseRequestPolicy
 class RequestIDPolicy extends BaseRequestPolicy {
   prefix: string;
-  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptions, prefix: string) {
+  constructor(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike, prefix: string) {
     super(nextPolicy, options);
     this.prefix = prefix;
   }
 
   // Customize HTTP requests and responses by overriding sendRequest
   // Parameter request is WebResource type
-  async sendRequest(request: WebResource) {
+  async sendRequest(request: WebResourceLike) {
     // Customize client request ID header
     request.headers.set(
       "x-ms-client-request-id",

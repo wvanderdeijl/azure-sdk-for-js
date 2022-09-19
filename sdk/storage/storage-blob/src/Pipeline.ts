@@ -1,61 +1,34 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import {
-  BaseRequestPolicy,
-  deserializationPolicy,
-  disableResponseDecompressionPolicy,
-  HttpClient as IHttpClient,
-  HttpHeaders,
-  HttpOperationResponse,
-  HttpRequestBody,
-  RequestPolicy,
-  RequestPolicyFactory,
-  RequestPolicyOptions,
-  ServiceClientOptions,
-  WebResource,
-  proxyPolicy,
-  isNode,
-  TokenCredential,
-  isTokenCredential,
-  tracingPolicy,
-  logPolicy,
-  ProxyOptions,
-  keepAlivePolicy,
-  KeepAliveOptions,
-  generateClientRequestIdPolicy,
-  UserAgentOptions,
-} from "@azure/core-http";
-
-import { logger } from "./log";
-import { StorageBrowserPolicyFactory } from "./StorageBrowserPolicyFactory";
-import { StorageRetryOptions, StorageRetryPolicyFactory } from "./StorageRetryPolicyFactory";
-import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
+import { isTokenCredential, TokenCredential } from "@azure/core-auth";
+import { deserializationPolicy, ServiceClientOptions } from "@azure/core-client";
+import { CompatResponse, createRequestPolicyFactoryPolicy, KeepAliveOptions, RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike, WebResourceLike } from "@azure/core-http-compat";
+import { createEmptyPipeline, HttpClient as IHttpClient, logPolicy, proxyPolicy, ProxySettings, tracingPolicy, UserAgentPolicyOptions } from "@azure/core-rest-pipeline";
 import { AnonymousCredential } from "./credentials/AnonymousCredential";
-import {
-  StorageOAuthScopes,
-  StorageBlobLoggingAllowedHeaderNames,
-  StorageBlobLoggingAllowedQueryParameters,
-} from "./utils/constants";
-import { TelemetryPolicyFactory } from "./TelemetryPolicyFactory";
+import { StorageSharedKeyCredential } from "./credentials/StorageSharedKeyCredential";
+import { StorageRetryOptions } from "./StorageRetryPolicyFactory";
 import { getCachedDefaultHttpClient } from "./utils/cache";
-import { attachCredential } from "./utils/utils.common";
+import { attachCredential, ToRequestPolicyFactory } from "./utils/utils.common";
 import { storageBearerTokenChallengeAuthenticationPolicy } from "./policies/StorageBearerTokenChallengeAuthenticationPolicy";
+import { StorageBlobLoggingAllowedHeaderNames, StorageBlobLoggingAllowedQueryParameters, StorageOAuthScopes } from "./utils/constants";
+import { logger } from "./log";
+import { isNode } from "./utils/utils.node";
+import { StorageRetryPolicyFactory } from "./StorageRetryPolicyFactory";
+import { StorageBrowserPolicyFactory } from "./StorageBrowserPolicyFactory";
+import { TelemetryPolicyFactory } from "./TelemetryPolicyFactory";
+import { BaseRequestPolicy } from "./models";
 
-// Export following interfaces and types for customers who want to implement their
-// own RequestPolicy or HTTPClient
-export {
+export
+{
   BaseRequestPolicy,
   StorageOAuthScopes,
-  deserializationPolicy,
+  WebResourceLike,
+  CompatResponse,
   IHttpClient,
-  HttpHeaders,
-  HttpRequestBody,
-  HttpOperationResponse,
-  WebResource,
   RequestPolicyFactory,
   RequestPolicy,
-  RequestPolicyOptions,
+  RequestPolicyOptionsLike,
 };
 
 /**
@@ -154,9 +127,11 @@ export class Pipeline implements PipelineLike {
    * @returns The ServiceClientOptions object from this Pipeline.
    */
   public toServiceClientOptions(): ServiceClientOptions {
+    const pipelineContext = createEmptyPipeline();
+    pipelineContext.addPolicy(createRequestPolicyFactoryPolicy(this.factories));
     return {
       httpClient: this.options.httpClient,
-      requestPolicyFactories: this.factories,
+      pipeline: pipelineContext,
     };
   }
 }
@@ -168,11 +143,11 @@ export interface StoragePipelineOptions {
   /**
    * Options to configure a proxy for outgoing requests.
    */
-  proxyOptions?: ProxyOptions;
+  proxyOptions?: ProxySettings;
   /**
    * Options for adding user agent details to outgoing requests.
    */
-  userAgentOptions?: UserAgentOptions;
+  userAgentOptions?: UserAgentPolicyOptions;
   /**
    * Configures the built-in retry policy behavior.
    */
@@ -212,27 +187,28 @@ export function newPipeline(
 
   const telemetryPolicy = new TelemetryPolicyFactory(pipelineOptions.userAgentOptions);
   const factories: RequestPolicyFactory[] = [
-    tracingPolicy({ userAgent: telemetryPolicy.telemetryString }),
-    keepAlivePolicy(pipelineOptions.keepAliveOptions),
+    ToRequestPolicyFactory(tracingPolicy({ userAgentPrefix: telemetryPolicy.telemetryString })),
+    //keepAlivePolicy(pipelineOptions.keepAliveOptions), // TODO:
     telemetryPolicy,
-    generateClientRequestIdPolicy(),
+    //generateClientRequestIdPolicy(), // TODO:
     new StorageBrowserPolicyFactory(),
     new StorageRetryPolicyFactory(pipelineOptions.retryOptions), // Retry policy should be above any policy that throws retryable errors
     // Default deserializationPolicy is provided by protocol layer
     // Use customized XML char key of "#" so we could deserialize metadata
     // with "_" key
-    deserializationPolicy(undefined, { xmlCharKey: "#" }),
-    logPolicy({
+    ToRequestPolicyFactory(deserializationPolicy({
+      serializerOptions: {
+       xml: {xmlCharKey: "#" }}})),
+    ToRequestPolicyFactory(logPolicy({
       logger: logger.info,
-      allowedHeaderNames: StorageBlobLoggingAllowedHeaderNames,
-      allowedQueryParameters: StorageBlobLoggingAllowedQueryParameters,
-    }),
+      additionalAllowedHeaderNames: StorageBlobLoggingAllowedHeaderNames,
+      additionalAllowedQueryParameters: StorageBlobLoggingAllowedQueryParameters,
+    })),
   ];
 
   if (isNode) {
     // policies only available in Node.js runtime, not in browsers
-    factories.push(proxyPolicy(pipelineOptions.proxyOptions));
-    factories.push(disableResponseDecompressionPolicy());
+    factories.push(ToRequestPolicyFactory(proxyPolicy(pipelineOptions.proxyOptions)));
   }
   factories.push(
     isTokenCredential(credential)

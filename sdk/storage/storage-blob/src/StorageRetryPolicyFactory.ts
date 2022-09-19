@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
-
-import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptions } from "@azure/core-http";
+import { RequestPolicy, RequestPolicyFactory, RequestPolicyOptionsLike } from "@azure/core-http-compat";
 import { StorageRetryPolicy, StorageRetryPolicyType } from "./policies/StorageRetryPolicy";
 
 export { StorageRetryPolicyType, StorageRetryPolicy };
@@ -75,7 +74,7 @@ export class StorageRetryPolicyFactory implements RequestPolicyFactory {
    * @param nextPolicy -
    * @param options -
    */
-  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptions): StorageRetryPolicy {
+  public create(nextPolicy: RequestPolicy, options: RequestPolicyOptionsLike): StorageRetryPolicy {
     return new StorageRetryPolicy(nextPolicy, options, this.retryOptions);
   }
 }
