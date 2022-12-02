@@ -1,0 +1,694 @@
+Found configuration in /home/dealmaha/textanalytics/rush.json
+
+[1mRush Multi-Project Build Tool 5.63.0[22m - Node.js 18.6.0 (pre-LTS)
+> "npm run clean && npm run build:test && npm run unit-test"
+
+
+> @azure/ai-language-text@1.1.0-beta.1 clean
+> rimraf dist dist-* temp types *.tgz *.log
+
+
+> @azure/ai-language-text@1.1.0-beta.1 build:test
+> tsc -p . && dev-tool run bundle
+
+[bundle] Created production CommonJS bundle.
+[bundle] Created browser testing bundle.
+
+> @azure/ai-language-text@1.1.0-beta.1 unit-test
+> npm run unit-test:node && npm run unit-test:browser
+
+
+> @azure/ai-language-text@1.1.0-beta.1 unit-test:node
+> dev-tool run test:node-ts-input -- --timeout 1200000 "test/**/*.spec.ts"
+
+[test-info] ===TEST_MODE="record"===
+[test-proxy] Proxy tool seems to be active at http://localhost:5000
+
+[preparing-proxy-tool] Proxy tool seems to be active, not attempting to start the test proxy at http://localhost:5000 & https://localhost:5001.
+
+[node-tests] 
+[node-tests] 
+[node-tests]   Models
+[node-tests]     ✓ AnalyzeActionName
+[node-tests]     ✓ AnalyzeBatchActionName
+[node-tests] 
+[node-tests]   [APIKey] TextAnalysisClient
+[node-tests]     analyze
+[node-tests]       #SentimentAnalysis
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (148ms)
+[node-tests]         ✓ client accepts string[] with no language (129ms)
+[node-tests]         ✓ service returns error for invalid language (98ms)
+[node-tests]         ✓ service has a bug when referencing assessments in doc #6 or greater (128ms)
+[node-tests]         ✓ service returns an error for an empty document (123ms)
+[node-tests]         ✓ client accepts TextDocumentInput[] (123ms)
+[node-tests]         ✓ client gets positive mined assessments (111ms)
+[node-tests]         ✓ client gets negative mined assessments (103ms)
+[node-tests]         ✓ client gets no mined assessments (97ms)
+[node-tests]       #LanguageDetection
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts no countryHint (3465ms)
+[node-tests]         ✓ client accepts a countryHint (766ms)
+[node-tests]         ✓ client accepts "none" country hint with string[] input (116ms)
+[node-tests]         ✓ client accepts "none" country hint with DetectLanguageInput[] input (113ms)
+[node-tests]         ✓ service errors on invalid country hint (89ms)
+[node-tests]         ✓ client accepts mixed-country DetectLanguageInput[] (96ms)
+[node-tests]       #EntityRecognition
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (176ms)
+[node-tests]         ✓ client accepts string[] with a language specified (660ms)
+[node-tests]         ✓ service errors on unsupported language (113ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (157ms)
+[node-tests]         ✓ client throws exception for too many inputs (94ms)
+[node-tests]       #KeyPhraseExtraction
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (110ms)
+[node-tests]         ✓ client accepts string[] with a language specified (133ms)
+[node-tests]         ✓ service errors on unsupported language (88ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (116ms)
+[node-tests]       #PiiEntityRecognition
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (128ms)
+[node-tests]         ✓ client accepts string[] with a language specified (118ms)
+[node-tests]         ✓ client correctly reports recognition of PII-like pattern (115ms)
+[node-tests]         ✓ service errors on unsupported language (87ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (118ms)
+[node-tests]         ✓ accepts domain filter (147ms)
+[node-tests]         ✓ accepts pii categories (124ms)
+[node-tests]         ✓ output pii categories are accepted as input (224ms)
+[node-tests]       #EntityLinking
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (115ms)
+[node-tests]         ✓ client accepts string[] with a language specified (139ms)
+[node-tests]         ✓ service errors on unsupported language (93ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (1435ms)
+[node-tests]         ✓ client throws exception for too many inputs (102ms)
+[node-tests]       #Dynamic Classification [single]
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (886ms)
+[node-tests]         ✓ client accepts string[] with no language (852ms)
+[node-tests]         ✓ service errors on unsupported language (97ms)
+[node-tests]         ✓ service errors on invalid number of categories (96ms)
+[node-tests]         ✓ service errors on invalid classification type (95ms)
+[node-tests]       #Dynamic Classification [multi]
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (784ms)
+[node-tests]         ✓ client accepts string[] with no language (1825ms)
+[node-tests]         ✓ service errors on unsupported language (104ms)
+[node-tests]         ✓ service errors on invalid number of categories (97ms)
+[node-tests]         ✓ service errors on invalid classification type (88ms)
+[node-tests]       #String encoding
+[node-tests]         #Default encoding (utf16CodeUnit)
+[node-tests]           ✓ emoji (115ms)
+[node-tests]           ✓ emoji with skin tone modifier (115ms)
+[node-tests]           ✓ family emoji (116ms)
+[node-tests]           ✓ family emoji with skin tone modifier (118ms)
+[node-tests]           ✓ diacritics nfc (116ms)
+[node-tests]           ✓ diacritics nfd (117ms)
+[node-tests]           ✓ korean nfc (205ms)
+[node-tests]           ✓ korean nfd (130ms)
+[node-tests]           ✓ zalgo (171ms)
+[node-tests]         #UnicodeCodePoint
+[node-tests]           ✓ emoji (125ms)
+[node-tests]           ✓ emoji with skin tone modifier (111ms)
+[node-tests]           ✓ family emoji (114ms)
+[node-tests]           ✓ family emoji with skin tone modifier (108ms)
+[node-tests]           ✓ diacritics nfc (118ms)
+[node-tests]           ✓ diacritics nfd (112ms)
+[node-tests]           ✓ korean nfc (109ms)
+[node-tests]           ✓ korean nfd (117ms)
+[node-tests]           ✓ zalgo (142ms)
+[node-tests]         #TextElementsV8
+[node-tests]           ✓ emoji (115ms)
+[node-tests]           ✓ emoji with skin tone modifier (121ms)
+[node-tests]           ✓ family emoji (157ms)
+[node-tests]           ✓ family emoji with skin tone modifier (130ms)
+[node-tests]           ✓ diacritics nfc (120ms)
+[node-tests]           ✓ diacritics nfd (115ms)
+[node-tests]           ✓ korean nfc (116ms)
+[node-tests]           ✓ korean nfd (136ms)
+[node-tests]           ✓ zalgo (152ms)
+[node-tests] 
+[node-tests]   [AAD] TextAnalysisClient
+[node-tests]     analyze
+[node-tests]       #SentimentAnalysis
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (1328ms)
+[node-tests]         ✓ client accepts string[] with no language (618ms)
+[node-tests]         ✓ service returns error for invalid language (616ms)
+[node-tests]         ✓ service has a bug when referencing assessments in doc #6 or greater (613ms)
+[node-tests]         ✓ service returns an error for an empty document (627ms)
+[node-tests]         ✓ client accepts TextDocumentInput[] (642ms)
+[node-tests]         ✓ client gets positive mined assessments (544ms)
+[node-tests]         ✓ client gets negative mined assessments (550ms)
+[node-tests]         ✓ client gets no mined assessments (556ms)
+[node-tests]       #LanguageDetection
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts no countryHint (573ms)
+[node-tests]         ✓ client accepts a countryHint (521ms)
+[node-tests]         ✓ client accepts "none" country hint with string[] input (547ms)
+[node-tests]         ✓ client accepts "none" country hint with DetectLanguageInput[] input (603ms)
+[node-tests]         ✓ service errors on invalid country hint (594ms)
+[node-tests]         ✓ client accepts mixed-country DetectLanguageInput[] (518ms)
+[node-tests]       #EntityRecognition
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (589ms)
+[node-tests]         ✓ client accepts string[] with a language specified (629ms)
+[node-tests]         ✓ service errors on unsupported language (535ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (591ms)
+[node-tests]         ✓ client throws exception for too many inputs (435ms)
+[node-tests]       #KeyPhraseExtraction
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (456ms)
+[node-tests]         ✓ client accepts string[] with a language specified (547ms)
+[node-tests]         ✓ service errors on unsupported language (581ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (546ms)
+[node-tests]       #PiiEntityRecognition
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (531ms)
+[node-tests]         ✓ client accepts string[] with a language specified (592ms)
+[node-tests]         ✓ client correctly reports recognition of PII-like pattern (588ms)
+[node-tests]         ✓ service errors on unsupported language (463ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (589ms)
+[node-tests]         ✓ accepts domain filter (507ms)
+[node-tests]         ✓ accepts pii categories (524ms)
+[node-tests]         ✓ output pii categories are accepted as input (725ms)
+[node-tests]       #EntityLinking
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] with no language (598ms)
+[node-tests]         ✓ client accepts string[] with a language specified (548ms)
+[node-tests]         ✓ service errors on unsupported language (458ms)
+[node-tests]         ✓ client accepts mixed-language TextDocumentInput[] (556ms)
+[node-tests]         ✓ client throws exception for too many inputs (479ms)
+[node-tests]       #Dynamic Classification [single]
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (1210ms)
+[node-tests]         ✓ client accepts string[] with no language (1228ms)
+[node-tests]         ✓ service errors on unsupported language (464ms)
+[node-tests]         ✓ service errors on invalid number of categories (434ms)
+[node-tests]         ✓ service errors on invalid classification type (552ms)
+[node-tests]       #Dynamic Classification [multi]
+[node-tests]         ✓ client throws on empty list
+[node-tests]         ✓ client accepts string[] and language (1397ms)
+[node-tests]         ✓ client accepts string[] with no language (1311ms)
+[node-tests]         ✓ service errors on unsupported language (492ms)
+[node-tests]         ✓ service errors on invalid number of categories (458ms)
+[node-tests]         ✓ service errors on invalid classification type (491ms)
+[node-tests]       #String encoding
+[node-tests]         #Default encoding (utf16CodeUnit)
+[node-tests]           ✓ emoji (498ms)
+[node-tests]           ✓ emoji with skin tone modifier (475ms)
+[node-tests]           ✓ family emoji (494ms)
+[node-tests]           ✓ family emoji with skin tone modifier (615ms)
+[node-tests]           ✓ diacritics nfc (465ms)
+[node-tests]           ✓ diacritics nfd (561ms)
+[node-tests]           ✓ korean nfc (537ms)
+[node-tests]           ✓ korean nfd (517ms)
+[node-tests]           ✓ zalgo (527ms)
+[node-tests]         #UnicodeCodePoint
+[node-tests]           ✓ emoji (565ms)
+[node-tests]           ✓ emoji with skin tone modifier (525ms)
+[node-tests]           ✓ family emoji (572ms)
+[node-tests]           ✓ family emoji with skin tone modifier (489ms)
+[node-tests]           ✓ diacritics nfc (573ms)
+[node-tests]           ✓ diacritics nfd (529ms)
+[node-tests]           ✓ korean nfc (516ms)
+[node-tests]           ✓ korean nfd (488ms)
+[node-tests]           ✓ zalgo (626ms)
+[node-tests]         #TextElementsV8
+[node-tests]           ✓ emoji (468ms)
+[node-tests]           ✓ emoji with skin tone modifier (629ms)
+[node-tests]           ✓ family emoji (550ms)
+[node-tests]           ✓ family emoji with skin tone modifier (482ms)
+[node-tests]           ✓ diacritics nfc (497ms)
+[node-tests]           ✓ diacritics nfd (528ms)
+[node-tests]           ✓ korean nfc (558ms)
+[node-tests]           ✓ korean nfd (625ms)
+[node-tests]           ✓ zalgo (499ms)
+[node-tests] 
+[node-tests]   [APIKey] TextAnalysisClient
+[node-tests]     analyzeBatch
+[node-tests]       actions
+[node-tests]         prebuilt
+[node-tests]           ✓ entity recognition (3008ms)
+[node-tests]           ✓ entity recognition with resolution (3325ms)
+[node-tests]           ✓ key phrase extraction (2992ms)
+[node-tests]           ✓ entity linking (3036ms)
+[node-tests]           ✓ pii entity recognition (3689ms)
+[node-tests]           ✓ pii entity recognition with filtered categories (2748ms)
+[node-tests]           ✓ pii entity recognition with phi domain (2939ms)
+[node-tests]           ✓ sentiment analysis with opinion mining (9568ms)
+[node-tests]           ✓ healthcare (3043ms)
+[node-tests]           ✓ healthcare with fhir (7305ms)
+[node-tests]           ✓ healthcare with known documents type (3108ms)
+[node-tests]           ✓ extractive summarization (7069ms)
+[node-tests]           ✓ extractive summarization with maxSentenceCount (6995ms)
+[node-tests]           ✓ extractive summarization with orderBy (7171ms)
+[node-tests]           ✓ abstractive summarization (7021ms)
+[node-tests]           ✓ abstractive summarization with maxSentenceCont (4895ms)
+[node-tests]       general behavior
+[node-tests]         ✓ unique multiple actions per type are allowed (2780ms)
+[node-tests]         ✓ some documents with errors and multiple actions (3178ms)
+[node-tests]         ✓ all documents with errors and multiple actions (3140ms)
+[node-tests]         ✓ output order is same as the input's one with multiple actions (5740ms)
+[node-tests]         ✓ out of order input IDs with multiple actions (3451ms)
+[node-tests]         ✓ statistics (3290ms)
+[node-tests]         ✓ whole batch language hint (3179ms)
+[node-tests]         ✓ whole batch with no language hint (3042ms)
+[node-tests]         ✓ whole batch input with a language hint (3146ms)
+[node-tests]         ✓ invalid language hint (9414ms)
+[node-tests]         ✓ paged results with custom page size (18954ms)
+[node-tests]         ✓ operation metadata (2581ms)
+[node-tests]         - cancel after progress
+[node-tests]         ✓ rehydrated polling (8484ms)
+[node-tests]         errors and warnings
+[node-tests]           ✓ bad request empty string (102ms)
+[node-tests]           ✓ malformed action (95ms)
+[node-tests]           ✓ duplicate actions of the same type are disallowed (86ms)
+[node-tests]           ✓ too many documents (164ms)
+[node-tests]           ✓ payload too large (392ms)
+[node-tests]           ✓ big document causes a warning (6986ms)
+[node-tests]         stringIndexType
+[node-tests]           ✓ family emoji wit skin tone modifier (2674ms)
+[node-tests]           ✓ family emoji wit skin tone modifier with Utf16CodeUnit (2709ms)
+[node-tests]           ✓ family emoji wit skin tone modifier with UnicodeCodePoint (2702ms)
+[node-tests] 
+[node-tests]   [AAD] TextAnalysisClient
+[node-tests]     analyzeBatch
+[node-tests]       actions
+[node-tests]         prebuilt
+[node-tests]           ✓ entity recognition (3454ms)
+[node-tests]           ✓ entity recognition with resolution (3718ms)
+[node-tests]           ✓ key phrase extraction (5565ms)
+[node-tests]           ✓ entity linking (3575ms)
+[node-tests]           ✓ pii entity recognition (3403ms)
+[node-tests]           ✓ pii entity recognition with filtered categories (3282ms)
+[node-tests]           ✓ pii entity recognition with phi domain (3530ms)
+[node-tests]           ✓ sentiment analysis with opinion mining (3628ms)
+[node-tests]           ✓ healthcare (3683ms)
+[node-tests]           ✓ healthcare with fhir (5892ms)
+[node-tests]           ✓ healthcare with known documents type (3631ms)
+[node-tests]           ✓ extractive summarization (7675ms)
+[node-tests]           ✓ extractive summarization with maxSentenceCount (7653ms)
+[node-tests]           ✓ extractive summarization with orderBy (7769ms)
+[node-tests]           ✓ abstractive summarization (5576ms)
+[node-tests]           ✓ abstractive summarization with maxSentenceCont (5763ms)
+[node-tests]       general behavior
+[node-tests]         ✓ unique multiple actions per type are allowed (3317ms)
+[node-tests]         ✓ some documents with errors and multiple actions (3593ms)
+[node-tests]         ✓ all documents with errors and multiple actions (6140ms)
+[node-tests]         ✓ output order is same as the input's one with multiple actions (8697ms)
+[node-tests]         ✓ out of order input IDs with multiple actions (6351ms)
+[node-tests]         ✓ statistics (6331ms)
+[node-tests]         ✓ whole batch language hint (3595ms)
+[node-tests]         ✓ whole batch with no language hint (3709ms)
+[node-tests]         ✓ whole batch input with a language hint (3803ms)
+[node-tests]         ✓ invalid language hint (3454ms)
+[node-tests]         ✓ paged results with custom page size (10206ms)
+[node-tests]         ✓ operation metadata (3029ms)
+[node-tests]         - cancel after progress
+[node-tests]         ✓ rehydrated polling (11507ms)
+[node-tests]         errors and warnings
+[node-tests]           ✓ bad request empty string (213ms)
+[node-tests]           ✓ malformed action (355ms)
+[node-tests]           ✓ duplicate actions of the same type are disallowed (267ms)
+[node-tests]           ✓ too many documents (326ms)
+[node-tests]           ✓ payload too large (524ms)
+[node-tests]           ✓ big document causes a warning (5515ms)
+[node-tests]         stringIndexType
+[node-tests]           ✓ family emoji wit skin tone modifier (3328ms)
+[node-tests]           ✓ family emoji wit skin tone modifier with Utf16CodeUnit (3238ms)
+[node-tests]           ✓ family emoji wit skin tone modifier with UnicodeCodePoint (3242ms)
+[node-tests] 
+[node-tests]   [APIKey] TextAnalysisClient
+[node-tests]     analyzeBatch
+[node-tests]       actions
+[node-tests]         custom
+[node-tests]           ✓ entity recognition (3033ms)
+[node-tests]           ✓ single label classification action (2400ms)
+[node-tests]           ✓ multi label classification action (2568ms)
+[node-tests] 
+[node-tests]   [AAD] TextAnalysisClient
+[node-tests]     analyzeBatch
+[node-tests]       actions
+[node-tests]         custom
+[node-tests]           ✓ entity recognition (1397ms)
+[node-tests]           ✓ single label classification action (2705ms)
+[node-tests]           ✓ multi label classification action (2773ms)
+[node-tests] 
+[node-tests]   [API Key] TextAnalysisClient
+[node-tests]     Client options
+[node-tests]       ✓ service version (231ms)
+[node-tests] 
+[node-tests] 
+[node-tests]   249 passing (7m)
+[node-tests]   2 pending
+[node-tests] 
+[node-tests] mocha -r esm -r ts-node/register --reporter ../../../common/tools/mocha-multi-reporter.js --full-trace --timeout 1200000 "test/**/*.spec.ts" exited with code 0
+
+> @azure/ai-language-text@1.1.0-beta.1 unit-test:browser
+> dev-tool run test:browser
+
+[test-info] ===TEST_MODE="record"===
+[test-proxy] Proxy tool seems to be active at http://localhost:5000
+
+[preparing-proxy-tool] Proxy tool seems to be active, not attempting to start the test proxy at http://localhost:5000 & https://localhost:5001.
+
+[browser-tests] [32m01 11 2022 15:58:52.615:INFO [preprocessor.env]: [39mPublishing variables:  [
+[browser-tests]   'TEST_MODE',
+[browser-tests]   'ENDPOINT',
+[browser-tests]   'LANGUAGE_API_KEY',
+[browser-tests]   'LANGUAGE_API_KEY_ALT',
+[browser-tests]   'AZURE_CLIENT_ID',
+[browser-tests]   'AZURE_CLIENT_SECRET',
+[browser-tests]   'AZURE_TENANT_ID',
+[browser-tests]   'AZURE_LANGUAGE_ENDPOINT',
+[browser-tests]   'AZURE_LANGUAGE_KEY',
+[browser-tests]   'CUSTOM_ENTITIES_PROJECT_NAME',
+[browser-tests]   'CUSTOM_ENTITIES_DEPLOYMENT_NAME',
+[browser-tests]   'SINGLE_LABEL_CLASSIFY_PROJECT_NAME',
+[browser-tests]   'SINGLE_LABEL_CLASSIFY_DEPLOYMENT_NAME',
+[browser-tests]   'MULTI_LABEL_CLASSIFY_PROJECT_NAME',
+[browser-tests]   'MULTI_LABEL_CLASSIFY_DEPLOYMENT_NAME',
+[browser-tests]   'RECORDINGS_RELATIVE_PATH'
+[browser-tests] ]
+[browser-tests] 
+[browser-tests] START:
+[browser-tests] [32m01 11 2022 15:58:52.840:INFO [karma-server]: [39mKarma v6.4.1 server started at http://localhost:9876/
+[browser-tests] [32m01 11 2022 15:58:52.841:INFO [launcher]: [39mLaunching browsers ChromeHeadlessNoSandbox with concurrency 1
+[browser-tests] [32m01 11 2022 15:58:52.856:INFO [launcher]: [39mStarting browser ChromeHeadless
+[browser-tests] [32m01 11 2022 15:58:53.495:INFO [Chrome Headless 103.0.5058.0 (Linux x86_64)]: [39mConnected on socket egsJPgsUe9Jfiwi9AAAB with id 40967061
+[browser-tests]   Models
+[browser-tests]     ✔ AnalyzeActionName
+[browser-tests]     ✔ AnalyzeBatchActionName
+[browser-tests]   [APIKey] TextAnalysisClient
+[browser-tests]     analyze
+[browser-tests]       #SentimentAnalysis
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service returns error for invalid language
+[browser-tests]         ✔ service has a bug when referencing assessments in doc #6 or greater
+[browser-tests]         ✔ service returns an error for an empty document
+[browser-tests]         ✔ client accepts TextDocumentInput[]
+[browser-tests]         ✔ client gets positive mined assessments
+[browser-tests]         ✔ client gets negative mined assessments
+[browser-tests]         ✔ client gets no mined assessments
+[browser-tests]       #LanguageDetection
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts no countryHint
+[browser-tests]         ✔ client accepts a countryHint
+[browser-tests]         ✔ client accepts "none" country hint with string[] input
+[browser-tests]         ✔ client accepts "none" country hint with DetectLanguageInput[] input
+[browser-tests]         ✔ service errors on invalid country hint
+[browser-tests]         ✔ client accepts mixed-country DetectLanguageInput[]
+[browser-tests]       #EntityRecognition
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ client throws exception for too many inputs
+[browser-tests]       #KeyPhraseExtraction
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]       #PiiEntityRecognition
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ client correctly reports recognition of PII-like pattern
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ accepts domain filter
+[browser-tests]         ✔ accepts pii categories
+[browser-tests]         ✔ output pii categories are accepted as input
+[browser-tests]       #EntityLinking
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ client throws exception for too many inputs
+[browser-tests]       #Dynamic Classification [single]
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ service errors on invalid number of categories
+[browser-tests]         ✔ service errors on invalid classification type
+[browser-tests]       #Dynamic Classification [multi]
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ service errors on invalid number of categories
+[browser-tests]         ✔ service errors on invalid classification type
+[browser-tests]       #String encoding
+[browser-tests]         #Default encoding (utf16CodeUnit)
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]         #UnicodeCodePoint
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]         #TextElementsV8
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]   [AAD] TextAnalysisClient
+[browser-tests]     analyze
+[browser-tests]       #SentimentAnalysis
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service returns error for invalid language
+[browser-tests]         ✔ service has a bug when referencing assessments in doc #6 or greater
+[browser-tests]         ✔ service returns an error for an empty document
+[browser-tests]         ✔ client accepts TextDocumentInput[]
+[browser-tests]         ✔ client gets positive mined assessments
+[browser-tests]         ✔ client gets negative mined assessments
+[browser-tests]         ✔ client gets no mined assessments
+[browser-tests]       #LanguageDetection
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts no countryHint
+[browser-tests]         ✔ client accepts a countryHint
+[browser-tests]         ✔ client accepts "none" country hint with string[] input
+[browser-tests]         ✔ client accepts "none" country hint with DetectLanguageInput[] input
+[browser-tests]         ✔ service errors on invalid country hint
+[browser-tests]         ✔ client accepts mixed-country DetectLanguageInput[]
+[browser-tests]       #EntityRecognition
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ client throws exception for too many inputs
+[browser-tests]       #KeyPhraseExtraction
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]       #PiiEntityRecognition
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ client correctly reports recognition of PII-like pattern
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ accepts domain filter
+[browser-tests]         ✔ accepts pii categories
+[browser-tests]         ✔ output pii categories are accepted as input
+[browser-tests]       #EntityLinking
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ client accepts string[] with a language specified
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ client accepts mixed-language TextDocumentInput[]
+[browser-tests]         ✔ client throws exception for too many inputs
+[browser-tests]       #Dynamic Classification [single]
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ service errors on invalid number of categories
+[browser-tests]         ✔ service errors on invalid classification type
+[browser-tests]       #Dynamic Classification [multi]
+[browser-tests]         ✔ client throws on empty list
+[browser-tests]         ✔ client accepts string[] and language
+[browser-tests]         ✔ client accepts string[] with no language
+[browser-tests]         ✔ service errors on unsupported language
+[browser-tests]         ✔ service errors on invalid number of categories
+[browser-tests]         ✔ service errors on invalid classification type
+[browser-tests]       #String encoding
+[browser-tests]         #Default encoding (utf16CodeUnit)
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]         #UnicodeCodePoint
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]         #TextElementsV8
+[browser-tests]           ✔ emoji
+[browser-tests]           ✔ emoji with skin tone modifier
+[browser-tests]           ✔ family emoji
+[browser-tests]           ✔ family emoji with skin tone modifier
+[browser-tests]           ✔ diacritics nfc
+[browser-tests]           ✔ diacritics nfd
+[browser-tests]           ✔ korean nfc
+[browser-tests]           ✔ korean nfd
+[browser-tests]           ✔ zalgo
+[browser-tests]     analyzeBatch
+[browser-tests]       actions
+[browser-tests]         prebuilt
+[browser-tests]           ✔ entity recognition
+[browser-tests]           ✔ entity recognition with resolution
+[browser-tests]           ✔ key phrase extraction
+[browser-tests]           ✔ entity linking
+[browser-tests]           ✔ pii entity recognition
+[browser-tests]           ✔ pii entity recognition with filtered categories
+[browser-tests]           ✔ pii entity recognition with phi domain
+[browser-tests]           ✔ sentiment analysis with opinion mining
+[browser-tests]           ✔ healthcare
+[browser-tests]           ✔ healthcare with fhir
+[browser-tests]           ✔ healthcare with known documents type
+[browser-tests]           ✔ extractive summarization
+[browser-tests]           ✔ extractive summarization with maxSentenceCount
+[browser-tests]           ✔ extractive summarization with orderBy
+[browser-tests]           ✔ abstractive summarization
+[browser-tests]           ✔ abstractive summarization with maxSentenceCont
+[browser-tests]       general behavior
+[browser-tests]         ✔ unique multiple actions per type are allowed
+[browser-tests]         ✔ some documents with errors and multiple actions
+[browser-tests]         ✔ all documents with errors and multiple actions
+[browser-tests]         ✔ output order is same as the input's one with multiple actions
+[browser-tests]         ✔ out of order input IDs with multiple actions
+[browser-tests]         ✔ statistics
+[browser-tests]         ✔ whole batch language hint
+[browser-tests]         ✔ whole batch with no language hint
+[browser-tests]         ✔ whole batch input with a language hint
+[browser-tests]         ✔ invalid language hint
+[browser-tests]         ✔ paged results with custom page size
+[browser-tests]         ✔ operation metadata
+[browser-tests]         ✖ cancel after progress (skipped)
+[browser-tests]         ✔ rehydrated polling
+[browser-tests]         errors and warnings
+[browser-tests]           ✔ bad request empty string
+[browser-tests]           ✔ malformed action
+[browser-tests]           ✔ duplicate actions of the same type are disallowed
+[browser-tests]           ✔ too many documents
+[browser-tests]           ✔ payload too large
+[browser-tests]           ✔ big document causes a warning
+[browser-tests]         stringIndexType
+[browser-tests]           ✔ family emoji wit skin tone modifier
+[browser-tests]           ✔ family emoji wit skin tone modifier with Utf16CodeUnit
+[browser-tests]           ✔ family emoji wit skin tone modifier with UnicodeCodePoint
+[browser-tests]     analyzeBatch
+[browser-tests]       actions
+[browser-tests]         prebuilt
+[browser-tests]           ✔ entity recognition
+[browser-tests]           ✔ entity recognition with resolution
+[browser-tests]           ✔ key phrase extraction
+[browser-tests]           ✔ entity linking
+[browser-tests]           ✔ pii entity recognition
+[browser-tests]           ✔ pii entity recognition with filtered categories
+[browser-tests]           ✔ pii entity recognition with phi domain
+[browser-tests]           ✔ sentiment analysis with opinion mining
+[browser-tests]           ✔ healthcare
+[browser-tests]           ✔ healthcare with fhir
+[browser-tests]           ✔ healthcare with known documents type
+[browser-tests]           ✔ extractive summarization
+[browser-tests]           ✔ extractive summarization with maxSentenceCount
+[browser-tests]           ✔ extractive summarization with orderBy
+[browser-tests]           ✔ abstractive summarization
+[browser-tests]           ✔ abstractive summarization with maxSentenceCont
+[browser-tests]       general behavior
+[browser-tests]         ✔ unique multiple actions per type are allowed
+[browser-tests]         ✔ some documents with errors and multiple actions
+[browser-tests]         ✔ all documents with errors and multiple actions
+[browser-tests]         ✖ output order is same as the input's one with multiple actions
+[browser-tests]         ✔ out of order input IDs with multiple actions
+[browser-tests]         ✔ statistics
+[browser-tests]         ✔ whole batch language hint
+[browser-tests]         ✔ whole batch with no language hint
+[browser-tests]         ✔ whole batch input with a language hint
+[browser-tests]         ✔ invalid language hint
+[browser-tests]         ✔ paged results with custom page size
+[browser-tests]         ✔ operation metadata
+[browser-tests]         ✖ cancel after progress (skipped)
+[browser-tests]         ✔ rehydrated polling
+[browser-tests]         errors and warnings
+[browser-tests]           ✔ bad request empty string
+[browser-tests]           ✔ malformed action
+[browser-tests]           ✔ duplicate actions of the same type are disallowed
+[browser-tests]           ✔ too many documents
+[browser-tests]           ✔ payload too large
+[browser-tests]           ✔ big document causes a warning
+[browser-tests]         stringIndexType
+[browser-tests]           ✔ family emoji wit skin tone modifier
+[browser-tests]           ✔ family emoji wit skin tone modifier with Utf16CodeUnit
+[browser-tests]           ✔ family emoji wit skin tone modifier with UnicodeCodePoint
+[browser-tests]         custom
+[browser-tests]           ✔ entity recognition
+[browser-tests]           ✔ single label classification action
+[browser-tests]           ✔ multi label classification action
+[browser-tests]         custom
+[browser-tests]           ✔ entity recognition
+[browser-tests]           ✔ single label classification action
+[browser-tests]           ✔ multi label classification action
+[browser-tests]   [API Key] TextAnalysisClient
+[browser-tests]     Client options
+[browser-tests]       ✔ service version
+[browser-tests] 
+[browser-tests] Finished in 16 mins 50.052 secs / 16 mins 34.333 secs @ 16:15:43 GMT-0700 (Pacific Daylight Time)
+[browser-tests] 
+[browser-tests] SUMMARY:
+[browser-tests] ✔ 248 tests completed
+[browser-tests] ℹ 2 tests skipped
+[browser-tests] ✖ 1 test failed
+[browser-tests] 
+[browser-tests] FAILED TESTS:
+[browser-tests]         ✖ output order is same as the input's one with multiple actions
+[browser-tests]           Chrome Headless 103.0.5058.0 (Linux x86_64)
+[browser-tests]         Error: Timeout of 600000ms exceeded. For async tests and hooks, ensure "done()" is called; if returning a Promise, ensure it resolves.
+[browser-tests] 
+[browser-tests] karma start --single-run exited with code 1
+Trace: [Internal Error] 
+    at /home/dealmaha/textanalytics/common/tools/dev-tool/src/index.ts:10:11
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)
+[31mThe script failed with exit code 1[39m
