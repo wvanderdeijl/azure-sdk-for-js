@@ -46,7 +46,7 @@ parameters:
   default: '.*'
 - name: Tests
   type: string
-  default: '.*'
+  default: '^.*$'
 - name: Arguments
   type: string
   default: '.*'
@@ -62,22 +62,32 @@ parameters:
 - name: EnvVars
   type: object
   default: {}
+- name: UsePlatformContainer
+  type: boolean
+  default: false
+- name: DependsOn
+  type: string
+  default: ''
+- name: Matrix
+  type: string
+- name: CloudConfig
+  type: object
+  default: {}
 
 jobs:
-- job: ${{ parameters.JobName }}
-  timeoutInMinutes: 360
+- job:
+  dependsOn: ${{ parameters.DependsOn }}
+  condition: ne(${{ parameters.Matrix }}, '{}')
   strategy:
-    matrix:
-      ${{ if contains(parameters.OperatingSystems, 'Linux') }}:
-        Linux:
-          Pool: ${{ parameters.LinuxPool }}
-          OsVmImage: ${{ parameters.LinuxVmImage }}
-          MatrixName: 'Linux'
-      ${{ if contains(parameters.OperatingSystems, 'Windows') }}:
-        Windows:
-          Pool: ${{ parameters.WindowsPool }}
-          OsVmImage: ${{ parameters.WindowsVmImage }}
-          MatrixName: 'Windows'
+    matrix: $[ ${{ parameters.Matrix }} ]
+  pool:
+    name: $(Pool)
+    vmImage: $(OSVmImage)
+
+  ${{ if eq(parameters.UsePlatformContainer, 'true') }}:
+      container: $[ variables['Container'] ]
+
+  timeoutInMinutes: 360
   variables:
   - ${{ parameters.Variables }}
   - name: Profile
@@ -85,9 +95,6 @@ jobs:
       value: '--profile'
     ${{ else }}:
       value: ''
-  pool:
-    name: $(Pool)
-    vmImage: $(OSVmImage)
   steps:
 
   - template: /eng/common/pipelines/templates/steps/sparse-checkout.yml
@@ -125,7 +132,7 @@ jobs:
       --repo-root $(System.DefaultWorkingDirectory)
       --tests-file $(System.DefaultWorkingDirectory)/sdk/${{ parameters.ServiceDirectory }}/perf-tests.yml
       --package-versions "${{ parameters.PackageVersions }}"
-      --tests "${{ parameters.Tests }}"
+      --tests "$(Tests)"
       --arguments "${{ parameters.Arguments }}"
       --iterations ${{ parameters.Iterations }}
       $(Profile)
@@ -163,7 +170,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       targetPath: azure-sdk-tools/tools/perf-automation/Azure.Sdk.Tools.PerfAutomation/results
-      artifactName: results-${{ parameters.Language }}-$(MatrixName)
+      artifactName: results-${{ parameters.Language }}-$(System.JobName)
     condition: always()
 
   - task: PublishPipelineArtifact@1

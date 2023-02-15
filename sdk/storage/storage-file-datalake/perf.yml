@@ -12,13 +12,17 @@ parameters:
   type: string
   default: '12|source'
 - name: Tests
-  displayName: Tests (regex of tests to run)
+  displayName: Tests (csv of tests to run)
   type: string
-  default: '^(download|upload)$'
+  default: 'download, upload'
+- name: TestBuckets
+  displayName: Max number of jobs per OS. 0 == no max
+  type: number
+  default: 0
 - name: Arguments
   displayName: Arguments (regex of arguments to run)
   type: string
-  default: '(10240)|(10485760)|(1073741824)' 
+  default: '(10240)|(10485760)|(1073741824)'
 - name: Iterations
   displayName: Iterations (times to run each test)
   type: number
@@ -36,6 +40,7 @@ extends:
     LanguageVersion: ${{ parameters.LanguageVersion }}
     PackageVersions: ${{ parameters.PackageVersions }}
     Tests: ${{ parameters.Tests }}
+    TestBuckets: ${{ parameters.TestBuckets }}
     Arguments: ${{ parameters.Arguments }}
     Iterations: ${{ parameters.Iterations }}
     AdditionalArguments: ${{ parameters.AdditionalArguments }}
