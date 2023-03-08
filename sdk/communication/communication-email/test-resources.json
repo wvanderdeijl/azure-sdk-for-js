@@ -1,0 +1,62 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "baseName": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().name]",
+      "metadata": {
+        "description": "The base resource name."
+      }
+    },
+    "endpointPrefix": {
+      "defaultValue": "communication",
+      "type": "string"
+    }
+  },
+  "variables": {
+    "uniqueSubDomainName": "[format('{0}-{1}', parameters('baseName'), parameters('endpointPrefix'))]",
+    "emailServiceName": "[format('{0}-{1}', variables('uniqueSubDomainName'), 'email-service')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Communication/EmailServices",
+      "apiVersion": "2021-10-01-preview",
+      "name": "[variables('emailServiceName')]",
+      "location": "global",
+      "properties": {
+        "dataLocation": "UnitedStates"
+      },
+      "resources": [
+        {
+          "type": "Domains",
+          "apiVersion": "2021-10-01-preview",
+          "name": "AzureManagedDomain",
+          "location": "global",
+          "dependsOn": ["[variables('emailServiceName')]"],
+          "properties": {
+            "domainManagement": "AzureManaged"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "COMMUNICATION_CONNECTION_STRING_EMAIL": {
+      "type": "string",
+      "value": "[listKeys(resourceId('Microsoft.Communication/CommunicationServices',variables('uniqueSubDomainName')), '2021-10-01-preview').primaryConnectionString]"
+    },
+    "SENDER_ADDRESS": {
+      "type": "string",
+      "value": "[format('{0}@{1}', 'DoNotReply', reference(resourceId('Microsoft.Communication/EmailServices/Domains', variables('emailServiceName'), 'AzureManagedDomain')).mailFromSenderDomain)]"
+    },
+    "RECIPIENT_ADDRESS": {
+      "type": "string",
+      "value": "acseaastesting@gmail.com"
+    },
+    "SECOND_RECIPIENT_ADDRESS": {
+      "type": "string",
+      "value": "acseaastesting@gmail.com"
+    }
+  }
+}
