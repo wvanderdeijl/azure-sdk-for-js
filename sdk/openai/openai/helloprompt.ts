@@ -7,8 +7,8 @@
 import createClient from "./src/azureOpenAIApi";
 import { AzureKeyCredential } from "@azure/core-auth";
 
-const endpoint = "https://openai-gharper-test.openai.azure.com/";
-const key = "cad9de954a8b401082ae04eebb11671f";
+const endpoint = "https://<my_resource_name>.openai.azure.com/";
+const key = "<my_key_here>";
 const keyCredential = new AzureKeyCredential(key);
 const client = createClient(endpoint, keyCredential);
 
