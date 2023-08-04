@@ -17,15 +17,11 @@ export async function* getOaiSSEs<TEvent>(
   response: StreamableMethod<unknown>,
   toEvent: (obj: Record<string, any>) => TEvent
 ): AsyncIterable<TEvent> {
-  const stream = await getSSEs(response);
-  let isDone = false;
-  for await (const event of stream) {
-    if (isDone) {
-      // handle a case where the service sends excess stream
-      // data after the [DONE] event
-      continue;
-    } else if (event.data === "[DONE]") {
-      isDone = true;
+  const { destroy, iter } = await getSSEs(response);
+  for await (const event of iter) {
+    if (event.data === "[DONE]") {
+      destroy();
+      return;
     } else {
       yield toEvent(
         wrapError(

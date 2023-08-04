@@ -29,3 +29,5 @@ export function wrapError<T>(f: () => T, message: string): T {
   }
   return result;
 }
+
+export interface StreamIterator<T> { iter: AsyncIterable<T>, destroy: () => void }

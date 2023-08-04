@@ -1,8 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { Client } from "@azure-rest/core-client";
-import { getSSEs } from "../../src/api/getSSEs.js";
+import { Client, StreamableMethod } from "@azure-rest/core-client";
+import { getSSEs as getSSEsAndDestroy } from "../../src/api/getSSEs.js";
 import {
   assertAsyncIterable,
   createChunkedEvent,
@@ -18,6 +18,12 @@ import {
   genStrs,
 } from "./util.js";
 import { assert, matrix } from "@azure/test-utils";
+import { EventMessage } from "../../src/api/sse.js";
+
+async function getSSEs(response: StreamableMethod<unknown>): Promise<AsyncIterable<EventMessage>> {
+  const { iter } = await getSSEsAndDestroy(response);
+  return iter;
+}
 
 export function buildSseTests<StreamT>(
   rtName: string,
