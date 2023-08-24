@@ -23,6 +23,7 @@ import {
   BlobSASPermissions,
   BlobServiceClient,
   StorageBlobAudience,
+  AnonymousCredential,
 } from "../../src";
 import { TokenCredential } from "@azure/core-auth";
 import { assertClientUsesTokenCredential } from "../utils/assert";
@@ -68,6 +69,24 @@ describe("PageBlobClient Node.js only", () => {
   afterEach(async function () {
     await containerClient.delete();
     await recorder.stop();
+  });
+
+  it("getPageRangesDiffForManagedDisks", async function (this: Context): Promise<void> {
+    const mdPageBlobClient = new PageBlobClient("https://md-rl3lgf2vls3c.z34.blob.storage.azure.net/mbcrvgxtrdwk/abcd?snapshot=2023-09-04T07%3A02%3A35.5665310Z&sv=2018-11-09&sr=bs&si=67a876bae8704c959c578046ff3f4942bb0c59de96bc490099ad205b2cee0391&sig=OAUI6objoBB26agXfhqQeXCOp5HzrHFpY%2FNW3OdyHo8%3D", new AnonymousCredential());
+    const rangesDiff = await mdPageBlobClient.getPageRangesDiffForManagedDisks(
+      0,
+      1024 * 1024 * 1024,
+      "https://md-rl3lgf2vls3c.z34.blob.storage.azure.net/mbcrvgxtrdwk/abcd?snapshot=2023-09-04T06%3A22%3A07.0343924Z&sv=2018-11-09&sr=bs&si=daa5a1ed31204d82915f376533091eb13bb00480533844f88aa6d59cae94ffec&sig=pndui51B3bA1UfY3Rf3LmfQX44XwU5g08Z0x148VtS8%3D"
+    );
+
+    assert.equal(rangesDiff.pageRange?.length, 3);
+
+    assert.equal(rangesDiff.pageRange![0].offset, 1196032);
+    assert.equal(rangesDiff.pageRange![0].count, 4095);
+
+    assert.equal(rangesDiff.clearRange?.length, 8);
+    assert.equal(rangesDiff.clearRange![0].offset, 11534336);
+    assert.equal(rangesDiff.clearRange![0].count, 31981567);
   });
 
   // needs special setup to record

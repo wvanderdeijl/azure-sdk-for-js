@@ -1446,8 +1446,8 @@ describe("BlobClient - Verify Name Properties", () => {
 });
 
 describe("BlobClient - Object Replication", () => {
-  const srcContainerName = "orssrc";
-  const destContainerName = "orsdst";
+  const srcContainerName = "orscontainer";
+  const destContainerName = "orscontainer";
   const blobName = "orsBlob";
 
   let srcBlobServiceClient: BlobServiceClient;
@@ -1460,19 +1460,19 @@ describe("BlobClient - Object Replication", () => {
 
   const expectedObjectReplicateSourceProperties = [
     {
-      policyId: "003ca702-58ab-4405-8f52-cb92316babde",
+      policyId: "6b810d17-de03-4f62-b237-5f44ad587055",
       rules: [
         {
-          ruleId: "9a53f315-d56b-44f6-a3e8-1d62c1b7089b",
+          ruleId: "55beb2e7-f603-4092-8682-0b61834f0053",
           replicationStatus: "complete",
         },
       ],
     },
     {
-      policyId: "d685bc41-c8ab-4ea5-889c-2503f02954d8",
+      policyId: "bb2d6ebb-faac-41ec-8b70-677a4d3bf8d4",
       rules: [
         {
-          ruleId: "671e9447-be18-4632-9eea-a1a29cdae759",
+          ruleId: "2bcde799-ff11-4adc-b051-f0bde28126e3",
           replicationStatus: "complete",
         },
       ],
@@ -1513,7 +1513,7 @@ describe("BlobClient - Object Replication", () => {
     assert.equal(getRes.objectReplicationSourceProperties, undefined);
     assert.equal(
       getRes.objectReplicationDestinationPolicyId,
-      "d685bc41-c8ab-4ea5-889c-2503f02954d8"
+      "bb2d6ebb-faac-41ec-8b70-677a4d3bf8d4"
     );
   });
 
@@ -1545,7 +1545,7 @@ describe("BlobClient - Object Replication", () => {
     const destRes = await destBlobClient.download();
     assert.equal(
       destRes.objectReplicationDestinationPolicyId,
-      "d685bc41-c8ab-4ea5-889c-2503f02954d8"
+      "bb2d6ebb-faac-41ec-8b70-677a4d3bf8d4"
     );
     assert.equal(destRes.objectReplicationSourceProperties, undefined);
   });
@@ -1573,7 +1573,7 @@ describe("BlobClient - Object Replication", () => {
     const destRes = await destBlobClient.downloadToFile(dstDownloadedFilePath);
     assert.equal(
       destRes.objectReplicationDestinationPolicyId,
-      "d685bc41-c8ab-4ea5-889c-2503f02954d8"
+      "bb2d6ebb-faac-41ec-8b70-677a4d3bf8d4"
     );
     assert.equal(destRes.objectReplicationSourceProperties, undefined);
     fs.unlinkSync(dstDownloadedFilePath);

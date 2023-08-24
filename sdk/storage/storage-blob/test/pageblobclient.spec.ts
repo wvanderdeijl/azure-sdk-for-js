@@ -6,7 +6,6 @@ import {
   bodyToString,
   configureBlobStorageClient,
   getBSU,
-  getGenericBSU,
   getSASConnectionStringFromEnvironment,
   getUniqueName,
   recorderEnvSetup,
@@ -202,49 +201,6 @@ describe("PageBlobClient", () => {
     assert.equal(rangesDiff.pageRange![0].count, 511);
     assert.equal(rangesDiff.clearRange![0].offset, 512);
     assert.equal(rangesDiff.clearRange![0].count, 511);
-  });
-
-  it("getPageRangesDiffForManagedDisks", async function (this: Context): Promise<void> {
-    let mdBlobServiceClient: BlobServiceClient;
-    try {
-      mdBlobServiceClient = getGenericBSU(recorder, "MD_", "");
-    } catch (err: any) {
-      // managed disk account is not properly configured
-      return this.skip();
-    }
-    const mdContainerName = recorder.variable("md-container", getUniqueName("md-container"));
-    const mdContainerClient = mdBlobServiceClient.getContainerClient(mdContainerName);
-    await mdContainerClient.create();
-    const mdBlobName = recorder.variable("md-blob", getUniqueName("md-blob"));
-    const mdBlobClient = mdContainerClient.getBlobClient(mdBlobName);
-    const mdPageBlobClient = mdBlobClient.getPageBlobClient();
-
-    await mdPageBlobClient.create(1024);
-
-    const result = await mdBlobClient.download(0);
-    assert.deepStrictEqual(await bodyToString(result, 1024), "\u0000".repeat(1024));
-
-    await mdPageBlobClient.uploadPages("b".repeat(1024), 0, 1024);
-
-    const snapshotResult = await mdPageBlobClient.createSnapshot();
-    assert.ok(snapshotResult.snapshot);
-
-    await mdPageBlobClient.uploadPages("a".repeat(512), 0, 512);
-    await mdPageBlobClient.clearPages(512, 512);
-
-    const snapshotUrl = mdPageBlobClient.withSnapshot(snapshotResult.snapshot!).url;
-    const rangesDiff = await mdPageBlobClient.getPageRangesDiffForManagedDisks(
-      0,
-      1024,
-      snapshotUrl
-    );
-
-    assert.equal(rangesDiff.pageRange![0].offset, 0);
-    assert.equal(rangesDiff.pageRange![0].count, 511);
-    assert.equal(rangesDiff.clearRange![0].offset, 512);
-    assert.equal(rangesDiff.clearRange![0].count, 511);
-
-    await mdContainerClient.delete();
   });
 
   it("listPageRanges", async function () {
