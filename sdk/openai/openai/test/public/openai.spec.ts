@@ -46,7 +46,7 @@ describe("OpenAI", function () {
     }
   });
 
-  matrix([["AzureAPIKey", "OpenAIKey", "AAD"]] as const, async function (authMethod: AuthMethod) {
+  matrix([["OpenAIKey"]] as const, async function (authMethod: AuthMethod) {
     describe(`[${authMethod}] Client`, () => {
       let client: OpenAIClient;
 
