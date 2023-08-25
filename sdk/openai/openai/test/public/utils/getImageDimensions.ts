@@ -12,7 +12,7 @@ export async function getImageDimensions(response: PipelineResponse): Promise<Di
   async function getBufferFromResponse(): Promise<Buffer> {
     const stream = response.readableStreamBody;
     if (!stream) {
-      throw new Error("Stream body is not found");
+      throw new Error(`Stream body is not found in response ${response}`);
     }
     return new Promise<Buffer>((resolve, reject) => {
       const buffer: Buffer[] = [];
