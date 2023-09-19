@@ -5229,8 +5229,9 @@ packages:
       signal-exit: 3.0.7
     dev: false
 
-  /form-data-encoder@1.7.2:
-    resolution: {integrity: sha512-qfqtYan3rxrnCk1VYaA4H+Ms9xdpPqvLZa6xmMgFvhO32x7/3J/ExcTd6qpxM0vH2GdMI+poehyBZvqfMTto8A==}
+  /form-data-encoder@3.0.0:
+    resolution: {integrity: sha512-qPautpoQvO/kTxjKawxHlBQ5KUHdJy8c3z5ddUaF589k5nJDY+AjnvsxtzLXlZmkNNu64bA7YOuvwWb32TMbJw==}
+    engines: {node: '>= 16.5'}
     dev: false
 
   /form-data@3.0.1:
@@ -5251,9 +5252,9 @@ packages:
       mime-types: 2.1.35
     dev: false
 
-  /formdata-node@4.4.1:
-    resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
-    engines: {node: '>= 12.20'}
+  /formdata-node@5.0.1:
+    resolution: {integrity: sha512-8xnIjMYGKPj+rY2BTbAmpqVpi8der/2FT4d9f7J32FlsCpO5EzZPq3C/N56zdv8KweHzVF6TGijsS1JT6r1H2g==}
+    engines: {node: '>= 14.17'}
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 4.0.0-beta.3
@@ -8158,13 +8159,13 @@ packages:
       glob: 7.2.3
     dev: false
 
-  /rollup-plugin-polyfill-node@0.12.0(rollup@2.79.1):
+  /rollup-plugin-polyfill-node@0.12.0(rollup@3.28.1):
     resolution: {integrity: sha512-PWEVfDxLEKt8JX1nZ0NkUAgXpkZMTb85rO/Ru9AQ69wYW8VUCfDgP4CGRXXWYni5wDF0vIeR1UoF3Jmw/Lt3Ug==}
     peerDependencies:
       rollup: ^1.20.0 || ^2.0.0 || ^3.0.0
     dependencies:
-      '@rollup/plugin-inject': 5.0.3(rollup@2.79.1)
-      rollup: 2.79.1
+      '@rollup/plugin-inject': 5.0.3(rollup@3.28.1)
+      rollup: 3.28.1
     dev: false
 
   /rollup-plugin-shim@1.0.0:
@@ -8187,7 +8188,7 @@ packages:
       source-map-resolve: 0.6.0
     dev: false
 
-  /rollup-plugin-visualizer@5.9.2(rollup@2.79.1):
+  /rollup-plugin-visualizer@5.9.2(rollup@3.28.1):
     resolution: {integrity: sha512-waHktD5mlWrYFrhOLbti4YgQCn1uR24nYsNuXxg7LkPH8KdTXVWR9DNY1WU0QqokyMixVXJS4J04HNrVTMP01A==}
     engines: {node: '>=14'}
     hasBin: true
@@ -8199,7 +8200,7 @@ packages:
     dependencies:
       open: 8.4.2
       picomatch: 2.3.1
-      rollup: 2.79.1
+      rollup: 3.28.1
       source-map: 0.7.4
       yargs: 17.7.2
     dev: false
@@ -18516,17 +18517,17 @@ packages:
     dev: false
 
   file:projects/dev-tool.tgz:
-    resolution: {integrity: sha512-j9fmM/MAWFeDiCNgOl8fTqyQxvWQg/DNPlm7UWIZtnJRNU3F3V2qxC91FhNGhEw3zuCshfvcWFo+Rdqo7at6rw==, tarball: file:projects/dev-tool.tgz}
+    resolution: {integrity: sha512-nDroJGaUhk0hJADms4iNLXU/95FWrj90aGc5tm48jn2xRkGpBYozX9UG0oLa57usKcxYGOSCByoiJ1IUcAwk9Q==, tarball: file:projects/dev-tool.tgz}
     name: '@rush-temp/dev-tool'
     version: 0.0.0
     dependencies:
       '@_ts/max': /typescript@5.2.2
       '@_ts/min': /typescript@4.2.4
       '@microsoft/api-extractor': 7.36.4(@types/node@14.18.56)
-      '@rollup/plugin-commonjs': 24.1.0(rollup@2.79.1)
-      '@rollup/plugin-json': 6.0.0(rollup@2.79.1)
-      '@rollup/plugin-multi-entry': 6.0.0(rollup@2.79.1)
-      '@rollup/plugin-node-resolve': 13.3.0(rollup@2.79.1)
+      '@rollup/plugin-commonjs': 25.0.4(rollup@3.28.1)
+      '@rollup/plugin-json': 6.0.0(rollup@3.28.1)
+      '@rollup/plugin-multi-entry': 6.0.0(rollup@3.28.1)
+      '@rollup/plugin-node-resolve': 15.2.1(rollup@3.28.1)
       '@types/chai': 4.3.6
       '@types/chai-as-promised': 7.1.5
       '@types/decompress': 4.2.4
@@ -18557,10 +18558,10 @@ packages:
       nyc: 15.1.0
       prettier: 2.8.8
       rimraf: 3.0.2
-      rollup: 2.79.1
-      rollup-plugin-polyfill-node: 0.12.0(rollup@2.79.1)
+      rollup: 3.28.1
+      rollup-plugin-polyfill-node: 0.12.0(rollup@3.28.1)
       rollup-plugin-sourcemaps: 0.6.3(@types/node@14.18.56)(rollup@2.79.1)
-      rollup-plugin-visualizer: 5.9.2(rollup@2.79.1)
+      rollup-plugin-visualizer: 5.9.2(rollup@3.28.1)
       semver: 7.5.4
       strip-json-comments: 5.0.1
       ts-morph: 19.0.0
@@ -20139,7 +20140,7 @@ packages:
     dev: false
 
   file:projects/openai.tgz:
-    resolution: {integrity: sha512-WRV1j/1aVnIgMm/N3idnFRuT3yBlsIHTD89SNhEkeYwD5LWtt4+HJCbflVkrOBkdN/zDUARQ8BEpOyHGrUIYAg==, tarball: file:projects/openai.tgz}
+    resolution: {integrity: sha512-l5LbnaWdqquhRfqmd7eN+w+pE3/Paoc1lQKC5ZYvPqEOkIpcT+Ht6EGHYMtK2lDrRrNvMQga/K4iWalDHJDgZw==, tarball: file:projects/openai.tgz}
     name: '@rush-temp/openai'
     version: 0.0.0
     dependencies:
@@ -20150,8 +20151,8 @@ packages:
       dotenv: 16.3.1
       eslint: 8.48.0
       esm: 3.2.25
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
+      form-data-encoder: 3.0.0
+      formdata-node: 5.0.1
       karma: 6.4.2(debug@4.3.4)
       karma-chrome-launcher: 3.2.0
       karma-coverage: 2.2.1

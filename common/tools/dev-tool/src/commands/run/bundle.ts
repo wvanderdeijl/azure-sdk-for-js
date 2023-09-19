@@ -78,6 +78,7 @@ export default leafCommand(commandInfo, async (options) => {
         file: cjsOutput,
         format: "cjs",
         sourcemap: true,
+        dynamicImportInCjs: true,
         exports: "named",
       });
     } catch (error: any) {
