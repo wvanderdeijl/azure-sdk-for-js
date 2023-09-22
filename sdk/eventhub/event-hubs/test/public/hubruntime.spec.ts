@@ -9,8 +9,7 @@ import {
   MessagingError,
 } from "../../src";
 import { assert } from "@azure/test-utils";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";

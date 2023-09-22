@@ -7,7 +7,7 @@ import { PipelineRequest } from "@azure/core-rest-pipeline";
 import { SDK_VERSION } from "../../src/utils/constants";
 import { TokenCredential } from "@azure/identity";
 import { TollFreeVerificationClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { configurationHttpClient } from "../public/utils/mockHttpClients";
 import { createMockToken } from "../public/utils/recordedClient";
 import { isNode } from "@azure/test-utils";

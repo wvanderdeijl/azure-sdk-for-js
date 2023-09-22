@@ -5,7 +5,7 @@ import * as path from "path";
 import { IdentityTestContext, prepareMSALResponses } from "../../httpRequests";
 import { IdentityTestContextInterface, createResponse } from "../../httpRequestsCommon";
 import { OnBehalfOfCredential } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isNode } from "@azure/core-util";
 
 describe("OnBehalfOfCredential", function () {

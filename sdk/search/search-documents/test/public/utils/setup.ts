@@ -11,7 +11,7 @@ import {
 } from "../../../src";
 import { Hotel } from "./interfaces";
 import { delay } from "../../../src/serviceUtils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isLiveMode, isPlaybackMode } from "@azure-tools/test-recorder";
 import { OpenAIClient } from "@azure/openai";
 

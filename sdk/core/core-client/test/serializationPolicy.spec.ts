@@ -4,7 +4,7 @@
 import { MapperTypeNames, createSerializer } from "../src";
 import { serializeHeaders, serializeRequestBody } from "../src/serializationPolicy";
 import { Mappers } from "./testMappers1";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createPipelineRequest } from "@azure/core-rest-pipeline";
 import { stringifyXML } from "@azure/core-xml";
 

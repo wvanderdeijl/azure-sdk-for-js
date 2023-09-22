@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DataLakeAnalyticsAccountManagementClient } from "../src/dataLakeAnalyticsAccountManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,10 +44,14 @@ describe("DatalakeAnalytics test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new DataLakeAnalyticsAccountManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new DataLakeAnalyticsAccountManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus2";
     resourceGroup = "myjstest";
     accountName = "myaccountxxx";

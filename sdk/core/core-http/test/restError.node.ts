@@ -5,7 +5,7 @@ import { HttpHeaders } from "../src";
 import { HttpOperationResponse } from "../src/httpOperationResponse";
 import { RestError } from "../src/restError";
 import { WebResource } from "../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { inspect } from "util";
 
 describe("RestError", function () {

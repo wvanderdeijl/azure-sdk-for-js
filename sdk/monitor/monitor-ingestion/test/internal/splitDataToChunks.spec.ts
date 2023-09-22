@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { splitDataToChunks } from "../../src/utils/splitDataToChunksHelper";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("LogsIngestionClient unit tests", function () {
   it("creates one chunk for single log record of 1MB size", () => {

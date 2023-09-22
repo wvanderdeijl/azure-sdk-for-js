@@ -9,7 +9,7 @@ import {
   recorderEnvSetup,
   uriSanitizers,
 } from "./utils/index";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { appendToURLPath, EscapePath } from "../src/utils/utils.common";
 import { Recorder } from "@azure-tools/test-recorder";
 import { ContainerClient } from "../src";

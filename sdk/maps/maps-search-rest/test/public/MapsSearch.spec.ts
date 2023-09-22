@@ -5,7 +5,7 @@ import { Context } from "mocha";
 import { env, isPlaybackMode, Recorder } from "@azure-tools/test-recorder";
 import { isNode } from "@azure/test-utils";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient, createRecorder } from "./utils/recordedClient";
 import { AzureKeyCredential } from "@azure/core-auth";
 import MapsSearch, {

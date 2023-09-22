@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiExclude from "chai-exclude";
 import { testPeekMsgsLength, addServiceBusClientForLiveTesting } from "../public/utils/testutils2";
 import { AmqpAnnotatedMessage } from "@azure/core-amqp";
@@ -12,7 +11,7 @@ import { TestClientType } from "./utils/testUtils";
 const should = chai.should();
 chai.use(chaiAsPromised);
 chai.use(chaiExclude);
-const assert = chai.assert;
+const assert = assert;
 
 [
   // when we encode messages the partition+session queues are basically the "hardest" one

@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { createDefaultPipeline } from "../src/clientHelpers";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { bearerTokenAuthenticationPolicyName } from "@azure/core-rest-pipeline";
 import { keyCredentialAuthenticationPolicyName } from "../src/keyCredentialAuthenticationPolicy";
 import { TokenCredential } from "@azure/core-auth";

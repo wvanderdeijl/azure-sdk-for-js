@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createFetchHttpClient } from "../../src/fetchHttpClient";
 import { createPipelineRequest } from "../../src/pipelineRequest";
 import { png } from "./mocks/encodedPng";

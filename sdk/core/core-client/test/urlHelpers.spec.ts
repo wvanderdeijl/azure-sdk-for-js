@@ -8,7 +8,7 @@ import {
   createSerializer,
 } from "../src";
 import { appendQueryParams, getRequestUrl } from "../src/urlHelpers";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("getRequestUrl", function () {
   const urlParameter: OperationURLParameter = {

@@ -3,7 +3,7 @@
 
 import { AuthenticationError } from "../src";
 import { DefaultAuthorityHost } from "../src/constants";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 /**
  * Waits for the given promise to resolve, then returns the resulted error.

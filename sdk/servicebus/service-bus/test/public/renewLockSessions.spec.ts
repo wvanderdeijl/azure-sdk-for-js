@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 const should = chai.should();
-import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import { ServiceBusMessage, delay, ProcessErrorArgs, isServiceBusError } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
@@ -59,7 +58,7 @@ describe("Session Lock Renewal", () => {
     // const peekedMsgs = await receiver.peekMessages();
     // const receiverEntityType = receiver.entityType;
     // if (peekedMsgs.length) {
-    //   chai.assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
+    //   assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
     // }
   }
 
@@ -274,7 +273,7 @@ describe("Session Lock Renewal", () => {
     await receiver.close();
 
     if (uncaughtErrorFromHandlers) {
-      chai.assert.fail(uncaughtErrorFromHandlers.message);
+      assert.fail(uncaughtErrorFromHandlers.message);
     }
 
     should.equal(numOfMessagesReceived, 1, "Unexpected number of messages");
@@ -361,7 +360,7 @@ describe("Session Lock Renewal", () => {
     await receiver.close();
 
     if (uncaughtErrorFromHandlers) {
-      chai.assert.fail(uncaughtErrorFromHandlers.message);
+      assert.fail(uncaughtErrorFromHandlers.message);
     }
   }
 

@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 const should = chai.should();
-const assert = chai.assert;
-import chaiAsPromised from "chai-as-promised";
+const assert = assert;
 chai.use(chaiAsPromised);
 import { delay } from "rhea-promise";
 import { checkWithTimeout, TestMessage } from "../public/utils/testUtils";
@@ -308,7 +307,7 @@ describe("Message Lock Renewal", () => {
     await receiver.close();
 
     if (uncaughtErrorFromHandlers) {
-      chai.assert.fail(uncaughtErrorFromHandlers.message);
+      assert.fail(uncaughtErrorFromHandlers.message);
     }
 
     should.equal(numOfMessagesReceived, 1, "Unexpected number of messages");

@@ -5,7 +5,7 @@ import { Recorder, env } from "@azure-tools/test-recorder";
 import { createRecorder } from "./utils/recordedClient";
 import { Context } from "mocha";
 import createPersonalizerClient, { PersonalizerClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Event Tests", () => {
   let recorder: Recorder;

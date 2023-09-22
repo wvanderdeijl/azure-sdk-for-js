@@ -3,8 +3,7 @@
 
 import * as sinon from "sinon";
 import { AbortController, AbortSignalLike } from "@azure/abort-controller";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { cancelablePromiseRace, createAbortablePromise } from "../../src";
 
 chai.use(chaiAsPromised);

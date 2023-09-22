@@ -11,7 +11,7 @@ import { GetTokenOptions } from "@azure/core-auth";
 import { MsalNode } from "../../../src/msal/nodeFlows/msalNodeCommon";
 import { PublicClientApplication } from "@azure/msal-node";
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("DeviceCodeCredential (internal)", function () {
   let cleanup: MsalTestCleanup;

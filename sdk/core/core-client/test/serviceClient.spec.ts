@@ -32,7 +32,7 @@ import {
   getOperationRequestInfo,
 } from "../src/operationHelpers";
 import { TokenCredential } from "@azure/core-auth";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { assertServiceClientResponse } from "./utils/serviceClient";
 import { deserializationPolicy } from "../src/deserializationPolicy";
 import { getCachedDefaultHttpClient } from "../src/httpClientCache";

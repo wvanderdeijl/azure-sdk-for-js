@@ -14,7 +14,7 @@ import {
   toSortedArray,
 } from "./utils/testHelpers";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AppConfigurationClient", () => {
   let client: AppConfigurationClient;

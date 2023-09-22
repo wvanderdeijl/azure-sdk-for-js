@@ -8,7 +8,7 @@ import {
   useInstrumenter,
 } from "../src/instrumenter";
 import { createTracingContext, knownContextKeys } from "../src/tracingContext";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTracingClient } from "../src/tracingClient";
 import sinon from "sinon";
 

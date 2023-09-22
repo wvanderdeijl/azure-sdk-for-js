@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-invalid-this */
 
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { ChatClient, ChatMessage, ChatThreadClient } from "../../src";
 import { createChatClient, createRecorder, createTestUser } from "./utils/recordedClient";
 import { CommunicationIdentifier, getIdentifierKind } from "@azure/communication-common";

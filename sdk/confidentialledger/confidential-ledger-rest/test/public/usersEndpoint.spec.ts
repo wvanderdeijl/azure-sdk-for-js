@@ -5,7 +5,7 @@ import { Recorder, env } from "@azure-tools/test-recorder";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Get user", function () {
   let recorder: Recorder;

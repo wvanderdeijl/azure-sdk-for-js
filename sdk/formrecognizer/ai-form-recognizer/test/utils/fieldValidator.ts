@@ -6,7 +6,7 @@
  * declarative "spec" format.
  */
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 import { AnalyzedDocument } from "../../src/lro/analysis";
 import {

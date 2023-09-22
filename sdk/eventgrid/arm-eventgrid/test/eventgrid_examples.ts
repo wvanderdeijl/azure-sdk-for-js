@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { EventGridManagementClient } from "../src/eventGridManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -46,10 +46,14 @@ describe("Eventgrid test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new EventGridManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new EventGridManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "east us2 euap";
     resourceGroupName = "myjstest";
     topicName = "mytopicxxx";
@@ -62,7 +66,12 @@ describe("Eventgrid test", () => {
   });
 
   it("topics create test", async function () {
-    const res = await client.topics.beginCreateOrUpdateAndWait(resourceGroupName, topicName, { location }, testPollingOptions);
+    const res = await client.topics.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      topicName,
+      { location },
+      testPollingOptions
+    );
     assert.equal(res.name, topicName);
   });
 
@@ -75,17 +84,27 @@ describe("Eventgrid test", () => {
   });
 
   it("domains create test", async function () {
-    const res = await client.domains.beginCreateOrUpdateAndWait(resourceGroupName, domainName, { location: location }, testPollingOptions);
+    const res = await client.domains.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      domainName,
+      { location: location },
+      testPollingOptions
+    );
     assert.equal(res.name, domainName);
   });
 
   it("domains update test", async function () {
-    const res = await client.domains.beginUpdateAndWait(resourceGroupName, domainName, {
-      tags: {
-        tag1: "value1",
-        tag2: "value2"
-      }
-    }, testPollingOptions);
+    const res = await client.domains.beginUpdateAndWait(
+      resourceGroupName,
+      domainName,
+      {
+        tags: {
+          tag1: "value1",
+          tag2: "value2",
+        },
+      },
+      testPollingOptions
+    );
     //It's void response
   });
 
@@ -99,26 +118,28 @@ describe("Eventgrid test", () => {
     for await (let item of client.domains.listByResourceGroup(resourceGroupName)) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 1)
+    assert.equal(resArray.length, 1);
   });
 
   it("domainTopicEventSubscriptions create test", async function () {
-    const res = await client.domainTopicEventSubscriptions.beginCreateOrUpdateAndWait(resourceGroupName,
+    const res = await client.domainTopicEventSubscriptions.beginCreateOrUpdateAndWait(
+      resourceGroupName,
       domainName,
       topicName,
       eventSubscriptionName,
       {
         destination: {
           endpointType: "WebHook",
-          endpointUrl: "https://testsite230718.azurewebsites.net/api/updates"
+          endpointUrl: "https://testsite230718.azurewebsites.net/api/updates",
         },
         filter: {
           isSubjectCaseSensitive: false,
           subjectBeginsWith: "ExamplePrefix",
-          subjectEndsWith: "ExampleSuffix"
-        }
+          subjectEndsWith: "ExampleSuffix",
+        },
       },
-      testPollingOptions);
+      testPollingOptions
+    );
     console.log(res);
     assert.equal(res.name, eventSubscriptionName);
   });
@@ -128,30 +149,33 @@ describe("Eventgrid test", () => {
     for await (let item of client.domainTopicEventSubscriptions.list(
       resourceGroupName,
       domainName,
-      topicName)) {
+      topicName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 1);
-    console.log('********************************')
+    console.log("********************************");
   });
 
   it("domainTopicEventSubscriptions update test", async function () {
-    const res = await client.domainTopicEventSubscriptions.beginUpdateAndWait(resourceGroupName,
+    const res = await client.domainTopicEventSubscriptions.beginUpdateAndWait(
+      resourceGroupName,
       domainName,
       topicName,
       eventSubscriptionName,
       {
         destination: {
           endpointType: "WebHook",
-          endpointUrl: "https://testsite230718.azurewebsites.net/api/updates"
+          endpointUrl: "https://testsite230718.azurewebsites.net/api/updates",
         },
         filter: {
           isSubjectCaseSensitive: false,
           subjectBeginsWith: "ExamplePrefix1",
-          subjectEndsWith: "ExampleSuffix1"
-        }
+          subjectEndsWith: "ExampleSuffix1",
+        },
       },
-      testPollingOptions);
+      testPollingOptions
+    );
     console.log(res);
     assert.equal(res.name, eventSubscriptionName);
   });
@@ -161,19 +185,26 @@ describe("Eventgrid test", () => {
       resourceGroupName,
       domainName,
       topicName,
-      eventSubscriptionName, testPollingOptions);
+      eventSubscriptionName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.domainTopicEventSubscriptions.list(
       resourceGroupName,
       domainName,
-      topicName)) {
+      topicName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
 
   it("topics delete test", async function () {
-    const res = await client.topics.beginDeleteAndWait(resourceGroupName, topicName, testPollingOptions);
+    const res = await client.topics.beginDeleteAndWait(
+      resourceGroupName,
+      topicName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.topics.listByResourceGroup(resourceGroupName)) {
       resArray.push(item);
@@ -182,7 +213,11 @@ describe("Eventgrid test", () => {
   });
 
   it("domains delete test", async function () {
-    const res = await client.domains.beginDeleteAndWait(resourceGroupName, domainName, testPollingOptions);
+    const res = await client.domains.beginDeleteAndWait(
+      resourceGroupName,
+      domainName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.domains.listByResourceGroup(resourceGroupName)) {
       resArray.push(item);

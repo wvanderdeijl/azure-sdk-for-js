@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { MessageSession } from "../../../src/session/messageSession";
 import {
   addCloseablesCleanup,
@@ -27,7 +26,7 @@ import { Constants } from "@azure/core-amqp";
 import { AbortError } from "@azure/abort-controller";
 
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 describe("Message session unit tests", () => {
   describe("receiveMessages", () => {

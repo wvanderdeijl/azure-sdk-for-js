@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { WebSiteManagementClient } from "../src/webSiteManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,10 +45,14 @@ describe("Web test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new WebSiteManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new WebSiteManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     appservicePlanName = "myappserviceplanxxx";
@@ -60,43 +64,53 @@ describe("Web test", () => {
   });
 
   it("appServicePlans create test", async function () {
-    const res = await client.appServicePlans.beginCreateOrUpdateAndWait(resourceGroup, appservicePlanName, {
-      location: "eastus",
-      sku: {
-        name: "S1",
-        tier: "STANDARD",
-        capacity: 1,
+    const res = await client.appServicePlans.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      appservicePlanName,
+      {
+        location: "eastus",
+        sku: {
+          name: "S1",
+          tier: "STANDARD",
+          capacity: 1,
+        },
+        perSiteScaling: false,
+        isXenon: false,
       },
-      perSiteScaling: false,
-      isXenon: false
-    }, testPollingOptions)
+      testPollingOptions
+    );
     assert.equal(res.name, appservicePlanName);
   });
 
   it("webApps create test", async function () {
-    const res = await client.webApps.beginCreateOrUpdateAndWait(resourceGroup, name, {
-      location: "eastus",
-      serverFarmId:
-        "/subscriptions/" +
-        subscriptionId +
-        "/resourceGroups/myjstest/providers/Microsoft.Web/serverfarms/myappserviceplanxxx",
-      reserved: false,
-      isXenon: false,
-      hyperV: false,
-      siteConfig: {
-        netFrameworkVersion: "v4.6",
-        appSettings: [
-          {
-            name: "WEBSITE_NODE_DEFAULT_VERSION",
-            value: "10.14",
-          },
-        ],
-        localMySqlEnabled: false,
-        http20Enabled: true,
+    const res = await client.webApps.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      name,
+      {
+        location: "eastus",
+        serverFarmId:
+          "/subscriptions/" +
+          subscriptionId +
+          "/resourceGroups/myjstest/providers/Microsoft.Web/serverfarms/myappserviceplanxxx",
+        reserved: false,
+        isXenon: false,
+        hyperV: false,
+        siteConfig: {
+          netFrameworkVersion: "v4.6",
+          appSettings: [
+            {
+              name: "WEBSITE_NODE_DEFAULT_VERSION",
+              value: "10.14",
+            },
+          ],
+          localMySqlEnabled: false,
+          http20Enabled: true,
+        },
+        scmSiteAlsoStopped: false,
+        httpsOnly: false,
       },
-      scmSiteAlsoStopped: false,
-      httpsOnly: false
-    }, testPollingOptions)
+      testPollingOptions
+    );
     assert.equal(res.name, name);
   });
 
@@ -128,7 +142,10 @@ describe("Web test", () => {
 
   it("webApps update test", async function () {
     const res = await client.webApps.update(resourceGroup, name, {
-      serverFarmId: "/subscriptions/" + subscriptionId + "/resourceGroups/myjstest/providers/Microsoft.Web/serverfarms/myappserviceplanxxx",
+      serverFarmId:
+        "/subscriptions/" +
+        subscriptionId +
+        "/resourceGroups/myjstest/providers/Microsoft.Web/serverfarms/myappserviceplanxxx",
       reserved: false,
       isXenon: false,
       hyperV: false,
@@ -137,8 +154,8 @@ describe("Web test", () => {
         localMySqlEnabled: false,
         http20Enabled: true,
       },
-      scmSiteAlsoStopped: false
-    })
+      scmSiteAlsoStopped: false,
+    });
     assert.equal(res.name, name);
   });
 

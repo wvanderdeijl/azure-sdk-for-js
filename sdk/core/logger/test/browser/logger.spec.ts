@@ -3,7 +3,7 @@
 
 import * as Logger from "../../src";
 import * as sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 const testLogger = Logger.createClientLogger("test");
 

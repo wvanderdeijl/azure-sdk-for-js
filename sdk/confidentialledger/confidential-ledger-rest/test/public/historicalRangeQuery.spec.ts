@@ -11,7 +11,7 @@ import {
 import { createClient, createRecorder, getRecorderUniqueVariable } from "./utils/recordedClient";
 
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 describe("Range query should be successful", function () {

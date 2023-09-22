@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { Suite } from "mocha";
 import { Recorder, env, isLiveMode } from "@azure-tools/test-recorder";

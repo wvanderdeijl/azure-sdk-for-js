@@ -3,7 +3,7 @@
 /* eslint-disable no-invalid-this */
 import { Recorder, assertEnvironmentVariable } from "@azure-tools/test-recorder";
 import { WebPubSubServiceClient, WebPubSubGroup } from "../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import recorderOptions from "./testEnv";
 import { FullOperationResponse } from "@azure/core-client";
 import { RestError } from "@azure/core-rest-pipeline";

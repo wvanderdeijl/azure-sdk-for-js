@@ -9,7 +9,7 @@ import {
   CredentialUnavailableError,
   TokenCredential,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { getError } from "../authTestUtils";
 
 function mockCredential(returnPromise: Promise<AccessToken | null>): TokenCredential {

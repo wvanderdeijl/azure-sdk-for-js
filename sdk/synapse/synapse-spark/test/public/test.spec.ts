@@ -1,5 +1,5 @@
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { SparkClient } from "../../src";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
@@ -7,7 +7,7 @@ describe("Synapse Managed Private Endpoints", () => {
   let recorder: Recorder;
   let client: SparkClient;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     recorder = await createRecorder(this);
     const spark_pool_name = "testsparkpool";
     client = createClient(spark_pool_name, recorder.configureClientOptions({}));
@@ -26,7 +26,7 @@ describe("Synapse Managed Private Endpoints", () => {
       driverCores: 4,
       executorMemory: "28g",
       executorCores: 4,
-      executorCount: 2
+      executorCount: 2,
     });
 
     assert.isDefined(result);

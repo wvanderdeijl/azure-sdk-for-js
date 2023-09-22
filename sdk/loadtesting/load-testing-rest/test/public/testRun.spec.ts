@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { env, isPlaybackMode, Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecorder, createClient } from "./utils/recordedClient";
 import { AbortController } from "@azure/abort-controller";
 import { Context } from "mocha";

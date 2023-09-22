@@ -9,7 +9,7 @@ import createPersonalizerClient, {
   PersonalizerClient,
   isUnexpected,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Model Tests", () => {
   let recorder: Recorder;

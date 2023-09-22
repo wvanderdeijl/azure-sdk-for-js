@@ -20,7 +20,7 @@ import {
   recreateTopic,
   verifyMessageCount,
 } from "./managementUtils";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ServiceBusReceivedMessage, ServiceBusMessage } from "../../../src";
 import { ServiceBusReceiverOptions, ServiceBusSessionReceiverOptions } from "../../../src";
 

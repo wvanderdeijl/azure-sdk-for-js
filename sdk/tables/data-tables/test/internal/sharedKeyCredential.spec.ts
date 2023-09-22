@@ -10,7 +10,7 @@ import {
 } from "@azure/core-rest-pipeline";
 import { AzureNamedKeyCredential } from "@azure/core-auth";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { expectedSharedKeyLiteHeader } from "./fakeTestSecrets";
 import { isNode } from "@azure/test-utils";
 import { tablesNamedKeyCredentialPolicy } from "../../src/tablesNamedCredentialPolicy";

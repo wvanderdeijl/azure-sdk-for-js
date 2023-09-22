@@ -9,7 +9,7 @@ import {
   formatError,
   formatSuccess,
 } from "../../src/util/logging";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Identity logging utilities", function () {
   describe("credentialLoggerInstance", function () {

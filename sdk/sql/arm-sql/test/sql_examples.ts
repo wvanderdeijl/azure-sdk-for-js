@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { SqlManagementClient } from "../src/sqlManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,10 +45,14 @@ describe("Sql test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new SqlManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new SqlManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "czwjstest";
     databaseName = "mydatabasezzzz";
@@ -60,20 +64,31 @@ describe("Sql test", () => {
   });
 
   it("servers create test", async function () {
-    const res = await client.servers.beginCreateOrUpdateAndWait(resourceGroup, serverName, {
-      location: "eastus",
-      administratorLogin: "dummylogin",
-      administratorLoginPassword: "Placeholder123",
-      version: "12.0"
-    }, testPollingOptions)
+    const res = await client.servers.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      serverName,
+      {
+        location: "eastus",
+        administratorLogin: "dummylogin",
+        administratorLoginPassword: "Placeholder123",
+        version: "12.0",
+      },
+      testPollingOptions
+    );
     assert.equal(res.name, serverName);
   });
 
   it("databases create test", async function () {
-    const res = await client.databases.beginCreateOrUpdateAndWait(resourceGroup, serverName, databaseName, {
-      location: "eastus",
-      readScale: "Disabled"
-    }, testPollingOptions)
+    const res = await client.databases.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      serverName,
+      databaseName,
+      {
+        location: "eastus",
+        readScale: "Disabled",
+      },
+      testPollingOptions
+    );
     assert.equal(res.name, databaseName);
   });
 
@@ -88,56 +103,76 @@ describe("Sql test", () => {
   });
 
   it("servers list test", async function () {
-    const resArray = new Array()
+    const resArray = new Array();
     for await (let item of client.servers.listByResourceGroup(resourceGroup)) {
-      resArray.push(item)
+      resArray.push(item);
     }
     assert.equal(resArray.length, 1);
   });
 
   it("databases list test", async function () {
-    const resArray = new Array()
+    const resArray = new Array();
     for await (let item of client.databases.listByServer(resourceGroup, serverName)) {
-      resArray.push(item)
+      resArray.push(item);
     }
     assert.equal(resArray.length, 2);
   });
 
   it("servers update test", async function () {
-    const res = await client.servers.beginUpdateAndWait(resourceGroup, serverName, {
-      tags: {
-        tag1: "value1"
-      }
-    }, testPollingOptions);
-    assert.equal(res.type, "Microsoft.Sql/servers")
+    const res = await client.servers.beginUpdateAndWait(
+      resourceGroup,
+      serverName,
+      {
+        tags: {
+          tag1: "value1",
+        },
+      },
+      testPollingOptions
+    );
+    assert.equal(res.type, "Microsoft.Sql/servers");
   });
 
   it("databases update test", async function () {
-    const res = await client.databases.beginUpdateAndWait(resourceGroup, serverName, databaseName, {
-      sku: {
-        name: "S1",
-        tier: "Standard",
+    const res = await client.databases.beginUpdateAndWait(
+      resourceGroup,
+      serverName,
+      databaseName,
+      {
+        sku: {
+          name: "S1",
+          tier: "Standard",
+        },
+        collation: "SQL_Latin1_General_CP1_CI_AS",
+        maxLogSizeBytes: 1073741824,
       },
-      collation: "SQL_Latin1_General_CP1_CI_AS",
-      maxLogSizeBytes: 1073741824
-    }, testPollingOptions);
-    assert.equal(res.type, "Microsoft.Sql/servers/databases")
+      testPollingOptions
+    );
+    assert.equal(res.type, "Microsoft.Sql/servers/databases");
   });
 
   it("databases delete test", async function () {
-    const res = await client.databases.beginDeleteAndWait(resourceGroup, serverName, databaseName, testPollingOptions);
-    const resArray = new Array()
+    const res = await client.databases.beginDeleteAndWait(
+      resourceGroup,
+      serverName,
+      databaseName,
+      testPollingOptions
+    );
+    const resArray = new Array();
     for await (let item of client.databases.listByServer(resourceGroup, serverName)) {
-      resArray.push(item)
+      resArray.push(item);
     }
     assert.equal(resArray.length, 1);
   });
 
   it("servers delete test", async function () {
-    const res = await client.servers.beginDeleteAndWait(resourceGroup, serverName, testPollingOptions);
-    const resArray = new Array()
+    const res = await client.servers.beginDeleteAndWait(
+      resourceGroup,
+      serverName,
+      testPollingOptions
+    );
+    const resArray = new Array();
     for await (let item of client.servers.listByResourceGroup(resourceGroup)) {
-      resArray.push(item)
+      resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });

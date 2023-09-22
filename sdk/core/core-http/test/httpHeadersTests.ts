@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { HttpHeaders } from "../src/httpHeaders";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("HttpHeaders", () => {
   it("clone() should keep the original header names", () => {

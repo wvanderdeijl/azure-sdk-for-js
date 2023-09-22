@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { MicrosoftVoiceServices } from "../src/microsoftVoiceServices";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,13 +44,17 @@ describe("voiceservices test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new MicrosoftVoiceServices(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new MicrosoftVoiceServices(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "westcentralus";
     resourceGroup = "czwjstest";
-    communicationsGatewayName = "mycgtest6";// if you got this error message"Existing entry found in CosmosDB for new resource mycgtest - reject the request" when creating, use a new name to create
+    communicationsGatewayName = "mycgtest6"; // if you got this error message"Existing entry found in CosmosDB for new resource mycgtest - reject the request" when creating, use a new name to create
   });
 
   afterEach(async function () {
@@ -74,21 +78,22 @@ describe("voiceservices test", () => {
             primaryRegionProperties: {
               allowedMediaSourceAddressPrefixes: ["10.1.2.0/24"],
               allowedSignalingSourceAddressPrefixes: ["10.1.1.0/24"],
-              operatorAddresses: ["198.51.100.1"]
-            }
+              operatorAddresses: ["198.51.100.1"],
+            },
           },
           {
             name: "eastus2",
             primaryRegionProperties: {
               allowedMediaSourceAddressPrefixes: ["10.2.2.0/24"],
               allowedSignalingSourceAddressPrefixes: ["10.2.1.0/24"],
-              operatorAddresses: ["198.51.100.2"]
-            }
-          }
+              operatorAddresses: ["198.51.100.2"],
+            },
+          },
         ],
-        teamsVoicemailPilotNumber: "1234567890"
+        teamsVoicemailPilotNumber: "1234567890",
       },
-      testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, communicationsGatewayName);
   });
 
@@ -107,10 +112,14 @@ describe("voiceservices test", () => {
 
   it("communicationsGateways delete test", async function () {
     const resArray = new Array();
-    const res = await client.communicationsGateways.beginDeleteAndWait(resourceGroup, communicationsGatewayName, testPollingOptions)
+    const res = await client.communicationsGateways.beginDeleteAndWait(
+      resourceGroup,
+      communicationsGatewayName,
+      testPollingOptions
+    );
     for await (let item of client.communicationsGateways.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

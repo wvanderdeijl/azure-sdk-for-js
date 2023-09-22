@@ -10,15 +10,14 @@ import {
   ServiceBusSender,
 } from "../../src";
 import { TestClientType } from "../public/utils/testUtils";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { getEntityNameFromConnectionString } from "../../src/constructorHelpers";
 import {
   ServiceBusClientForTests,
   createServiceBusClientForTests,
 } from "../public/utils/testutils2";
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 /**
  * A basic suite that exercises most of the core functionality.

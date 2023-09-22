@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AwaitableQueue } from "../../../src/impl/awaitableQueue";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { testWithServiceTypes } from "../../public/utils/testWithServiceTypes";
 
 const should = chai.should();

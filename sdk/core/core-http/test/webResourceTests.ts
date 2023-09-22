@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { RequestPrepareOptions, WebResource } from "../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("WebResource", function () {
   it("supports dash in parameter name", function () {

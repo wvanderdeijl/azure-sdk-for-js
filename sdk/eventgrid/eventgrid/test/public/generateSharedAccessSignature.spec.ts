@@ -3,7 +3,7 @@
 
 /// <reference lib="dom"/>
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { AzureKeyCredential, generateSharedAccessSignature } from "../../src";
 import { isNode } from "@azure/test-utils";
 

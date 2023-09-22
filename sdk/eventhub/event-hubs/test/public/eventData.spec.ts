@@ -10,8 +10,7 @@ import {
   ReceivedEventData,
   Subscription,
 } from "../../src";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiExclude from "chai-exclude";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";

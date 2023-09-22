@@ -5,7 +5,7 @@ import { AzureKeyCredential } from "@azure/core-auth";
 import { HttpClient } from "@azure/core-rest-pipeline";
 import { isNode } from "@azure/core-util";
 import { TokenCredential } from "@azure/identity";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import sinon from "sinon";
 import { SmsClient, SmsClientOptions, SmsSendRequest } from "../../src";
 import { MockHttpClient } from "./utils/mockHttpClient";

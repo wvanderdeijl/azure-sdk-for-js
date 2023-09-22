@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import {
   ServiceBusClientForTests,
   createServiceBusClientForTests,
@@ -46,7 +46,7 @@ describe("sessions tests -  requires completely clean entity for each test", () 
     // const peekedMsgs = await receiver.peekMessages();
     // const receiverEntityType = receiver.entityType;
     // if (peekedMsgs.length) {
-    //   chai.assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
+    //   assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
     // }
   }
 

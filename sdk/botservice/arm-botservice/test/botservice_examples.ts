@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AzureBotService } from "../src/azureBotService";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,7 +44,7 @@ describe("Botservice test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new AzureBotService(credential, subscriptionId, recorder.configureClientOptions({}));
@@ -60,12 +60,12 @@ describe("Botservice test", () => {
   it("bots create test", async function () {
     const res = await client.bots.create(resourceGroup, botresourceName, {
       sku: {
-        name: "S1"
+        name: "S1",
       },
       etag: "etag1",
       tags: {
         tag1: "value1",
-        tag2: "value2"
+        tag2: "value2",
       },
       kind: "sdk",
       properties: {
@@ -75,9 +75,9 @@ describe("Botservice test", () => {
         developerAppInsightsApplicationId: "cf03484e-3fdb-4b5e-9ad7-94bde32e5a2b",
         displayName: "this is a test bot",
         endpoint: "https://bing.com/messages/",
-        msaAppId: "41a220b9-6571-4f0b-bbd2-43f1c1d82f51"
+        msaAppId: "41a220b9-6571-4f0b-bbd2-43f1c1d82f51",
       },
-      location: "global"
+      location: "global",
     });
     assert.equal(res.name, botresourceName);
   });
@@ -94,15 +94,15 @@ describe("Botservice test", () => {
         channelName: "MsTeamsChannel",
         properties: {
           isEnabled: true,
-        }
-      }
+        },
+      },
     });
-    assert.equal(res.name, "mybotxxx/MsTeamsChannel")
+    assert.equal(res.name, "mybotxxx/MsTeamsChannel");
   });
 
   it("MsTeamsChannel get test", async function () {
     const res = await client.channels.get(resourceGroup, botresourceName, "MsTeamsChannel");
-    assert.equal(res.name, "mybotxxx/MsTeamsChannel")
+    assert.equal(res.name, "mybotxxx/MsTeamsChannel");
   });
 
   it("MsTeamsChannel list test", async function () {
@@ -110,7 +110,7 @@ describe("Botservice test", () => {
     for await (let item of client.channels.listByResourceGroup(resourceGroup, botresourceName)) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 3);//bot has 2 basic channels
+    assert.equal(resArray.length, 3); //bot has 2 basic channels
   });
 
   it("MsTeamsChannel delete test", async function () {
@@ -119,7 +119,7 @@ describe("Botservice test", () => {
     for await (let item of client.channels.listByResourceGroup(resourceGroup, botresourceName)) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 2);//bot has 2 basic channels
+    assert.equal(resArray.length, 2); //bot has 2 basic channels
   });
 
   it("bots delete test", async function () {

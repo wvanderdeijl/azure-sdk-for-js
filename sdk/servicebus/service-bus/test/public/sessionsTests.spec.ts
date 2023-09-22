@@ -4,7 +4,6 @@
 import chai, { assert } from "chai";
 import Long from "long";
 const should = chai.should();
-import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import {
   ServiceBusReceivedMessage,
@@ -67,7 +66,7 @@ describe("session tests", () => {
     // const peekedMsgs = await receiver.peekMessages();
     // const receiverEntityType = receiver.entityType;
     // if (peekedMsgs.length) {
-    //   chai.assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
+    //   assert.fail(`Please use an empty ${receiverEntityType} for integration testing`);
     // }
   }
 

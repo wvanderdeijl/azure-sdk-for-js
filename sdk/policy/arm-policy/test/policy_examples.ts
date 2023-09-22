@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { PolicyClient } from "../src/policyClient";
 import { ManagementGroupsAPI } from "@azure/arm-managementgroups";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -50,11 +50,11 @@ describe("Policy test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new PolicyClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    managementclient = new ManagementGroupsAPI(credential, recorder.configureClientOptions({}))
+    managementclient = new ManagementGroupsAPI(credential, recorder.configureClientOptions({}));
     location = "eastus";
     resourceGroup = "myjstest";
     groupId = "20000000-0001-0000-0000-000000000123";
@@ -71,30 +71,35 @@ describe("Policy test", () => {
   it("policyDefinitions create test", async function () {
     const result = await managementclient.managementGroups.beginCreateOrUpdateAndWait(
       groupId,
-      { name: groupId }, testPollingOptions
-    )
+      { name: groupId },
+      testPollingOptions
+    );
 
-    const res = await client.policyDefinitions.createOrUpdateAtManagementGroup(policyName, groupId, {
-      policyType: "Custom",
-      description: "Don't create a VM anywhere",
-      policyRule: {
-        if: {
-          allof: [
-            {
-              source: "action",
-              equals: "Microsoft.Compute/virtualMachines/write",
-            },
-            {
-              field: "location",
-              in: ["eastus", "eastus2", "centralus"],
-            },
-          ],
-        },
-        then: {
-          effect: "deny",
+    const res = await client.policyDefinitions.createOrUpdateAtManagementGroup(
+      policyName,
+      groupId,
+      {
+        policyType: "Custom",
+        description: "Don't create a VM anywhere",
+        policyRule: {
+          if: {
+            allof: [
+              {
+                source: "action",
+                equals: "Microsoft.Compute/virtualMachines/write",
+              },
+              {
+                field: "location",
+                in: ["eastus", "eastus2", "centralus"],
+              },
+            ],
+          },
+          then: {
+            effect: "deny",
+          },
         },
       }
-    })
+    );
     assert.equal(res.name, policyName);
   });
 
@@ -114,8 +119,8 @@ describe("Policy test", () => {
   it("policyAssignments create test", async function () {
     const definition = await client1.policyDefinitions.getAtManagementGroup(policyName, groupId);
     const res = await client1.policyAssignments.create(scope, policyAssignmentName, {
-      policyDefinitionId: definition.id
-    })
+      policyDefinitionId: definition.id,
+    });
     assert.equal(res.name, policyAssignmentName);
   });
 
@@ -136,7 +141,7 @@ describe("Policy test", () => {
     const filter = "atScope()";
     const resArray = new Array();
     for await (let item of client1.policyAssignments.listForManagementGroup(groupId, {
-      filter
+      filter,
     })) {
       resArray.push(item);
     }

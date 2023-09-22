@@ -9,7 +9,7 @@ import {
   getQueueRequest,
   getWorkerRequest,
 } from "../utils/testData";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import {
   RouterJobAssignment,
   RouterJobOffer,

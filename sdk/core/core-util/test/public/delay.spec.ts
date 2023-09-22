@@ -3,7 +3,7 @@
 
 import * as sinon from "sinon";
 import { AbortController } from "@azure/abort-controller";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { delay } from "../../src";
 
 describe("delay", function () {

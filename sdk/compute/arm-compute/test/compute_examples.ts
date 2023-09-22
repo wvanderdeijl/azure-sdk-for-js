@@ -14,20 +14,25 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ComputeManagementClient } from "../src/computeManagementClient";
-import { NetworkManagementClient, VirtualNetwork, Subnet, NetworkInterface } from "@azure/arm-network";
+import {
+  NetworkManagementClient,
+  VirtualNetwork,
+  Subnet,
+  NetworkInterface,
+} from "@azure/arm-network";
 
 const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -50,11 +55,19 @@ describe("Compute test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ComputeManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    network_client = new NetworkManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ComputeManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    network_client = new NetworkManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroupName = "myjstest";
     availabilitySetName = "availabilitySets123";
@@ -76,12 +89,13 @@ describe("Compute test", () => {
         addressPrefixes: ["10.0.0.0/16"],
       },
     };
-    const virtualNetworks_create_info = await network_client.virtualNetworks.beginCreateOrUpdateAndWait(
-      resourceGroupName,
-      network_name,
-      parameter,
-      testPollingOptions
-    );
+    const virtualNetworks_create_info =
+      await network_client.virtualNetworks.beginCreateOrUpdateAndWait(
+        resourceGroupName,
+        network_name,
+        parameter,
+        testPollingOptions
+      );
 
     const subnet_parameter: Subnet = {
       addressPrefix: "10.0.0.0/24",
@@ -96,11 +110,7 @@ describe("Compute test", () => {
   }
 
   //network_client.networkInterfaces.createOrUpdate
-  async function createNetworkInterface(
-    group_name: any,
-    location: any,
-    nic_name: any
-  ) {
+  async function createNetworkInterface(group_name: any, location: any, nic_name: any) {
     const parameter: NetworkInterface = {
       location: location,
       ipConfigurations: [
@@ -129,19 +139,23 @@ describe("Compute test", () => {
   }
 
   it("availabilitySets create test", async function () {
-    const res = await client.availabilitySets.createOrUpdate(resourceGroupName, availabilitySetName, {
-      platformFaultDomainCount: 2,
-      platformUpdateDomainCount: 20,
-      location: location,
-    })
+    const res = await client.availabilitySets.createOrUpdate(
+      resourceGroupName,
+      availabilitySetName,
+      {
+        platformFaultDomainCount: 2,
+        platformUpdateDomainCount: 20,
+        location: location,
+      }
+    );
     assert.equal(res.name, availabilitySetName);
   });
 
   it("availabilitySets update test", async function () {
     const res = await client.availabilitySets.update(resourceGroupName, availabilitySetName, {
       platformFaultDomainCount: 2,
-      platformUpdateDomainCount: 20
-    })
+      platformUpdateDomainCount: 20,
+    });
     assert.equal(res.type, "Microsoft.Compute/availabilitySets");
   });
 
@@ -170,63 +184,68 @@ describe("Compute test", () => {
   it("virtualMachines create test", async function () {
     await createVirtualNetwork();
     await createNetworkInterface(resourceGroupName, location, interface_name);
-    const res = await client.virtualMachines.beginCreateOrUpdateAndWait(resourceGroupName, virtual_machine_name, {
-      location: location,
-      hardwareProfile: {
-        vmSize: "Standard_D2_v2",
-      },
-      storageProfile: {
-        imageReference: {
-          sku: "2016-Datacenter",
-          publisher: "MicrosoftWindowsServer",
-          version: "latest",
-          offer: "WindowsServer",
+    const res = await client.virtualMachines.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      virtual_machine_name,
+      {
+        location: location,
+        hardwareProfile: {
+          vmSize: "Standard_D2_v2",
         },
-        osDisk: {
-          caching: "ReadWrite",
-          managedDisk: {
-            storageAccountType: "Standard_LRS",
+        storageProfile: {
+          imageReference: {
+            sku: "2016-Datacenter",
+            publisher: "MicrosoftWindowsServer",
+            version: "latest",
+            offer: "WindowsServer",
           },
-          name: "myVMosdisk",
-          createOption: "FromImage",
+          osDisk: {
+            caching: "ReadWrite",
+            managedDisk: {
+              storageAccountType: "Standard_LRS",
+            },
+            name: "myVMosdisk",
+            createOption: "FromImage",
+          },
+          dataDisks: [
+            {
+              diskSizeGB: 1023,
+              createOption: "Empty",
+              lun: 0,
+            },
+            {
+              diskSizeGB: 1023,
+              createOption: "Empty",
+              lun: 1,
+            },
+          ],
         },
-        dataDisks: [
-          {
-            diskSizeGB: 1023,
-            createOption: "Empty",
-            lun: 0,
+        osProfile: {
+          adminUsername: "testuser",
+          computerName: "myVM",
+          adminPassword: "SecretPlaceholder123",
+          windowsConfiguration: {
+            enableAutomaticUpdates: true, // need automatic update for reimage
           },
-          {
-            diskSizeGB: 1023,
-            createOption: "Empty",
-            lun: 1,
-          },
-        ],
-      },
-      osProfile: {
-        adminUsername: "testuser",
-        computerName: "myVM",
-        adminPassword: "SecretPlaceholder123",
-        windowsConfiguration: {
-          enableAutomaticUpdates: true, // need automatic update for reimage
+        },
+        networkProfile: {
+          networkInterfaces: [
+            {
+              id:
+                "/subscriptions/" +
+                subscriptionId +
+                "/resourceGroups/" +
+                resourceGroupName +
+                "/providers/Microsoft.Network/networkInterfaces/" +
+                interface_name +
+                "",
+              primary: true,
+            },
+          ],
         },
       },
-      networkProfile: {
-        networkInterfaces: [
-          {
-            id:
-              "/subscriptions/" +
-              subscriptionId +
-              "/resourceGroups/" +
-              resourceGroupName +
-              "/providers/Microsoft.Network/networkInterfaces/" +
-              interface_name +
-              "",
-            primary: true,
-          },
-        ],
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, virtual_machine_name);
   });
 
@@ -244,37 +263,59 @@ describe("Compute test", () => {
   });
 
   it("virtualMachines update test", async function () {
-    const res = await client.virtualMachines.beginUpdateAndWait(resourceGroupName, virtual_machine_name, {
-      networkProfile: {
-        networkInterfaces: [
-          {
-            id:
-              "/subscriptions/" +
-              subscriptionId +
-              "/resourceGroups/" +
-              resourceGroupName +
-              "/providers/Microsoft.Network/networkInterfaces/" +
-              interface_name +
-              "",
-            primary: true,
-          },
-        ],
-      }
-    }, testPollingOptions)
+    const res = await client.virtualMachines.beginUpdateAndWait(
+      resourceGroupName,
+      virtual_machine_name,
+      {
+        networkProfile: {
+          networkInterfaces: [
+            {
+              id:
+                "/subscriptions/" +
+                subscriptionId +
+                "/resourceGroups/" +
+                resourceGroupName +
+                "/providers/Microsoft.Network/networkInterfaces/" +
+                interface_name +
+                "",
+              primary: true,
+            },
+          ],
+        },
+      },
+      testPollingOptions
+    );
     const res1 = await client.virtualMachines.get(resourceGroupName, virtual_machine_name);
     assert.equal(res1.name, virtual_machine_name);
   });
 
   it("virtualMachines delete test", async function () {
-    const res = await client.virtualMachines.beginDeleteAndWait(resourceGroupName, virtual_machine_name, testPollingOptions);
+    const res = await client.virtualMachines.beginDeleteAndWait(
+      resourceGroupName,
+      virtual_machine_name,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (const item of client.virtualMachines.list(resourceGroupName)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
-    await client.disks.beginDeleteAndWait(resourceGroupName, "myVMosdisk", testPollingOptions)
-    await network_client.networkInterfaces.beginDeleteAndWait(resourceGroupName, interface_name, testPollingOptions);
-    await network_client.subnets.beginDeleteAndWait(resourceGroupName, network_name, subnet_name, testPollingOptions);
-    await network_client.virtualNetworks.beginDeleteAndWait(resourceGroupName, network_name, testPollingOptions);
+    await client.disks.beginDeleteAndWait(resourceGroupName, "myVMosdisk", testPollingOptions);
+    await network_client.networkInterfaces.beginDeleteAndWait(
+      resourceGroupName,
+      interface_name,
+      testPollingOptions
+    );
+    await network_client.subnets.beginDeleteAndWait(
+      resourceGroupName,
+      network_name,
+      subnet_name,
+      testPollingOptions
+    );
+    await network_client.virtualNetworks.beginDeleteAndWait(
+      resourceGroupName,
+      network_name,
+      testPollingOptions
+    );
   });
 });

@@ -15,7 +15,7 @@ import {
   WebPubSubMessage,
 } from "@azure/web-pubsub-client";
 import { WebPubSubProtobufProtocol } from "../src/index";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("WebPubSubClient", function () {
   const protocol = WebPubSubProtobufProtocol();

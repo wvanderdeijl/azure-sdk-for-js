@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DataProtectionClient } from "../src/dataProtectionClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888"
+  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,13 +44,17 @@ describe("DataProtection test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new DataProtectionClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new DataProtectionClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
-    vaultName = "swaggerExample"
+    vaultName = "swaggerExample";
   });
 
   afterEach(async function () {
@@ -66,15 +70,14 @@ describe("DataProtection test", () => {
         location,
         properties: {
           monitoringSettings: {
-            azureMonitorAlertSettings: { alertsForAllJobFailures: "Enabled" }
+            azureMonitorAlertSettings: { alertsForAllJobFailures: "Enabled" },
           },
-          storageSettings: [
-            { type: "LocallyRedundant", datastoreType: "VaultStore" }
-          ]
+          storageSettings: [{ type: "LocallyRedundant", datastoreType: "VaultStore" }],
         },
-        tags: { key1: "val1" }
+        tags: { key1: "val1" },
       },
-      testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, vaultName);
   });
 
@@ -93,10 +96,14 @@ describe("DataProtection test", () => {
 
   it("backupVaults delete test", async function () {
     const resArray = new Array();
-    const res = await client.backupVaults.beginDeleteAndWait(resourceGroup, vaultName, testPollingOptions)
+    const res = await client.backupVaults.beginDeleteAndWait(
+      resourceGroup,
+      vaultName,
+      testPollingOptions
+    );
     for await (let item of client.backupVaults.listInResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

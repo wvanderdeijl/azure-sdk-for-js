@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DevTestLabsClient } from "../src/devTestLabsClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -41,11 +41,10 @@ describe("DevTestLabs test", () => {
   let resourceGroup: string;
   let name: string;
 
-
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new DevTestLabsClient(credential, subscriptionId, recorder.configureClientOptions({}));
@@ -59,7 +58,12 @@ describe("DevTestLabs test", () => {
   });
 
   it("labs create test", async function () {
-    const res = await client.labs.beginCreateOrUpdateAndWait(resourceGroup, name, { location: location }, testPollingOptions);
+    const res = await client.labs.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      name,
+      { location: location },
+      testPollingOptions
+    );
     assert.equal(res.name, name);
   });
 
@@ -79,8 +83,8 @@ describe("DevTestLabs test", () => {
   it("labs update test", async function () {
     const res = await client.labs.update(resourceGroup, name, {
       tags: {
-        tag1: "vaue1"
-      }
+        tag1: "vaue1",
+      },
     });
     assert.equal(res.type, "Microsoft.DevTestLab/labs");
   });

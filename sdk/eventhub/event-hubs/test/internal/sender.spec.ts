@@ -12,8 +12,7 @@ import {
 } from "../../src";
 import { assert } from "@azure/test-utils";
 import { SubscriptionHandlerForTests } from "../public/utils/subscriptionHandlerForTests";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";

@@ -10,7 +10,7 @@ import createPersonalizerClient, {
   RankableAction,
   isUnexpected,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Rank Tests", () => {
   let recorder: Recorder;

@@ -20,7 +20,7 @@ import {
   context,
   setSpan,
 } from "@azure/core-tracing";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import sinon from "sinon";
 import { tracingPolicy } from "../../src/policies/tracingPolicy";
 

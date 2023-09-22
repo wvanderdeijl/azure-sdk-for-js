@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Mapper, createSerializer } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Serializer (browser specific)", function () {
   describe("serialize", function () {

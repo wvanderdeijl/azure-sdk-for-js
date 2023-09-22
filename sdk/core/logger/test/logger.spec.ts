@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import * as Logger from "../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 const testLogger = Logger.createClientLogger("test");
 

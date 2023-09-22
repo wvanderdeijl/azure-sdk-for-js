@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Chunk } from "../src/Chunk";
 import * as sinon from "sinon";
 import { AvroReader } from "../../storage-internal-avro/src";

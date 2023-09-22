@@ -4,7 +4,7 @@
 import { AzureKeyCredential } from "@azure/core-auth";
 import { Context } from "mocha";
 import { ShortCodesClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockToken } from "./utils/recordedClient";
 
 describe("ShortCodesClient - constructor", function () {

@@ -5,7 +5,7 @@ import { createClient, createRecorder } from "./utils/recordedClient";
 
 import { Context } from "mocha";
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Get ledger history", function () {
   let recorder: Recorder;

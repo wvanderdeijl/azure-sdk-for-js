@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { isDefined, isObjectWithProperties, objectHasProperty } from "../../src/index";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Type guards", function () {
   describe("isDefined", function () {

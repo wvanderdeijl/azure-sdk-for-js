@@ -12,7 +12,7 @@ import { ConfidentialClientApplication } from "@azure/msal-node";
 import { Context } from "mocha";
 import { MsalNode } from "../../../src/msal/nodeFlows/msalNodeCommon";
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 const ASSET_PATH = "assets";
 

@@ -6,7 +6,7 @@ import {
   encodeContinuationToken,
 } from "../../src/utils/continuationToken";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("continuation token utils", function () {
   it("should encode nextPartitionKey and nextRowKey", function () {

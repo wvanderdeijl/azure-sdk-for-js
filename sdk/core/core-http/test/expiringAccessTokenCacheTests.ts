@@ -3,7 +3,7 @@
 
 import { AccessToken } from "../src";
 import { ExpiringAccessTokenCache } from "../src/credentials/accessTokenCache";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 function mockToken(expirationDeltaMs: number): AccessToken {
   return {

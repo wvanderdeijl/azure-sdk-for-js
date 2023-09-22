@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 /* eslint-disable no-invalid-this */
 import { WebPubSubEventHandler } from "../src/webPubSubEventHandler";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Can creat event handler", function () {
   it("Can provide default path", function () {

@@ -1,13 +1,13 @@
 import { MonitoringClient } from "../../src/monitoringClient";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
 describe("Access Control smoke", () => {
   let recorder: Recorder;
   let client: MonitoringClient;
 
-  beforeEach(function() {
+  beforeEach(function () {
     recorder = createRecorder(this);
     client = createClient();
   });

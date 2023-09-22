@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { AmqpError } from "rhea-promise";
 import { MessagingError } from "../../src";
 import { translateError } from "../../src/util/error";

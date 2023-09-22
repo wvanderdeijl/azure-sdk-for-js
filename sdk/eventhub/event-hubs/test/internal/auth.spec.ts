@@ -9,7 +9,7 @@ import {
   EventHubProducerClient,
   parseEventHubConnectionString,
 } from "../../src";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { createSasTokenProvider } from "@azure/core-amqp";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";

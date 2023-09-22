@@ -3,7 +3,7 @@
 
 import { APIM_EDITOR_DATA_KEY, APIM_ON_CHANGE_MESSAGE_KEY, onChangeWithOrigin } from "../src";
 import { getEditorValuesPure, getValuesPure, getWidgetDataPure } from "../src/utils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import sinon from "sinon";
 
 const valuesUrl = {

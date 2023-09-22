@@ -6,7 +6,7 @@ import { AvroReadableFromStream, AvroReader } from "../../src";
 import { AbortController } from "@azure/abort-controller";
 import { Readable } from "stream";
 import { arraysEqual } from "../../src/utils/utils.common";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 type Action = (o: Record<string, any> | null) => void;
 class TestCase {

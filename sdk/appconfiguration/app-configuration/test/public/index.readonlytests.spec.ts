@@ -11,7 +11,7 @@ import {
 } from "./utils/testHelpers";
 import { AppConfigurationClient } from "../../src";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AppConfigurationClient (set|clear)ReadOnly", () => {
   let client: AppConfigurationClient;

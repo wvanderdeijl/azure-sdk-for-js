@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { MonitorClient } from "../src/monitorClient";
 import { LogicManagementClient } from "@azure/arm-logic";
@@ -26,11 +26,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -64,14 +64,30 @@ describe("Monitor test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new MonitorClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    logic_client = new LogicManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    storage_client = new StorageManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    eventhub_client = new EventHubManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    op_client = new OperationalInsightsManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    logic_client = new LogicManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    storage_client = new StorageManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    eventhub_client = new EventHubManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    op_client = new OperationalInsightsManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     workflowName = "myworkflowxxx";
@@ -82,7 +98,7 @@ describe("Monitor test", () => {
     authorizationRuleName = "myauthorizationRulexxx";
     logProfileName = "mylogProfilexxx";
     diagnosticName = "mydiagnosticxxxx";
-    azureMonitorWorkspaceName = "myAzureMonitorWorkspace"
+    azureMonitorWorkspaceName = "myAzureMonitorWorkspace";
   });
 
   afterEach(async function () {
@@ -94,88 +110,121 @@ describe("Monitor test", () => {
     const res = await logic_client.workflows.createOrUpdate(resourceGroup, workflowName, {
       location: location,
       definition: {
-        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
-        "contentVersion": "1.0.0.0",
-        "parameters": {},
-        "triggers": {},
-        "actions": {},
-        "outputs": {}
-      }
+        $schema:
+          "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        contentVersion: "1.0.0.0",
+        parameters: {},
+        triggers: {},
+        actions: {},
+        outputs: {},
+      },
     });
     workflowsId = (res.id || "/").substring(1);
 
     //storageAccounts.beginCreateAndWait
-    const storageaccount = await storage_client.storageAccounts.beginCreateAndWait(resourceGroup, storageAccountName, {
-      sku: {
-        name: "Standard_GRS",
-      },
-      kind: "StorageV2",
-      location: "eastus",
-      encryption: {
-        services: {
-          file: {
-            keyType: "Account",
-            enabled: true,
-          },
-          blob: {
-            keyType: "Account",
-            enabled: true,
-          },
+    const storageaccount = await storage_client.storageAccounts.beginCreateAndWait(
+      resourceGroup,
+      storageAccountName,
+      {
+        sku: {
+          name: "Standard_GRS",
         },
-        keySource: "Microsoft.Storage",
+        kind: "StorageV2",
+        location: "eastus",
+        encryption: {
+          services: {
+            file: {
+              keyType: "Account",
+              enabled: true,
+            },
+            blob: {
+              keyType: "Account",
+              enabled: true,
+            },
+          },
+          keySource: "Microsoft.Storage",
+        },
+        tags: {
+          key1: "value1",
+          key2: "value2",
+        },
       },
-      tags: {
-        key1: "value1",
-        key2: "value2",
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     storageId = storageaccount.id || "";
 
     //namespaces.beginCreateOrUpdateAndWait
-    const namespaces = await eventhub_client.namespaces.beginCreateOrUpdateAndWait(resourceGroup, namespaceName, {
-      sku: {
-        name: "Standard",
-        tier: "Standard",
+    const namespaces = await eventhub_client.namespaces.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      namespaceName,
+      {
+        sku: {
+          name: "Standard",
+          tier: "Standard",
+        },
+        location: location,
+        tags: {
+          tag1: "value1",
+          tag2: "value2",
+        },
       },
-      location: location,
-      tags: {
-        tag1: "value1",
-        tag2: "value2",
-      }
-    }, testPollingOptions)
+      testPollingOptions
+    );
     //namespaces.createOrUpdateAuthorizationRule
-    const authorization = await eventhub_client.namespaces.createOrUpdateAuthorizationRule(resourceGroup, namespaceName, authorizationRuleName, { rights: ["Listen", "Send", "Manage"] });
+    const authorization = await eventhub_client.namespaces.createOrUpdateAuthorizationRule(
+      resourceGroup,
+      namespaceName,
+      authorizationRuleName,
+      { rights: ["Listen", "Send", "Manage"] }
+    );
     //eventHubs.createOrUpdate
-    const eventhub = await eventhub_client.eventHubs.createOrUpdate(resourceGroup, namespaceName, eventhubName, {
-      messageRetentionInDays: 4,
-      partitionCount: 4,
-      status: "Active",
-      captureDescription: {
-        enabled: true,
-        encoding: "Avro",
-        intervalInSeconds: 120,
-        sizeLimitInBytes: 10485763,
-        destination: {
-          name: "EventHubArchive.AzureBlockBlob",
-          storageAccountResourceId: "/subscriptions/" + subscriptionId + "/resourceGroups/" + resourceGroup + "/providers/Microsoft.Storage/storageAccounts/" + storageAccountName,
-          blobContainer: "container",
-          archiveNameFormat: "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-        }
+    const eventhub = await eventhub_client.eventHubs.createOrUpdate(
+      resourceGroup,
+      namespaceName,
+      eventhubName,
+      {
+        messageRetentionInDays: 4,
+        partitionCount: 4,
+        status: "Active",
+        captureDescription: {
+          enabled: true,
+          encoding: "Avro",
+          intervalInSeconds: 120,
+          sizeLimitInBytes: 10485763,
+          destination: {
+            name: "EventHubArchive.AzureBlockBlob",
+            storageAccountResourceId:
+              "/subscriptions/" +
+              subscriptionId +
+              "/resourceGroups/" +
+              resourceGroup +
+              "/providers/Microsoft.Storage/storageAccounts/" +
+              storageAccountName,
+            blobContainer: "container",
+            archiveNameFormat:
+              "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+          },
+        },
       }
-    });
+    );
     authorizationId = authorization.id || "";
 
     //workspaces.beginCreateOrUpdateAndWait
-    const workspace = await op_client.workspaces.beginCreateOrUpdateAndWait(resourceGroup, workspaceName, {
-      sku: {
-        name: "PerNode"
+    const workspace = await op_client.workspaces.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      workspaceName,
+      {
+        sku: {
+          name: "PerNode",
+        },
+        retentionInDays: 30,
+        location: location,
+        tags: {
+          tag1: "value1",
+        },
       },
-      retentionInDays: 30,
-      location: location,
-      tags: {
-        tag1: "value1"
-      }
-    }, testPollingOptions)
+      testPollingOptions
+    );
     workspaceId = workspace.id || "";
   });
 
@@ -192,11 +241,11 @@ describe("Monitor test", () => {
           enabled: true,
           retentionPolicy: {
             enabled: false,
-            days: 0
-          }
-        }
-      ]
-    })
+            days: 0,
+          },
+        },
+      ],
+    });
     assert.equal(res.name, diagnosticName);
   });
 
@@ -220,24 +269,18 @@ describe("Monitor test", () => {
       resArray.push(item);
     }
     if (resArray.length >= 1) {
-      await client.logProfiles.delete("sample-log-profile")
+      await client.logProfiles.delete("sample-log-profile");
     }
     const res = await client.logProfiles.createOrUpdate(logProfileName, {
       location: "",
-      locations: [
-        "global"
-      ],
-      categories: [
-        "Write",
-        "Delete",
-        "Action"
-      ],
+      locations: ["global"],
+      categories: ["Write", "Delete", "Action"],
       retentionPolicy: {
         enabled: true,
-        days: 3
+        days: 3,
       },
-      storageAccountId: storageId
-    })
+      storageAccountId: storageId,
+    });
     assert.equal(res.name, logProfileName);
   });
 
@@ -259,8 +302,9 @@ describe("Monitor test", () => {
       resourceGroup,
       azureMonitorWorkspaceName,
       {
-        location
-      });
+        location,
+      }
+    );
     assert.equal(res.name, azureMonitorWorkspaceName);
   });
 
@@ -279,7 +323,10 @@ describe("Monitor test", () => {
 
   it("workspace delete test", async function () {
     const resArray = new Array();
-    const res = await client.azureMonitorWorkspaces.delete(resourceGroup, azureMonitorWorkspaceName)
+    const res = await client.azureMonitorWorkspaces.delete(
+      resourceGroup,
+      azureMonitorWorkspaceName
+    );
     for await (let item of client.azureMonitorWorkspaces.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
@@ -288,9 +335,20 @@ describe("Monitor test", () => {
 
   it("delete parameters for diagnosticSettings", async function () {
     const workflowDlete = await logic_client.workflows.delete(resourceGroup, workflowName);
-    const storageDelete = await storage_client.storageAccounts.delete(resourceGroup, storageAccountName);
-    const namespaceDelete = await eventhub_client.namespaces.beginDeleteAndWait(resourceGroup, namespaceName, testPollingOptions);
-    const workspaceDelete = await op_client.workspaces.beginDeleteAndWait(resourceGroup, workspaceName, testPollingOptions);
+    const storageDelete = await storage_client.storageAccounts.delete(
+      resourceGroup,
+      storageAccountName
+    );
+    const namespaceDelete = await eventhub_client.namespaces.beginDeleteAndWait(
+      resourceGroup,
+      namespaceName,
+      testPollingOptions
+    );
+    const workspaceDelete = await op_client.workspaces.beginDeleteAndWait(
+      resourceGroup,
+      workspaceName,
+      testPollingOptions
+    );
   });
 
   it("logProfiles delete test", async function () {
@@ -299,6 +357,6 @@ describe("Monitor test", () => {
     for await (let item of client.logProfiles.list()) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 1);  //still exist sample logfile
+    assert.equal(resArray.length, 1); //still exist sample logfile
   });
 });

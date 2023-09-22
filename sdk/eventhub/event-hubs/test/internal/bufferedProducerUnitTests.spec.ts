@@ -4,7 +4,7 @@
 import { EventHubBufferedProducerClient } from "../../src";
 import { EnvVarKeys, getEnvVars } from "../public/utils/testUtils";
 import { createStubInstance, SinonStubbedInstance, stub } from "sinon";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { delay } from "@azure/core-amqp";
@@ -12,7 +12,7 @@ import { BatchingPartitionChannel } from "../../src/batchingPartitionChannel";
 import { PartitionAssigner } from "../../src/impl/partitionAssigner";
 
 const should = chai.should();
-const assert = chai.assert;
+const assert = assert;
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

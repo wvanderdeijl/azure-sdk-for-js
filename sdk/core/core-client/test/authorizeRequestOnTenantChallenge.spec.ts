@@ -4,7 +4,7 @@
 import { AccessToken, GetTokenOptions } from "@azure/core-auth";
 import { bearerTokenAuthenticationPolicy, createHttpHeaders } from "@azure/core-rest-pipeline";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { authorizeRequestOnTenantChallenge } from "../src";
 import sinon from "sinon";
 

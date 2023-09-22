@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Buffer } from "buffer";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { EventData, EventDataBatch, EventHubProducerClient } from "../../src";
 import { PartitionPublishingProperties } from "../../src/models/private";
 

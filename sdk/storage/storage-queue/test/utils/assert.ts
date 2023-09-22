@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { StorageClient } from "../../src/StorageClient";
 import { isTokenCredential } from "@azure/core-auth";
 

@@ -9,7 +9,7 @@ import {
 } from "../../src/serialization";
 
 import { Edm } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isNode8 } from "@azure/test-utils";
 
 interface Entity {

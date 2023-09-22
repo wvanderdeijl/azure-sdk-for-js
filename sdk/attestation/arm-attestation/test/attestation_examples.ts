@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AttestationManagementClient } from "../src/attestationManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,10 +44,14 @@ describe("Attestation test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new AttestationManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new AttestationManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     providerName = "myservicexxx";
@@ -59,21 +63,19 @@ describe("Attestation test", () => {
 
   it("attestationProviders create test", async function () {
     const res = await client.attestationProviders.create(resourceGroup, providerName, {
-      properties: {
-
-      },
-      location: location
-    })
+      properties: {},
+      location: location,
+    });
     assert.equal(res.name, providerName);
   });
 
   it("attestationProviders get test", async function () {
-    const res = await client.attestationProviders.get(resourceGroup, providerName)
+    const res = await client.attestationProviders.get(resourceGroup, providerName);
     assert.equal(res.name, providerName);
   });
 
   it("attestationProviders list test", async function () {
-    const res = await client.attestationProviders.listByResourceGroup(resourceGroup)
+    const res = await client.attestationProviders.listByResourceGroup(resourceGroup);
     assert.notEqual(res.value?.length, 0);
   });
 
@@ -81,15 +83,15 @@ describe("Attestation test", () => {
     const res = await client.attestationProviders.update(resourceGroup, providerName, {
       tags: {
         tag1: "value1",
-        tag2: "value2"
-      }
-    })
-    assert.equal(res.type, "Microsoft.Attestation/attestationProviders")
+        tag2: "value2",
+      },
+    });
+    assert.equal(res.type, "Microsoft.Attestation/attestationProviders");
   });
 
   it("attestationProviders delete test", async function () {
-    const resDelete = await client.attestationProviders.delete(resourceGroup, providerName)
-    const res = await client.attestationProviders.listByResourceGroup(resourceGroup)
+    const resDelete = await client.attestationProviders.delete(resourceGroup, providerName);
+    const res = await client.attestationProviders.listByResourceGroup(resourceGroup);
     assert.equal(res.value?.length, 0);
   });
 });

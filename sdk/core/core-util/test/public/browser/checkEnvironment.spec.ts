@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { isBrowser, isBun, isDeno, isNode, isReactNative, isWebWorker } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("checkEnvironment (browser)", function () {
   describe("isBun (browser)", function () {

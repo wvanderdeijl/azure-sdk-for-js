@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { HelpRP } from "../src/helpRP";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -46,7 +46,7 @@ describe("help test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new HelpRP(credential, recorder.configureClientOptions({}));
@@ -54,7 +54,10 @@ describe("help test", () => {
     resourceGroup = "czwjstest";
     resourcename = "resourcetest1";
     scope = "subscriptions/" + subscriptionId;
-    scope1 = "subscriptions/" + subscriptionId + "/resourceGroups/myjstest/providers/Microsoft.KeyVault/vaults/testkey20230703";
+    scope1 =
+      "subscriptions/" +
+      subscriptionId +
+      "/resourceGroups/myjstest/providers/Microsoft.KeyVault/vaults/testkey20230703";
   });
 
   afterEach(async function () {
@@ -62,15 +65,13 @@ describe("help test", () => {
   });
 
   it("selfhelp checkname test", async function () {
-    const res = await client.diagnostics.checkNameAvailability(
-      scope,
-      {
-        checkNameAvailabilityRequest: {
-          name: "sampleName",
-          // type: "Microsoft.Help/diagnostics"
-          type: "diagnostics"
-        }
-      });
+    const res = await client.diagnostics.checkNameAvailability(scope, {
+      checkNameAvailabilityRequest: {
+        name: "sampleName",
+        // type: "Microsoft.Help/diagnostics"
+        type: "diagnostics",
+      },
+    });
   });
 
   it("diagnostics create test", async function () {
@@ -78,17 +79,13 @@ describe("help test", () => {
       diagnosticResourceRequest: {
         insights: [
           {
-            solutionId: "KeyVaultUnauthorizedNetworkInsight"
-          }
-        ]
+            solutionId: "KeyVaultUnauthorizedNetworkInsight",
+          },
+        ],
       },
       updateIntervalInMs: isPlaybackMode() ? 0 : undefined,
-    }
-    const result = await client.diagnostics.beginCreateAndWait(
-      scope1,
-      resourcename,
-      options
-    );
+    };
+    const result = await client.diagnostics.beginCreateAndWait(scope1, resourcename, options);
     assert.equal(result.name, resourcename);
   });
 
@@ -97,7 +94,6 @@ describe("help test", () => {
     for await (let item of client.operations.list()) {
       resArray.push(item);
     }
-    assert.notEqual(resArray.length, 0)
+    assert.notEqual(resArray.length, 0);
   });
-
-})
+});

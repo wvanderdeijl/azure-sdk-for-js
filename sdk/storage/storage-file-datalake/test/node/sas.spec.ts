@@ -3,7 +3,7 @@
 
 import { UserDelegationKey } from "@azure/storage-blob";
 import { Recorder, delay } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 import {

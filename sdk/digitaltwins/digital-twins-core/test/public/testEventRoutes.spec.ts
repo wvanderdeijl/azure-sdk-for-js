@@ -4,9 +4,9 @@
 import { DigitalTwinsClient } from "../../src";
 import { authenticate } from "../utils/testAuthentication";
 import { Recorder } from "@azure-tools/test-recorder";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 
-const assert = chai.assert;
+const assert = assert;
 const should = chai.should();
 
 describe("DigitalTwins EventRoutes - create, read, list and delete operations", () => {

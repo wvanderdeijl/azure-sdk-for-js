@@ -3,7 +3,7 @@
 
 import { createSasTokenProvider } from "@azure/core-amqp";
 import { AzureNamedKeyCredential, AzureSASCredential } from "@azure/core-auth";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ServiceBusClient, ServiceBusReceiver, parseServiceBusConnectionString } from "../../src";
 import { getEnvVars } from "../public/utils/envVarUtils";
 import { TestClientType } from "../public/utils/testUtils";
@@ -12,7 +12,7 @@ import {
   ServiceBusClientForTests,
   ServiceBusTestHelpers,
 } from "../public/utils/testutils2";
-const assert = chai.assert;
+const assert = assert;
 
 type UnpackReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U>
   ? U

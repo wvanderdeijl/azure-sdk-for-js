@@ -3,7 +3,7 @@
 
 import { ShareClient, ShareDirectoryClient, ShareFileClient } from "../src";
 import { getBSU, getUniqueName, recorderEnvSetup, uriSanitizers } from "./utils/index";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { appendToURLPath } from "../src/utils/utils.common";
 import { Recorder } from "@azure-tools/test-recorder";
 import { Context } from "mocha";

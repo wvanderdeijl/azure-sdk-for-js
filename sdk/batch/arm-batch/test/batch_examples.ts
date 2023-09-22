@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { BatchManagementClient } from "../src/batchManagementClient";
 import { fakeTestPasswordPlaceholder, fakeTestCertData } from "./fakeTestSecrets";
@@ -24,11 +24,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -51,11 +51,19 @@ describe("Batch test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new BatchManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    storage_client = new StorageManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new BatchManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    storage_client = new StorageManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     accountName = "myaccountxxx";
@@ -80,11 +88,11 @@ describe("Batch test", () => {
         services: {
           file: {
             keyType: "Account",
-            enabled: true
+            enabled: true,
           },
           blob: {
             keyType: "Account",
-            enabled: true
+            enabled: true,
           },
         },
         keySource: "Microsoft.Storage",
@@ -92,19 +100,35 @@ describe("Batch test", () => {
       tags: {
         key1: "value1",
         key2: "value2",
-      }
-    }
-    const res = await storage_client.storageAccounts.beginCreateAndWait(resourceGroup, storageaccountName, parameter, testPollingOptions);
-  };
+      },
+    };
+    const res = await storage_client.storageAccounts.beginCreateAndWait(
+      resourceGroup,
+      storageaccountName,
+      parameter,
+      testPollingOptions
+    );
+  }
 
   it("batchAccountOperations create test", async function () {
     await storageAccounts_beginCreateAndWait();
-    const res = await client.batchAccountOperations.beginCreateAndWait(resourceGroup, accountName, {
-      location: location,
-      autoStorage: {
-        storageAccountId: "/subscriptions/" + subscriptionId + "/resourceGroups/" + resourceGroup + "/providers/Microsoft.Storage/storageAccounts/" + storageaccountName
-      }
-    }, testPollingOptions);
+    const res = await client.batchAccountOperations.beginCreateAndWait(
+      resourceGroup,
+      accountName,
+      {
+        location: location,
+        autoStorage: {
+          storageAccountId:
+            "/subscriptions/" +
+            subscriptionId +
+            "/resourceGroups/" +
+            resourceGroup +
+            "/providers/Microsoft.Storage/storageAccounts/" +
+            storageaccountName,
+        },
+      },
+      testPollingOptions
+    );
     assert.equal(res.name, accountName);
   });
 
@@ -119,7 +143,9 @@ describe("Batch test", () => {
   });
 
   it("batchAccountOperations regenerateKey test", async function () {
-    const res = await client.batchAccountOperations.regenerateKey(resourceGroup, accountName, { keyName: "Primary" });
+    const res = await client.batchAccountOperations.regenerateKey(resourceGroup, accountName, {
+      keyName: "Primary",
+    });
     assert.equal(res.accountName, accountName);
   });
 
@@ -132,12 +158,19 @@ describe("Batch test", () => {
   });
 
   it("batchAccountOperations update test", async function () {
-    const res = await client.batchAccountOperations.update(resourceGroup, accountName, { tags: { key1: "value1" } });
+    const res = await client.batchAccountOperations.update(resourceGroup, accountName, {
+      tags: { key1: "value1" },
+    });
     assert.equal(res.type, "Microsoft.Batch/batchAccounts");
   });
 
   it("applicationOperations create test", async function () {
-    const res = await client.applicationOperations.create(resourceGroup, accountName, applicationName, { parameters: { allowUpdates: false } });
+    const res = await client.applicationOperations.create(
+      resourceGroup,
+      accountName,
+      applicationName,
+      { parameters: { allowUpdates: false } }
+    );
     assert.equal(res.name, applicationName);
   });
 
@@ -155,13 +188,18 @@ describe("Batch test", () => {
   });
 
   it("certificateOperations create test", async function () {
-    const res = await client.certificateOperations.create(resourceGroup, accountName, certificateName, {
-      thumbprint: 'cff2ab63c8c955aaf71989efa641b906558d9fb7',
-      thumbprintAlgorithm: 'sha1',
-      data: fakeTestCertData,
-      format: "Pfx",
-      password: fakeTestPasswordPlaceholder
-    });
+    const res = await client.certificateOperations.create(
+      resourceGroup,
+      accountName,
+      certificateName,
+      {
+        thumbprint: "cff2ab63c8c955aaf71989efa641b906558d9fb7",
+        thumbprintAlgorithm: "sha1",
+        data: fakeTestCertData,
+        format: "Pfx",
+        password: fakeTestPasswordPlaceholder,
+      }
+    );
     assert.equal(res.name, certificateName);
   });
 
@@ -172,33 +210,48 @@ describe("Batch test", () => {
 
   it("certificateOperations list test", async function () {
     const resArray = new Array();
-    for await (let item of client.certificateOperations.listByBatchAccount(resourceGroup, accountName)) {
+    for await (let item of client.certificateOperations.listByBatchAccount(
+      resourceGroup,
+      accountName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 1);
   });
 
   it("certificateOperations update test", async function () {
-    const res = await client.certificateOperations.update(resourceGroup, accountName, certificateName, {
-      data: fakeTestCertData,
-      password: fakeTestPasswordPlaceholder
-    });
+    const res = await client.certificateOperations.update(
+      resourceGroup,
+      accountName,
+      certificateName,
+      {
+        data: fakeTestCertData,
+        password: fakeTestPasswordPlaceholder,
+      }
+    );
     assert.equal(res.type, "Microsoft.Batch/batchAccounts/certificates");
   });
 
   it("certificateOperations cancelDeletion test", async function () {
-    const res = await client.certificateOperations.cancelDeletion(resourceGroup, accountName, certificateName);
+    const res = await client.certificateOperations.cancelDeletion(
+      resourceGroup,
+      accountName,
+      certificateName
+    );
     assert.equal(res.name, certificateName);
   });
 
   it("location checkNameAvailability test", async function () {
-    const res = await client.location.checkNameAvailability(location, { name: accountName, type: "Microsoft.Batch/batchAccounts" });
-    assert.equal(res.reason, "AlreadyExists")
+    const res = await client.location.checkNameAvailability(location, {
+      name: accountName,
+      type: "Microsoft.Batch/batchAccounts",
+    });
+    assert.equal(res.reason, "AlreadyExists");
   });
 
   it("location getQuotas test", async function () {
     const res = await client.location.getQuotas(location);
-    assert.equal(res.accountQuota, 3)
+    assert.equal(res.accountQuota, 3);
   });
 
   it("location listSupportedCloudServiceSkus test", async function () {
@@ -222,15 +275,15 @@ describe("Batch test", () => {
       vmSize: "STANDARD_D4",
       deploymentConfiguration: {
         cloudServiceConfiguration: {
-          osFamily: "5"
-        }
+          osFamily: "5",
+        },
       },
       scaleSettings: {
         fixedScale: {
-          targetDedicatedNodes: 3
-        }
-      }
-    })
+          targetDedicatedNodes: 3,
+        },
+      },
+    });
     assert.equal(res.name, poolName);
   });
 
@@ -251,9 +304,9 @@ describe("Batch test", () => {
     const res = await client.poolOperations.update(resourceGroup, accountName, poolName, {
       scaleSettings: {
         autoScale: {
-          formula: "$TargetDedicatedNodes=34"
-        }
-      }
+          formula: "$TargetDedicatedNodes=34",
+        },
+      },
     });
     assert.equal(res.type, "Microsoft.Batch/batchAccounts/pools");
   });
@@ -270,7 +323,10 @@ describe("Batch test", () => {
 
   it("privateEndpointConnectionOperations listByBatchAccount test", async function () {
     const resArray = new Array();
-    for await (let item of client.privateEndpointConnectionOperations.listByBatchAccount(resourceGroup, accountName)) {
+    for await (let item of client.privateEndpointConnectionOperations.listByBatchAccount(
+      resourceGroup,
+      accountName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
@@ -278,14 +334,22 @@ describe("Batch test", () => {
 
   it("privateLinkResourceOperations listByBatchAccount test", async function () {
     const resArray = new Array();
-    for await (let item of client.privateLinkResourceOperations.listByBatchAccount(resourceGroup, accountName)) {
+    for await (let item of client.privateLinkResourceOperations.listByBatchAccount(
+      resourceGroup,
+      accountName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 2);
   });
 
   it("poolOperations delete test", async function () {
-    const res = await client.poolOperations.beginDeleteAndWait(resourceGroup, accountName, poolName, testPollingOptions);
+    const res = await client.poolOperations.beginDeleteAndWait(
+      resourceGroup,
+      accountName,
+      poolName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.poolOperations.listByBatchAccount(resourceGroup, accountName)) {
       resArray.push(item);
@@ -294,16 +358,28 @@ describe("Batch test", () => {
   });
 
   it("certificateOperations delete test", async function () {
-    const res = await client.certificateOperations.beginDeleteAndWait(resourceGroup, accountName, certificateName, testPollingOptions);
+    const res = await client.certificateOperations.beginDeleteAndWait(
+      resourceGroup,
+      accountName,
+      certificateName,
+      testPollingOptions
+    );
     const resArray = new Array();
-    for await (let item of client.certificateOperations.listByBatchAccount(resourceGroup, accountName)) {
+    for await (let item of client.certificateOperations.listByBatchAccount(
+      resourceGroup,
+      accountName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
 
   it("applicationOperations delete test", async function () {
-    const res = await client.applicationOperations.delete(resourceGroup, accountName, applicationName);
+    const res = await client.applicationOperations.delete(
+      resourceGroup,
+      accountName,
+      applicationName
+    );
     const resArray = new Array();
     for await (let item of client.applicationOperations.list(resourceGroup, accountName)) {
       resArray.push(item);
@@ -312,7 +388,11 @@ describe("Batch test", () => {
   });
 
   it("batchAccountOperations delete test", async function () {
-    const res = await client.batchAccountOperations.beginDeleteAndWait(resourceGroup, accountName, testPollingOptions);
+    const res = await client.batchAccountOperations.beginDeleteAndWait(
+      resourceGroup,
+      accountName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.batchAccountOperations.list()) {
       resArray.push(item);

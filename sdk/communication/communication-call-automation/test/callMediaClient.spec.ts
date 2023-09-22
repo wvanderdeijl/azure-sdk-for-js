@@ -44,7 +44,7 @@ import {
   getPhoneNumbers,
 } from "./utils/recordedClient";
 import sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createMediaClient, generateHttpClient } from "./utils/mockClient";
 import {
   CALL_CONNECTION_ID,

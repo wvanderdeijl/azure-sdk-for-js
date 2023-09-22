@@ -5,7 +5,7 @@ import * as fs from "fs";
 import { AbortController } from "@azure/abort-controller";
 import { AvroReadableFromStream } from "../../src";
 import { Readable } from "stream";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AvroReadableFromStream", () => {
   it("read pass end should throw", async () => {

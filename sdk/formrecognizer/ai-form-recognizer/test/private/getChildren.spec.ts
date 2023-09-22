@@ -8,7 +8,7 @@ import {
   iteratorFromFirstMatchBinarySearch,
 } from "../../src/lro/analysis";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 interface TestData {
   id: number;

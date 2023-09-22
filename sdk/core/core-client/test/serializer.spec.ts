@@ -11,7 +11,7 @@ import {
   createSerializer,
 } from "../src";
 import { Mappers } from "./testMappers1";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 const Serializer = createSerializer(Mappers);
 const valid_uuid = "ceaafd1e-f936-429f-bbfc-82ee75dddc33";

@@ -3,7 +3,7 @@
 
 import * as coreAuth from "@azure/core-auth";
 import * as coreTracing from "../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTracingContext } from "../src/tracingContext";
 
 describe("Interface compatibility", () => {

@@ -14,20 +14,20 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
-import { WorkloadsClient } from "../src/workloadsClient"
+import { WorkloadsClient } from "../src/workloadsClient";
 import { Monitor } from "../src/models";
 
 const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -47,14 +47,14 @@ describe("workloads test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new WorkloadsClient(credential, subscriptionId, recorder.configureClientOptions({}));
     resourceGroup = "myjstest";
     monitorName = "myMonitor";
     sapVirtualInstanceName = "O13";
-    location = "eastus2"
+    location = "eastus2";
   });
 
   afterEach(async function () {
@@ -67,20 +67,32 @@ describe("workloads test", () => {
       appLocation: "eastus2",
       location: "eastus2",
       logAnalyticsWorkspaceArmId:
-        "/subscriptions/" + subscriptionId + "/resourcegroups/myjstest/providers/microsoft.operationalinsights/workspaces/myWorkspace",
+        "/subscriptions/" +
+        subscriptionId +
+        "/resourcegroups/myjstest/providers/microsoft.operationalinsights/workspaces/myWorkspace",
       managedResourceGroupConfiguration: { name: "myManagedRg" },
       monitorSubnet:
-        "/subscriptions/" + subscriptionId + "/resourceGroups/myjstest/providers/Microsoft.Network/virtualNetworks/virtualnetworkabc/subnets/mySubnet",
+        "/subscriptions/" +
+        subscriptionId +
+        "/resourceGroups/myjstest/providers/Microsoft.Network/virtualNetworks/virtualnetworkabc/subnets/mySubnet",
       routingPreference: "RouteAll",
-      tags: { key: "value" }
+      tags: { key: "value" },
     };
-    const res = await client.monitors.beginCreateAndWait(resourceGroup, monitorName, monitorParameter, testPollingOptions)
+    const res = await client.monitors.beginCreateAndWait(
+      resourceGroup,
+      monitorName,
+      monitorParameter,
+      testPollingOptions
+    );
     assert.equal(res.name, monitorName);
   });
 
   //create svi
   it.skip("svi create test", async function () {
-    const subnetId = "/subscriptions/" + subscriptionId + "/resourceGroups/myjstest/providers/Microsoft.Networks/virtualNetworks/networknamex/subnets/subnetworknamex"
+    const subnetId =
+      "/subscriptions/" +
+      subscriptionId +
+      "/resourceGroups/myjstest/providers/Microsoft.Networks/virtualNetworks/networknamex/subnets/subnetworknamex";
     const res = await client.sAPVirtualInstances.beginCreateAndWait(
       resourceGroup,
       sapVirtualInstanceName,
@@ -100,7 +112,7 @@ describe("workloads test", () => {
                   offer: "RHEL-SAP-HA",
                   publisher: "RedHat",
                   sku: "82sapha-gen2",
-                  version: "latest"
+                  version: "latest",
                 },
                 osProfile: {
                   adminUsername: "testuser",
@@ -109,12 +121,12 @@ describe("workloads test", () => {
                     osType: "Linux",
                     sshKeyPair: {
                       publicKey: "",
-                      privateKey: ""
-                    }
-                  }
+                      privateKey: "",
+                    },
+                  },
                 },
-                vmSize: "Standard_E32ds_v4"
-              }
+                vmSize: "Standard_E32ds_v4",
+              },
             },
             osSapConfiguration: { sapFqdn: "sap.test.com" },
           },
@@ -123,8 +135,8 @@ describe("workloads test", () => {
           sapProduct: "S4HANA",
           tags: {},
           managedResourceGroupConfiguration: {
-            "name": "mrg-Y13-bf4ab3"
-          }
+            name: "mrg-Y13-bf4ab3",
+          },
         },
         updateIntervalInMs: isPlaybackMode() ? 0 : undefined,
       }
@@ -149,7 +161,7 @@ describe("workloads test", () => {
   //list Workloads
   it("Workloads list test", async function () {
     //list monitors from workloads
-    const res = await client.monitors.list()
+    const res = await client.monitors.list();
     const resArray = [];
     for await (let item of res) {
       resArray.push(item);
@@ -159,7 +171,11 @@ describe("workloads test", () => {
 
   //delete monitors
   it("Workloads delete test", async function () {
-    const res = await client.monitors.beginDeleteAndWait(resourceGroup, monitorName, testPollingOptions);
+    const res = await client.monitors.beginDeleteAndWait(
+      resourceGroup,
+      monitorName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.monitors.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
@@ -169,7 +185,11 @@ describe("workloads test", () => {
 
   //delete svi
   it.skip("svi delete test", async function () {
-    const res = await client.sAPVirtualInstances.beginDeleteAndWait(resourceGroup, sapVirtualInstanceName, testPollingOptions);
+    const res = await client.sAPVirtualInstances.beginDeleteAndWait(
+      resourceGroup,
+      sapVirtualInstanceName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.sAPVirtualInstances.listByResourceGroup(resourceGroup)) {
       resArray.push(item);

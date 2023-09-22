@@ -4,7 +4,7 @@
 import { Context } from "mocha";
 import { DocumentTranslatorClient } from "../../src";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient } from "./utils/recordedClient";
 
 describe("List Document Formats", () => {

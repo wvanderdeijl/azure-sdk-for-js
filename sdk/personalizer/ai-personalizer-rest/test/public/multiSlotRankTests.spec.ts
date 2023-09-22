@@ -10,7 +10,7 @@ import createPersonalizerClient, {
   SlotRequest,
   isUnexpected,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { enableMultiSlot, isMultiSlotEnabled } from "./helpers";
 
 describe("Multi-Slot Rank Tests", () => {

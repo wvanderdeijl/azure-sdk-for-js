@@ -9,7 +9,7 @@ import {
   isSASCredential,
   isTokenCredential,
 } from "../src/index";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AzureKeyCredential", () => {
   it("credential constructor throws on invalid key", () => {

@@ -17,7 +17,7 @@
 import { AvroSerializer, MessageAdapter } from "../../src";
 import { EventData, createEventDataAdapter } from "@azure/event-hubs";
 import { MessagingTestClient } from "./clients/models";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { assertError } from "./utils/assertError";
 import { createEventHubsClient } from "./clients/eventHubs";
 import { createMockedMessagingClient } from "./clients/mocked";

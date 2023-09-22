@@ -4,7 +4,7 @@
 import { CommunicationUserIdentifier } from "@azure/communication-common";
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { matrix } from "@azure/test-utils";
 import { CommunicationIdentityClient } from "../../../src/communicationIdentityClient";
 import {

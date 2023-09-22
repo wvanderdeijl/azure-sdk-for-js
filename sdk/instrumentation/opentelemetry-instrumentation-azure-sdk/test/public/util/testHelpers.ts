@@ -3,7 +3,7 @@
 
 import { OpenTelemetrySpanWrapper } from "../../../src/spanWrapper";
 import { ReadableSpan } from "@opentelemetry/sdk-trace-base";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { inMemoryExporter } from "./setup";
 
 export function getExportedSpan(span: OpenTelemetrySpanWrapper): ReadableSpan {

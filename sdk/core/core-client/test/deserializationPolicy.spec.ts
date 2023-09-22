@@ -18,7 +18,7 @@ import {
   createHttpHeaders,
   createPipelineRequest,
 } from "@azure/core-rest-pipeline";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { getOperationRequestInfo } from "../src/operationHelpers";
 import { parseXML } from "@azure/core-xml";
 

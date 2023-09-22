@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DeploymentStacksClient } from "../src/deploymentStacksClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,14 +44,17 @@ describe("DeploymentStacks test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new DeploymentStacksClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new DeploymentStacksClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     resourcename = "resourcetest";
-
   });
 
   afterEach(async function () {
@@ -61,62 +64,61 @@ describe("DeploymentStacks test", () => {
   it("deploymentStacks create test", async function () {
     const res = await client.deploymentStacks.beginCreateOrUpdateAtResourceGroupAndWait(
       resourceGroup,
-    	resourcename,
-	    {
+      resourcename,
+      {
         actionOnUnmanage: {
-          resources: "delete"
+          resources: "delete",
         },
         denySettings: {
           applyToChildScopes: false,
           excludedActions: ["action"],
           excludedPrincipals: ["principal"],
-          mode: "denyDelete"
+          mode: "denyDelete",
         },
-        template:{
-        "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-        "contentVersion": "1.0.0.0",
-        "parameters": {
-          "foo": {
-            "type": "string",
-            "defaultValue": "foo",
-            "metadata": {
-              "description": "description"
-            }
+        template: {
+          $schema:
+            "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          contentVersion: "1.0.0.0",
+          parameters: {
+            foo: {
+              type: "string",
+              defaultValue: "foo",
+              metadata: {
+                description: "description",
+              },
+            },
+            bar: {
+              type: "string",
+              defaultValue: "bar",
+              metadata: {
+                description: "description",
+              },
+            },
           },
-          "bar": {
-            "type": "string",
-            "defaultValue": "bar",
-            "metadata": {
-              "description": "description"
-            }
-          }
-        },
-        "functions": [],
-        "variables": {
-
-        },
-        "resources": [],
-        "outputs": {
-          "foo": {
-            "type": "string",
-            "value": "[parameters('foo')]"
+          functions: [],
+          variables: {},
+          resources: [],
+          outputs: {
+            foo: {
+              type: "string",
+              value: "[parameters('foo')]",
+            },
+            bar: {
+              type: "string",
+              value: "[parameters('bar')]",
+            },
           },
-          "bar": {
-            "type": "string",
-            "value": "[parameters('bar')]"
-          }
-        }
+        },
+        tags: { tagkey: "tagVal" },
       },
-        tags: { tagkey: "tagVal" }
-      },
-     testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, resourcename);
   });
 
   it("deploymentStacks get test", async function () {
-      const res = await client.deploymentStacks.getAtResourceGroup(resourceGroup,
-    	resourcename);
-      assert.equal(res.name, resourcename);
+    const res = await client.deploymentStacks.getAtResourceGroup(resourceGroup, resourcename);
+    assert.equal(res.name, resourcename);
   });
 
   it("deploymentStacks list test", async function () {
@@ -129,11 +131,14 @@ describe("DeploymentStacks test", () => {
 
   it("deploymentStacks delete test", async function () {
     const resArray = new Array();
-    const res = await client.deploymentStacks.beginDeleteAtResourceGroupAndWait(resourceGroup, resourcename, testPollingOptions
-)
+    const res = await client.deploymentStacks.beginDeleteAtResourceGroupAndWait(
+      resourceGroup,
+      resourcename,
+      testPollingOptions
+    );
     for await (let item of client.deploymentStacks.listAtResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

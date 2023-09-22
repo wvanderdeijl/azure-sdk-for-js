@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import fs from "fs";
 import { packageVersion } from "../../../src/internal/constants";
 import path from "path";

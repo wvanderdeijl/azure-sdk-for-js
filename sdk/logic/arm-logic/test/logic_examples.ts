@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { LogicManagementClient } from "../src/logicManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -47,7 +47,11 @@ describe("Logic test", () => {
     subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new LogicManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new LogicManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroupName = "myjstest";
     workflowName = "myworkflowxxx";
@@ -61,13 +65,14 @@ describe("Logic test", () => {
     const res = await client.workflows.createOrUpdate(resourceGroupName, workflowName, {
       location: location,
       definition: {
-        $schema: "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        $schema:
+          "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
         contentVersion: "1.0.0.0",
         parameters: {},
         triggers: {},
         actions: {},
-        outputs: {}
-      }
+        outputs: {},
+      },
     });
     assert.equal(res.name, workflowName);
   });

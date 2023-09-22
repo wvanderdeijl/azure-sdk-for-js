@@ -16,7 +16,7 @@ import { Recorder, RecorderStartOptions, env, isPlaybackMode } from "@azure-tool
 import { PagedAsyncIterableIterator } from "@azure/core-paging";
 import { RestError } from "@azure/core-rest-pipeline";
 import { TokenCredential } from "@azure/identity";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTestCredential } from "@azure-tools/test-credential";
 
 let connectionStringNotPresentWarning = false;

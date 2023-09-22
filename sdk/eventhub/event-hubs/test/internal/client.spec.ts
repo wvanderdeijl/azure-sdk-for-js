@@ -10,8 +10,7 @@ import {
 } from "../../src";
 import { ConnectionContext } from "../../src/connectionContext";
 import { MessagingError } from "@azure/core-amqp";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiString from "chai-string";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";

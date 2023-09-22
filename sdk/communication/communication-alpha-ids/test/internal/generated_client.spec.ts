@@ -9,7 +9,7 @@ import {
 } from "@azure/core-rest-pipeline";
 import { AlphaIDsClient as AlphaIDsGeneratedClient } from "../../src/generated/src";
 import { TokenCredential } from "@azure/identity";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockToken } from "../public/utils/recordedClient";
 import { isNode } from "@azure/test-utils";
 import { parseClientArguments } from "@azure/communication-common";

@@ -17,7 +17,7 @@ import {
   createEmptyPipeline,
   createHttpHeaders,
 } from "@azure/core-rest-pipeline";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 /**
  * Representation of a Service Client test case where the response status is 200.

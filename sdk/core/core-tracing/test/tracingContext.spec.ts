@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { TracingContextImpl, createTracingContext, knownContextKeys } from "../src/tracingContext";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createDefaultTracingSpan } from "../src/instrumenter";
 
 describe("TracingContext", () => {

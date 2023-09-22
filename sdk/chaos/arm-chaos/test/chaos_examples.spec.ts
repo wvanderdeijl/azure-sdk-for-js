@@ -14,20 +14,20 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ChaosManagementClient } from "../src/chaosManagementClient";
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb"
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 
 const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888"
+  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -51,15 +51,23 @@ describe("Chaos test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ChaosManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    cos_client = new CosmosDBManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ChaosManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    cos_client = new CosmosDBManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     experimentName = "exampleExperiment";
-    cosmosdbName = "test-123aa"
+    cosmosdbName = "test-123aa";
     parentProviderNamespace = "Microsoft.DocumentDB";
     parentResourceType = "databaseAccounts";
     targetName = "Microsoft-CosmosDB";
@@ -70,26 +78,31 @@ describe("Chaos test", () => {
   });
 
   it("chaos dependence create", async function () {
-    const cosmosdb_res = await cos_client.databaseAccounts.beginCreateOrUpdateAndWait(resourceGroup, cosmosdbName, {
-      databaseAccountOfferType: "Standard",
-      locations: [
-        {
-          failoverPriority: 2,
-          locationName: "southcentralus",
-          isZoneRedundant: false
-        },
-        {
-          locationName: "eastus",
-          failoverPriority: 1
-        },
-        {
-          locationName: "westus",
-          failoverPriority: 0
-        }
-      ],
-      location: location,
-      createMode: "Default"
-    }, testPollingOptions);
+    const cosmosdb_res = await cos_client.databaseAccounts.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      cosmosdbName,
+      {
+        databaseAccountOfferType: "Standard",
+        locations: [
+          {
+            failoverPriority: 2,
+            locationName: "southcentralus",
+            isZoneRedundant: false,
+          },
+          {
+            locationName: "eastus",
+            failoverPriority: 1,
+          },
+          {
+            locationName: "westus",
+            failoverPriority: 0,
+          },
+        ],
+        location: location,
+        createMode: "Default",
+      },
+      testPollingOptions
+    );
     assert.equal(cosmosdb_res.name, cosmosdbName);
     targetid = String(cosmosdb_res.id);
   });
@@ -104,10 +117,8 @@ describe("Chaos test", () => {
       {
         location,
         properties: {
-          identities: [
-            { type: "CertificateSubjectIssuer", subject: "CN=example.subject" }
-          ]
-        }
+          identities: [{ type: "CertificateSubjectIssuer", subject: "CN=example.subject" }],
+        },
       }
     );
   });
@@ -123,10 +134,10 @@ describe("Chaos test", () => {
           targets: [
             {
               type: "ChaosTarget",
-              id: targetid
-            }
-          ]
-        }
+              id: targetid,
+            },
+          ],
+        },
       ],
       steps: [
         {
@@ -142,16 +153,16 @@ describe("Chaos test", () => {
                   parameters: [
                     {
                       key: "readRegion",
-                      value: "East US"
-                    }
+                      value: "East US",
+                    },
                   ],
-                  "name": "urn:csci:microsoft:cosmosDB:failover/1.0"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+                  name: "urn:csci:microsoft:cosmosDB:failover/1.0",
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
     assert.equal(res.name, experimentName);
   });
@@ -162,7 +173,8 @@ describe("Chaos test", () => {
   });
 
   it("targets get test", async function () {
-    const res = await client.targets.get(resourceGroup,
+    const res = await client.targets.get(
+      resourceGroup,
       parentProviderNamespace,
       parentResourceType,
       cosmosdbName,
@@ -181,10 +193,12 @@ describe("Chaos test", () => {
 
   it("targets list test", async function () {
     const resArray = new Array();
-    for await (let item of client.targets.list(resourceGroup,
+    for await (let item of client.targets.list(
+      resourceGroup,
       parentProviderNamespace,
       parentResourceType,
-      cosmosdbName)) {
+      cosmosdbName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 1);
@@ -192,7 +206,7 @@ describe("Chaos test", () => {
 
   it("experiment delete test", async function () {
     const resArray = new Array();
-    const res = await client.experiments.delete(resourceGroup, experimentName)
+    const res = await client.experiments.delete(resourceGroup, experimentName);
     for await (let item of client.experiments.list(resourceGroup)) {
       resArray.push(item);
     }
@@ -201,15 +215,19 @@ describe("Chaos test", () => {
 
   it("target delete test", async function () {
     const resArray = new Array();
-    const res = await client.targets.delete(resourceGroup,
+    const res = await client.targets.delete(
+      resourceGroup,
       parentProviderNamespace,
       parentResourceType,
       cosmosdbName,
-      targetName)
-    for await (let item of client.targets.list(resourceGroup,
+      targetName
+    );
+    for await (let item of client.targets.list(
+      resourceGroup,
       parentProviderNamespace,
       parentResourceType,
-      cosmosdbName)) {
+      cosmosdbName
+    )) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
@@ -217,7 +235,11 @@ describe("Chaos test", () => {
 
   it("chaos dependence delete test", async function () {
     const resArray = new Array();
-    const res = await cos_client.databaseAccounts.beginDeleteAndWait(resourceGroup, cosmosdbName, testPollingOptions)
+    const res = await cos_client.databaseAccounts.beginDeleteAndWait(
+      resourceGroup,
+      cosmosdbName,
+      testPollingOptions
+    );
     for await (let item of cos_client.databaseAccounts.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }

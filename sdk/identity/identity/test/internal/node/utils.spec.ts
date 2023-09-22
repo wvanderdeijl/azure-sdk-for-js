@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { processMultiTenantRequest } from "../../../src/util/tenantIdUtils";
 
 describe("Identity utilities (Node.js only)", function () {

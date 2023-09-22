@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { isLiveMode, Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { DataLakeFileClient, DataLakeFileSystemClient } from "../../src";
 import { getDataLakeServiceClient, getUniqueName, recorderEnvSetup, uriSanitizers } from "../utils";
 import {

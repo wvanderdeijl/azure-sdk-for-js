@@ -5,7 +5,7 @@ import { ContainerClient, BlockBlobClient } from "@azure/storage-blob";
 import { QuantumJobClient } from "../../src";
 import { authenticate } from "../utils/testAuthentication";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import * as fs from "fs";
 import { TokenCredential } from "@azure/identity";
 import { isPlaybackMode } from "@azure-tools/test-recorder";
@@ -102,9 +102,9 @@ describe("Quantum job lifecycle", () => {
     const providerId = "quantinuum";
     const target = "quantinuum.sim.h1-1e";
     const inputParams = {
-      "entryPoint": "ENTRYPOINT__BellState",
-      "arguments": <string[]>[],
-      "targetCapability": "AdaptiveExecution",    
+      entryPoint: "ENTRYPOINT__BellState",
+      arguments: <string[]>[],
+      targetCapability: "AdaptiveExecution",
     };
     const createJobDetails = {
       containerUri: containerUri,

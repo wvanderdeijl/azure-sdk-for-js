@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { isUnexpected, MapsRenderClient, positionToTileXY } from "../../src";
 import { createClient, createRecorder } from "./utils/recordedClient";

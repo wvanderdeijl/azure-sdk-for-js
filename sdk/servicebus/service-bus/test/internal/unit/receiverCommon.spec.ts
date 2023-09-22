@@ -8,7 +8,7 @@ import {
   settleMessageOperation,
   wrapProcessErrorHandler,
 } from "../../../src/receivers/receiverCommon";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ServiceBusReceiver } from "../../../src/receivers/receiver";
 import { createServiceBusLogger, ServiceBusLogger } from "../../../src/log";
 import { ProcessErrorArgs } from "../../../src/models";
@@ -25,7 +25,7 @@ import { Delivery } from "rhea-promise";
 import { MessageAlreadySettled } from "../../../src/util/errors";
 import { assertThrows } from "../../public/utils/testUtils";
 import { AbortError } from "@azure/abort-controller";
-const assert = chai.assert;
+const assert = assert;
 
 describe("shared receiver code", () => {
   describe("translateServiceBusError", () => {

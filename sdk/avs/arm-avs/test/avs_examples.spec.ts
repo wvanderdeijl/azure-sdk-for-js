@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AzureVMwareSolutionAPI } from "../src/azureVMwareSolutionAPI";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,10 +44,14 @@ describe("avs test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new AzureVMwareSolutionAPI(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new AzureVMwareSolutionAPI(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastasia";
     resourceGroup = "myjstest";
     privateCloudName = "cloud1";
@@ -64,17 +68,17 @@ describe("avs test", () => {
       privateCloudName,
       {
         availability: {
-          strategy: "SingleZone"
+          strategy: "SingleZone",
         },
         identity: { type: "SystemAssigned" },
         location,
         managementCluster: {
           clusterId: 1,
-          clusterSize: 3
+          clusterSize: 3,
         },
         networkBlock: "192.168.0.0/16",
         sku: { name: "AV36" },
-        tags: {}
+        tags: {},
       },
       testPollingOptions
     );
@@ -91,7 +95,7 @@ describe("avs test", () => {
     for await (let item of client.privateClouds.listInSubscription()) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 1);//should be 1,but when testing this test there's 2 resources on portal
+    assert.equal(resArray.length, 1); //should be 1,but when testing this test there's 2 resources on portal
   });
 
   it("operation list test", async function () {
@@ -103,10 +107,14 @@ describe("avs test", () => {
 
   it.skip("privateClouds delete test", async function () {
     const resArray = new Array();
-    const res = await client.privateClouds.beginDeleteAndWait(resourceGroup, privateCloudName, testPollingOptions)
+    const res = await client.privateClouds.beginDeleteAndWait(
+      resourceGroup,
+      privateCloudName,
+      testPollingOptions
+    );
     for await (let item of client.privateClouds.listInSubscription()) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

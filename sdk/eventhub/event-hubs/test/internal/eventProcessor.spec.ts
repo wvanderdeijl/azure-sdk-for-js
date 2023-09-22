@@ -29,8 +29,7 @@ import { GreedyLoadBalancingStrategy } from "../../src/loadBalancerStrategies/gr
 import { InMemoryCheckpointStore } from "../../src/inMemoryCheckpointStore";
 import { PartitionContext } from "../../src/eventHubConsumerClientModels";
 import { UnbalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/unbalancedStrategy";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { delay } from "@azure/core-amqp";

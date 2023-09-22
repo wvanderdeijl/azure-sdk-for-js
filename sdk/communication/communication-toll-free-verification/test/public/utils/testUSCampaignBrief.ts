@@ -9,7 +9,7 @@ import {
   CampaignBriefSummary,
   TollFreeVerificationClient,
 } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { CompositeMapper } from "@azure/core-client";
 import { isPlaybackMode } from "@azure-tools/test-recorder";
 import { v1 as uuid } from "uuid";

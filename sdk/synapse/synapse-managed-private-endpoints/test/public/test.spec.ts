@@ -1,5 +1,5 @@
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { ManagedPrivateEndpoint, ManagedPrivateEndpointsClient } from "../../src";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
@@ -7,7 +7,7 @@ describe("Synapse Managed Private Endpoints", () => {
   let recorder: Recorder;
   let client: ManagedPrivateEndpointsClient;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     recorder = await createRecorder(this);
     client = createClient(recorder.configureClientOptions({}));
   });

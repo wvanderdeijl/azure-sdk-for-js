@@ -3,7 +3,7 @@
 
 import { HttpClient, PipelineResponse, createHttpHeaders } from "@azure/core-rest-pipeline";
 import { TableClient, TableServiceClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("ErrorHandling", function () {
   describe("TableClient", function () {

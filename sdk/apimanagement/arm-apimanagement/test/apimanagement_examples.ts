@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ApiManagementClient } from "../src/apiManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -40,14 +40,17 @@ describe("Apimanagement test", () => {
   let resourceGroupName: string;
   let serviceName: string;
 
-
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ApiManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ApiManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroupName = "myjstest";
     serviceName = "myserviceyyy1";
@@ -58,19 +61,24 @@ describe("Apimanagement test", () => {
   });
 
   function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   it("apiManagementService create test", async function () {
-    const res = await client.apiManagementService.beginCreateOrUpdateAndWait(resourceGroupName, serviceName, {
-      location: location,
-      sku: {
-        name: "Standard",
-        capacity: 1
+    const res = await client.apiManagementService.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      serviceName,
+      {
+        location: location,
+        sku: {
+          name: "Standard",
+          capacity: 1,
+        },
+        publisherEmail: "foo@contoso.com",
+        publisherName: "foo",
       },
-      publisherEmail: "foo@contoso.com",
-      publisherName: "foo"
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, serviceName);
   }).timeout(3600000);
 
@@ -94,20 +102,24 @@ describe("Apimanagement test", () => {
       count++;
       const res = await client.apiManagementService.get(resourceGroupName, serviceName);
       if (res.provisioningState == "Succeeded") {
-        const res = await client.apiManagementService.beginUpdateAndWait(resourceGroupName, serviceName, {
-          customProperties: {
-            "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false"
-          }
-        }, testPollingOptions);
+        const res = await client.apiManagementService.beginUpdateAndWait(
+          resourceGroupName,
+          serviceName,
+          {
+            customProperties: {
+              "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false",
+            },
+          },
+          testPollingOptions
+        );
         assert.equal(res.type, "Microsoft.ApiManagement/service");
         break;
       } else {
         // The resource is activating
-        await delay(300000)
+        await delay(300000);
       }
     }
   }).timeout(3600000);
-
 
   it("backend create test1", async function () {
     const result = await client.backend.createOrUpdate(
@@ -117,10 +129,10 @@ describe("Apimanagement test", () => {
       {
         description: "Service Fabric Test App 1",
         url: "https://backendname26441",
-        protocol: "http"
-      },
+        protocol: "http",
+      }
     );
-  })
+  });
 
   it("backend create test2", async function () {
     const result = await client.backend.createOrUpdate(
@@ -130,38 +142,30 @@ describe("Apimanagement test", () => {
       {
         description: "Service Fabric Test App 1",
         url: "https://backendname26442",
-        protocol: "http"
-      },
+        protocol: "http",
+      }
     );
-  })
+  });
 
   it("backend list test", async function () {
     const resArray = new Array();
-    for await (let item of client.backend.listByService(resourceGroupName, serviceName, { top: 1 })) {
+    for await (let item of client.backend.listByService(resourceGroupName, serviceName, {
+      top: 1,
+    })) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 2);
-  })
+  });
 
   it("backend delete test", async function () {
-    const res1 = await client.backend.delete(
-      resourceGroupName,
-      serviceName,
-      "sfbackend1",
-      "*"
-    );
-    const res2 = await client.backend.delete(
-      resourceGroupName,
-      serviceName,
-      "sfbackend2",
-      "*"
-    );
+    const res1 = await client.backend.delete(resourceGroupName, serviceName, "sfbackend1", "*");
+    const res2 = await client.backend.delete(resourceGroupName, serviceName, "sfbackend2", "*");
     const resArray = new Array();
     for await (let item of client.backend.listByService(resourceGroupName, serviceName)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
-  })
+  });
 
   it("apiManagementService delete test", async function () {
     let count = 0;
@@ -169,8 +173,16 @@ describe("Apimanagement test", () => {
       count++;
       const res = await client.apiManagementService.get(resourceGroupName, serviceName);
       if (res.provisioningState == "Succeeded") {
-        const res = await client.apiManagementService.beginDeleteAndWait(resourceGroupName, serviceName, testPollingOptions);
-        const purge_resource = await client.deletedServices.beginPurgeAndWait(serviceName, location, testPollingOptions);
+        const res = await client.apiManagementService.beginDeleteAndWait(
+          resourceGroupName,
+          serviceName,
+          testPollingOptions
+        );
+        const purge_resource = await client.deletedServices.beginPurgeAndWait(
+          serviceName,
+          location,
+          testPollingOptions
+        );
         const resArray = new Array();
         for await (let item of client.apiManagementService.listByResourceGroup(resourceGroupName)) {
           resArray.push(item);

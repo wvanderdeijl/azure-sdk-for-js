@@ -3,7 +3,7 @@
 import { PurviewAccount } from "../../src";
 import { Recorder } from "@azure-tools/test-recorder";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createAccountClient } from "./utils/recordedClient";
 import { Context } from "mocha";
 

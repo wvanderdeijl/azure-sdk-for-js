@@ -2,8 +2,7 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiExclude from "chai-exclude";
 import * as dotenv from "dotenv";
 import { ServiceBusAdministrationClient } from "../../src";

@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { parseXML, stringifyXML } from "../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("XML serializer", function () {
   describe("parseXML(string)", function () {

@@ -7,7 +7,7 @@ import { Context } from "mocha";
 import { CreateClientMode } from "./utils/recordedClient";
 import { TableClient } from "../../src/TableClient";
 import { TableServiceClient } from "../../src/TableServiceClient";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isLiveMode } from "@azure-tools/test-recorder";
 import { isNode } from "@azure/test-utils";
 import { odata } from "../../src/odata";

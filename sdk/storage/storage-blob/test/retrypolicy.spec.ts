@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Pipeline } from "@azure/core-rest-pipeline";
 
 import { AbortController } from "@azure/abort-controller";

@@ -9,7 +9,7 @@ import {
 } from "@azure/core-rest-pipeline";
 import { TableTransaction, parseTransactionResponse } from "../../src/TableTransaction";
 import { TableClient } from "../../src/TableClient";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("TableTransaction", function () {
   describe("parseTransactionResponse", function () {

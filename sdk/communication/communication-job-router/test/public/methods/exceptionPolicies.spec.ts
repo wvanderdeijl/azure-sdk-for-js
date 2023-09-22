@@ -3,7 +3,7 @@
 
 import { Recorder } from "@azure-tools/test-recorder";
 import { ExceptionPolicy, JobRouterAdministrationClient } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecordedRouterClientWithConnectionString } from "../../internal/utils/mockClient";
 import { Context } from "mocha";
 import { getExceptionPolicyRequest } from "../utils/testData";

@@ -13,7 +13,7 @@ import { RequestPolicy, RequestPolicyOptions } from "../../src/policies/requestP
 import { HttpHeaders } from "../../src/httpHeaders";
 import { HttpOperationResponse } from "../../src/httpOperationResponse";
 import { WebResource } from "../../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("deserializationPolicy", function () {
   const mockPolicy: RequestPolicy = {

@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { ServiceBusMessage } from "../../../src";
 import { TestMessage } from "../../public/utils/testUtils";
 import { fromRheaMessage, toRheaMessage } from "../../../src/serviceBusMessage";

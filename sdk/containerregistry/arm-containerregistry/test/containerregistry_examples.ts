@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ContainerRegistryManagementClient } from "../src/containerRegistryManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888"
+  SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -42,20 +42,24 @@ describe("ContainerRegistry test", () => {
   let registryName: string;
   let importPipelineName: string;
   let exportPipelineName: string;
-  let taskName: string
+  let taskName: string;
 
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ContainerRegistryManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ContainerRegistryManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     registryName = "myregistryxxxyy";
     importPipelineName = "myimportpipelinexxx";
-    exportPipelineName = 'myexportpipelinexxx';
+    exportPipelineName = "myexportpipelinexxx";
     taskName = "mytaskxxx";
   });
 
@@ -64,17 +68,22 @@ describe("ContainerRegistry test", () => {
   });
 
   it("registries create test", async function () {
-    const res = await client.registries.beginCreateAndWait(resourceGroup, registryName, {
-      location: location,
-      tags: {
-        key: "value"
+    const res = await client.registries.beginCreateAndWait(
+      resourceGroup,
+      registryName,
+      {
+        location: location,
+        tags: {
+          key: "value",
+        },
+        sku: {
+          name: "Premium",
+        },
+        adminUserEnabled: false,
       },
-      sku: {
-        name: "Premium"
-      },
-      adminUserEnabled: false
-    }, testPollingOptions);
-    assert.equal(res.name, registryName)
+      testPollingOptions
+    );
+    assert.equal(res.name, registryName);
   });
 
   // it("importPipelines create test", async function() {
@@ -160,36 +169,42 @@ describe("ContainerRegistry test", () => {
   // });
 
   it("tasks create test", async function () {
-    const res = await client.tasks.beginCreateAndWait(resourceGroup, registryName, taskName, {
-      location: location,
-      tags: {
-        testkey: "value"
+    const res = await client.tasks.beginCreateAndWait(
+      resourceGroup,
+      registryName,
+      taskName,
+      {
+        location: location,
+        tags: {
+          testkey: "value",
+        },
+        status: "Enabled",
+        platform: {
+          os: "Linux",
+          architecture: "amd64",
+        },
+        agentConfiguration: {
+          cpu: 2,
+        },
+        step: {
+          type: "Docker",
+          contextPath: "https://github.com/SteveLasker/node-helloworld",
+          imageNames: ["testtask:v1"],
+          dockerFilePath: "DockerFile",
+          isPushEnabled: true,
+          noCache: false,
+        },
+        trigger: {
+          baseImageTrigger: {
+            name: "myBaseImageTrigger",
+            baseImageTriggerType: "Runtime",
+            updateTriggerPayloadType: "Default",
+            status: "Enabled",
+          },
+        },
       },
-      status: "Enabled",
-      platform: {
-        os: "Linux",
-        architecture: "amd64"
-      },
-      agentConfiguration: {
-        cpu: 2
-      },
-      step: {
-        type: "Docker",
-        contextPath: "https://github.com/SteveLasker/node-helloworld",
-        imageNames: ["testtask:v1"],
-        dockerFilePath: "DockerFile",
-        isPushEnabled: true,
-        noCache: false
-      },
-      trigger: {
-        baseImageTrigger: {
-          name: "myBaseImageTrigger",
-          baseImageTriggerType: "Runtime",
-          updateTriggerPayloadType: "Default",
-          status: "Enabled"
-        }
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, taskName);
   });
 
@@ -207,40 +222,51 @@ describe("ContainerRegistry test", () => {
   });
 
   it("tasks update test", async function () {
-    const res = await client.tasks.beginUpdateAndWait(resourceGroup, registryName, taskName, {
-      tags: {
-        testkey: "value"
+    const res = await client.tasks.beginUpdateAndWait(
+      resourceGroup,
+      registryName,
+      taskName,
+      {
+        tags: {
+          testkey: "value",
+        },
+        status: "Enabled",
+        platform: {
+          os: "Linux",
+          architecture: "amd64",
+        },
+        agentConfiguration: {
+          cpu: 2,
+        },
+        step: {
+          type: "Docker",
+          contextPath: "https://github.com/SteveLasker/node-helloworld",
+          imageNames: ["testtask:v1"],
+          dockerFilePath: "DockerFile",
+          isPushEnabled: true,
+          noCache: false,
+        },
+        trigger: {
+          baseImageTrigger: {
+            name: "myBaseImageTrigger",
+            baseImageTriggerType: "Runtime",
+            updateTriggerPayloadType: "Default",
+            status: "Enabled",
+          },
+        },
       },
-      status: "Enabled",
-      platform: {
-        os: "Linux",
-        architecture: "amd64"
-      },
-      agentConfiguration: {
-        cpu: 2
-      },
-      step: {
-        type: "Docker",
-        contextPath: "https://github.com/SteveLasker/node-helloworld",
-        imageNames: ["testtask:v1"],
-        dockerFilePath: "DockerFile",
-        isPushEnabled: true,
-        noCache: false
-      },
-      trigger: {
-        baseImageTrigger: {
-          name: "myBaseImageTrigger",
-          baseImageTriggerType: "Runtime",
-          updateTriggerPayloadType: "Default",
-          status: "Enabled"
-        }
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.type, "Microsoft.ContainerRegistry/registries/tasks");
   });
 
   it("tasks delete test", async function () {
-    const res = await client.tasks.beginDeleteAndWait(resourceGroup, registryName, taskName, testPollingOptions);
+    const res = await client.tasks.beginDeleteAndWait(
+      resourceGroup,
+      registryName,
+      taskName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.tasks.list(resourceGroup, registryName)) {
       resArray.push(item);
@@ -249,6 +275,10 @@ describe("ContainerRegistry test", () => {
   });
 
   it("registries delete test", async function () {
-    const res = await client.registries.beginDeleteAndWait(resourceGroup, registryName, testPollingOptions);
+    const res = await client.registries.beginDeleteAndWait(
+      resourceGroup,
+      registryName,
+      testPollingOptions
+    );
   });
 });

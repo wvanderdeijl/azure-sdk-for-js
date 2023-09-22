@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { parseActionError } from "../../src/analyzeActionsResult";
 import { nextLinkToTopAndSkip, sortResponseIdObjects } from "../../src/util";
 

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ServiceBusMessageBatchImpl } from "../../../src/serviceBusMessageBatch";
 import { ConnectionContext } from "../../../src/connectionContext";
 import { ServiceBusMessage } from "../../../src";
@@ -13,7 +13,7 @@ import {
   PartitionKeySessionIdMismatchError,
 } from "../../../src/util/errors";
 
-const assert = chai.assert;
+const assert = assert;
 
 describe("Sender helper unit tests", () => {
   it("isServiceBusMessageBatch", () => {

@@ -3,7 +3,7 @@
 
 import { KnownEnvironmentKey, envVarToBoolean, environmentCache } from "../../../src/configuration";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("#envVarToBoolean", () => {
   const key = "FOO" as KnownEnvironmentKey;

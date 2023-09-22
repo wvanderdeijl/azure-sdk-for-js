@@ -14,7 +14,7 @@ import {
   expectedSas8,
   expectedSas9,
 } from "../fakeTestSecrets";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("SAS generation", function () {
   describe("generateTableSAS", function () {

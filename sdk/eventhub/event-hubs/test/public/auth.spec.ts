@@ -9,7 +9,7 @@ import {
   parseEventHubConnectionString,
 } from "../../src/index";
 import { SinonFakeTimers, useFakeTimers } from "sinon";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { createSasTokenProvider } from "@azure/core-amqp";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";

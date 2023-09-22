@@ -4,8 +4,7 @@
 import { EnvVarKeys, getEnvVars } from "./utils/testUtils";
 import { EventHubConsumerClient, EventHubProducerClient } from "../../src";
 import { AbortController } from "@azure/abort-controller";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 

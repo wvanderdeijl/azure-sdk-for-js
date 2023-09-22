@@ -4,7 +4,7 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api";
 
 import { OpenTelemetrySpanWrapper } from "../../src/spanWrapper";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { getExportedSpan } from "./util/testHelpers";
 import { inMemoryExporter } from "./util/setup";
 

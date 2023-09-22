@@ -9,7 +9,7 @@ import {
 } from "@azure/event-hubs";
 import { AssertEqualKeys } from "../utils/utils";
 import { MessageAdapter } from "../../src/models";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { matrix } from "@azure/test-utils";
 
 function isMessageAdapter<MessageT>(obj: any): obj is MessageAdapter<MessageT> {

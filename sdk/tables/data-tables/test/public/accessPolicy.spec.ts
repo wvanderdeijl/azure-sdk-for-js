@@ -5,7 +5,7 @@ import { Recorder, isPlaybackMode } from "@azure-tools/test-recorder";
 
 import { Context } from "mocha";
 import { TableClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTableClient } from "./utils/recordedClient";
 import { isNode } from "@azure/test-utils";
 

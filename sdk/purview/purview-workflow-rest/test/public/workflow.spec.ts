@@ -9,7 +9,7 @@ import { Context } from "mocha";
 import { PurviewWorkflowClient } from "../../src/clientDefinitions";
 import { CreateOrReplaceWorkflowParameters } from "../../src/parameters";
 import { isUnexpected } from "../../src/isUnexpected";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Get a workflow", () => {
   let recorder: Recorder;

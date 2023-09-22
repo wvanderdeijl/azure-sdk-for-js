@@ -4,7 +4,7 @@
 import { WebPubSubServiceClient, odata } from "../src/index";
 import { isLiveMode, assertEnvironmentVariable } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import ws from "ws";
 
 function defer<T>(): {

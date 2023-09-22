@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ContainerServiceClient } from "../src/containerServiceClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -46,12 +46,16 @@ describe("ContainerService test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
-    clientId = env.AZURE_CLIENT_ID || '';
-    secret = env.AZURE_CLIENT_SECRET || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
+    clientId = env.AZURE_CLIENT_ID || "";
+    secret = env.AZURE_CLIENT_SECRET || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ContainerServiceClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ContainerServiceClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroupName = "myjstest";
     resourceName = "myreourcexyz";
@@ -62,28 +66,33 @@ describe("ContainerService test", () => {
   });
 
   it("managedClusters create test", async function () {
-    const res = await client.managedClusters.beginCreateOrUpdateAndWait(resourceGroupName, resourceName, {
-      dnsPrefix: "aksjssdk",
-      agentPoolProfiles: [
-        {
-          name: "aksagent",
-          count: 1,
-          vmSize: "Standard_DS2_v2",
-          maxPods: 110,
-          minCount: 1,
-          maxCount: 100,
-          osType: "Linux",
-          type: "VirtualMachineScaleSets",
-          enableAutoScaling: true,
-          mode: "System"
-        }
-      ],
-      servicePrincipalProfile: {
-        clientId: clientId,
-        secret: secret
+    const res = await client.managedClusters.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      resourceName,
+      {
+        dnsPrefix: "aksjssdk",
+        agentPoolProfiles: [
+          {
+            name: "aksagent",
+            count: 1,
+            vmSize: "Standard_DS2_v2",
+            maxPods: 110,
+            minCount: 1,
+            maxCount: 100,
+            osType: "Linux",
+            type: "VirtualMachineScaleSets",
+            enableAutoScaling: true,
+            mode: "System",
+          },
+        ],
+        servicePrincipalProfile: {
+          clientId: clientId,
+          secret: secret,
+        },
+        location: location,
       },
-      location: location
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, resourceName);
   });
 
@@ -106,12 +115,21 @@ describe("ContainerService test", () => {
   });
 
   it("managedClusters update test", async function () {
-    const res = await client.managedClusters.beginUpdateTagsAndWait(resourceGroupName, resourceName, { tags: { tier: "testing", archv3: "" } }, testPollingOptions);
+    const res = await client.managedClusters.beginUpdateTagsAndWait(
+      resourceGroupName,
+      resourceName,
+      { tags: { tier: "testing", archv3: "" } },
+      testPollingOptions
+    );
     assert.equal(res.type, "Microsoft.ContainerService/ManagedClusters");
   });
 
   it("managedClusters delete test", async function () {
-    const res = await client.managedClusters.beginDeleteAndWait(resourceGroupName, resourceName, testPollingOptions);
+    const res = await client.managedClusters.beginDeleteAndWait(
+      resourceGroupName,
+      resourceName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.managedClusters.listByResourceGroup(resourceGroupName)) {
       resArray.push(item);

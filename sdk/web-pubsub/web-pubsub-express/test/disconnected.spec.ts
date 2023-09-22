@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 /* eslint-disable no-invalid-this */
 import { CloudEventsDispatcher } from "../src/cloudEventsDispatcher";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { IncomingMessage, ServerResponse } from "http";
 import { Socket } from "net";
 import * as sinon from "sinon";

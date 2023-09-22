@@ -20,7 +20,7 @@ import {
 } from "./utils/testUSProgramBrief";
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecordedClient } from "./utils/recordedClient";
 
 describe(`ShortCodesClient - manage Attachments`, function () {

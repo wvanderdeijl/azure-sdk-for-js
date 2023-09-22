@@ -3,7 +3,7 @@
 
 import { isBrowser, isNode } from "../../../src";
 import { stringToUint8Array, uint8ArrayToString } from "../../../src/bytesEncoding";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Base64", function () {
   describe("isBrowser (node)", function () {

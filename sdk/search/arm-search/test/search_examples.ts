@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { SearchManagementClient } from "../src/searchManagementClient";
 
@@ -22,23 +22,27 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
   envSetupForPlayback: replaceableVariables,
   sanitizerOptions: {
-    bodySanitizers: [{
-      regex: true,
-      value: `fakeKey`,
-      target: `[a-z0-9_A-z]{40,100}`
-    }],
-    uriSanitizers: [{
-      regex: true,
-      value: `fakeKey`,
-      target: `[a-z0-9_A-z]{40,100}`
-    }]
-  }
+    bodySanitizers: [
+      {
+        regex: true,
+        value: `fakeKey`,
+        target: `[a-z0-9_A-z]{40,100}`,
+      },
+    ],
+    uriSanitizers: [
+      {
+        regex: true,
+        value: `fakeKey`,
+        target: `[a-z0-9_A-z]{40,100}`,
+      },
+    ],
+  },
 };
 
 export const testPollingOptions = {
@@ -58,13 +62,17 @@ describe("Search test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new SearchManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new SearchManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
-    searchServiceName = "myjssearchservicexxx"
+    searchServiceName = "myjssearchservicexxx";
     keyname = "testjskey";
   });
 
@@ -73,15 +81,20 @@ describe("Search test", () => {
   });
 
   it("services create test", async function () {
-    const res = await client.services.beginCreateOrUpdateAndWait(resourceGroup, searchServiceName, {
-      location: location,
-      replicaCount: 1,
-      partitionCount: 1,
-      hostingMode: "default",
-      sku: {
-        name: "standard"
-      }
-    }, testPollingOptions);
+    const res = await client.services.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      searchServiceName,
+      {
+        location: location,
+        replicaCount: 1,
+        partitionCount: 1,
+        hostingMode: "default",
+        sku: {
+          name: "standard",
+        },
+      },
+      testPollingOptions
+    );
     assert.equal(res.name, searchServiceName);
   });
 

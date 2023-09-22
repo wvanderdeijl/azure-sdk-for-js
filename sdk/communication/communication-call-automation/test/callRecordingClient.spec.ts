@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import * as RestModel from "../src/generated/src/models";
 import { createRecordingClient, generateHttpClient } from "./utils/mockClient";
 import {

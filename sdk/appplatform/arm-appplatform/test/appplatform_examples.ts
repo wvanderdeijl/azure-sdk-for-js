@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AppPlatformManagementClient } from "../src/appPlatformManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,10 +45,14 @@ describe("AppPlatform test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new AppPlatformManagementClient(credential, subscriptionId, recorder.configureClientOptions({}) as any);
+    client = new AppPlatformManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({}) as any
+    );
     location = "east us";
     resourceGroup = "czwjstest";
     serviceName = "myservicexxx12";
@@ -60,35 +64,46 @@ describe("AppPlatform test", () => {
   });
 
   it("services create test", async function () {
-    const res = await client.services.beginCreateOrUpdateAndWait(resourceGroup, serviceName, {
-      sku: {
-        name: "B0",
-        tier: "Basic"
+    const res = await client.services.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      serviceName,
+      {
+        sku: {
+          name: "B0",
+          tier: "Basic",
+        },
+        tags: {
+          key1: "value1",
+        },
+        location: location,
       },
-      tags: {
-        key1: "value1"
-      },
-      location: location
-    }, testPollingOptions);
+      testPollingOptions
+    );
   });
 
   it("apps create test", async function () {
-    const res = await client.apps.beginCreateOrUpdateAndWait(resourceGroup, serviceName, appName, {
-      properties: {
-        public: true,
-        // activeDeploymentName: "mydeployment1",
-        fqdn: "myapp.mydomain.com",
-        httpsOnly: false,
-        temporaryDisk: {
-          sizeInGB: 2,
-          mountPath: "/mytemporarydisk"
+    const res = await client.apps.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      serviceName,
+      appName,
+      {
+        properties: {
+          public: true,
+          // activeDeploymentName: "mydeployment1",
+          fqdn: "myapp.mydomain.com",
+          httpsOnly: false,
+          temporaryDisk: {
+            sizeInGB: 2,
+            mountPath: "/mytemporarydisk",
+          },
+          persistentDisk: {
+            sizeInGB: 1,
+            mountPath: "/mypersistentdisk",
+          },
         },
-        persistentDisk: {
-          sizeInGB: 1,
-          mountPath: "/mypersistentdisk"
-        }
-      }
-    }, testPollingOptions);
+      },
+      testPollingOptions
+    );
   });
 
   it("services get test", async function () {
@@ -118,7 +133,12 @@ describe("AppPlatform test", () => {
   });
 
   it("apps delete test", async function () {
-    const res = await client.apps.beginDeleteAndWait(resourceGroup, serviceName, appName, testPollingOptions);
+    const res = await client.apps.beginDeleteAndWait(
+      resourceGroup,
+      serviceName,
+      appName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.apps.list(resourceGroup, serviceName)) {
       resArray.push(item);
@@ -127,7 +147,11 @@ describe("AppPlatform test", () => {
   });
 
   it("services delete test", async function () {
-    const res = await client.services.beginDeleteAndWait(resourceGroup, serviceName, testPollingOptions);
+    const res = await client.services.beginDeleteAndWait(
+      resourceGroup,
+      serviceName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.services.list(resourceGroup)) {
       resArray.push(item);

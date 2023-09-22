@@ -3,7 +3,7 @@
 
 import { Recorder, assertEnvironmentVariable } from "@azure-tools/test-recorder";
 import { matrix } from "@azure/test-utils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import fs from "fs";
 import { Context } from "mocha";
 import path from "path";

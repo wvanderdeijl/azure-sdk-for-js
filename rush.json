@@ -805,6 +805,13 @@
     {
       "packageName": "@azure-tools/test-recorder",
       "projectFolder": "sdk/test-utils/recorder",
+      "decoupledLocalDependencies": [
+        "@azure/core-client",
+        "@azure/core-rest-pipeline",
+        "@azure/core-auth",
+        "@azure/core-util",
+        "@azure/logger"
+      ],
       "versionPolicyName": "utility"
     },
     {
@@ -820,6 +827,11 @@
     {
       "packageName": "@azure/test-utils",
       "projectFolder": "sdk/test-utils/test-utils",
+      "decoupledLocalDependencies": [
+        "@azure/core-rest-pipeline",
+        "@azure/abort-controller",
+        "@azure/core-tracing"
+      ],
       "versionPolicyName": "utility"
     },
     {

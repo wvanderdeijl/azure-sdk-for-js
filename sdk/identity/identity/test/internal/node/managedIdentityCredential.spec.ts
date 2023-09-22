@@ -19,7 +19,7 @@ import { IdentityTestContext } from "../../httpRequests";
 import { ManagedIdentityCredential } from "../../../src";
 import { RestError } from "@azure/core-rest-pipeline";
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { join } from "path";
 import { logger } from "../../../src/credentials/managedIdentityCredential/cloudShellMsi";
 import { tmpdir } from "os";

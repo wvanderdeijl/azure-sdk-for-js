@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiExclude from "chai-exclude";
 import * as dotenv from "dotenv";
 import {
@@ -79,7 +78,7 @@ describe("Filter messages with the rules set by the ATOM API", () => {
       { subject },
       1,
       (msg) => {
-        chai.assert.deepEqual(msg.subject, subject, "Unexpected subject on the message");
+        assert.deepEqual(msg.subject, subject, "Unexpected subject on the message");
       }
     );
   });
@@ -127,7 +126,7 @@ describe("getSubscriptionRuntimeProperties", () => {
         subscriptionName1
       )
     ).activeMessageCount;
-    chai.assert.equal(activeMessageCount, messages.length, "Unexpected active message count");
+    assert.equal(activeMessageCount, messages.length, "Unexpected active message count");
   });
 
   it("Active Message Count - multiple subscriptions", async () => {
@@ -145,7 +144,7 @@ describe("getSubscriptionRuntimeProperties", () => {
     for await (const subscription of serviceBusAtomManagementClient.listSubscriptionsRuntimeProperties(
       topicName
     )) {
-      chai.assert.equal(
+      assert.equal(
         subscription.activeMessageCount,
         messages.length,
         "Unexpected active message count"

@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import debug, { Debugger } from "../src/debug";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { stub } from "sinon";
 
 describe("debug", function () {

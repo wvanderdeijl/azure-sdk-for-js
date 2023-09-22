@@ -5,9 +5,9 @@ import { BatchingReceiver } from "../../../src/core/batchingReceiver";
 import { ServiceBusReceiverImpl } from "../../../src/receivers/receiver";
 import { assertThrows } from "../../public/utils/testUtils";
 import { createConnectionContextForTests, getPromiseResolverForTest } from "./unittestUtils";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { InternalMessageHandlers } from "../../../src/models";
-const assert = chai.assert;
+const assert = assert;
 
 describe("ServiceBusReceiver unit tests", () => {
   let receiver: ServiceBusReceiverImpl;

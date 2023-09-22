@@ -6,7 +6,7 @@ import { HttpClient } from "@azure/core-rest-pipeline";
 import { generateSendMessageRequest } from "../../src/utils/smsUtils";
 import { Uuid } from "../../src/utils/uuid";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import sinon from "sinon";
 import { apiVersion } from "../../src/generated/src/models/parameters";
 import { SmsClient, SmsSendRequest } from "../../src/smsClient";

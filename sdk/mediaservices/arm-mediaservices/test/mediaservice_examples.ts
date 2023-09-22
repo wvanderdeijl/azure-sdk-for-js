@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AzureMediaServices } from "../src/azureMediaServices";
 import { StorageManagementClient } from "@azure/arm-storage";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -47,11 +47,19 @@ describe("MediaServices test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new AzureMediaServices(credential, subscriptionId, recorder.configureClientOptions({}));
-    storage_client = new StorageManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new AzureMediaServices(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    storage_client = new StorageManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     mediaName = "mymediaxxx";
@@ -63,39 +71,55 @@ describe("MediaServices test", () => {
   });
 
   it("mediaservices create test", async function () {
-    const storage_res = await storage_client.storageAccounts.beginCreateAndWait(resourceGroup, storageAccountName, {
-      sku: {
-        name: "Standard_GRS",
-      },
-      kind: "StorageV2",
-      location: "westeurope",
-      encryption: {
-        services: {
-          file: {
-            keyType: "Account",
-            enabled: true,
-          },
-          blob: {
-            keyType: "Account",
-            enabled: true,
-          },
+    const storage_res = await storage_client.storageAccounts.beginCreateAndWait(
+      resourceGroup,
+      storageAccountName,
+      {
+        sku: {
+          name: "Standard_GRS",
         },
-        keySource: "Microsoft.Storage",
+        kind: "StorageV2",
+        location: "westeurope",
+        encryption: {
+          services: {
+            file: {
+              keyType: "Account",
+              enabled: true,
+            },
+            blob: {
+              keyType: "Account",
+              enabled: true,
+            },
+          },
+          keySource: "Microsoft.Storage",
+        },
+        tags: {
+          key1: "value1",
+          key2: "value2",
+        },
       },
-      tags: {
-        key1: "value1",
-        key2: "value2",
-      }
-    }, testPollingOptions)
-    const res = await client.mediaservices.beginCreateOrUpdateAndWait(resourceGroup, mediaName, {
-      location: location,
-      storageAccounts: [
-        {
-          id: "/subscriptions/" + subscriptionId + "/resourceGroups/" + resourceGroup + "/providers/Microsoft.Storage/storageAccounts/" + storageAccountName,
-          type: "Primary"
-        }
-      ]
-    }, testPollingOptions);
+      testPollingOptions
+    );
+    const res = await client.mediaservices.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      mediaName,
+      {
+        location: location,
+        storageAccounts: [
+          {
+            id:
+              "/subscriptions/" +
+              subscriptionId +
+              "/resourceGroups/" +
+              resourceGroup +
+              "/providers/Microsoft.Storage/storageAccounts/" +
+              storageAccountName,
+            type: "Primary",
+          },
+        ],
+      },
+      testPollingOptions
+    );
     assert.equal(res.name, mediaName);
   });
 

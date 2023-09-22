@@ -3,14 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {
-  env,
-  Recorder,
-  RecorderStartOptions,
-  isPlaybackMode,
-} from "@azure-tools/test-recorder";
+import { env, Recorder, RecorderStartOptions, isPlaybackMode } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { CognitiveServicesManagementClient } from "../src/cognitiveServicesManagementClient";
 
@@ -18,11 +13,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -40,10 +35,14 @@ describe("CognitiveServices test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new CognitiveServicesManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new CognitiveServicesManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     accountName = "myaccountxxxx1";
@@ -54,16 +53,21 @@ describe("CognitiveServices test", () => {
   });
 
   it("accounts create test", async function () {
-    const res = await client.accounts.beginCreateAndWait(resourceGroup, accountName, {
-      location: location,
-      kind: "CognitiveServices",
-      sku: {
-        name: "S0"
+    const res = await client.accounts.beginCreateAndWait(
+      resourceGroup,
+      accountName,
+      {
+        location: location,
+        kind: "CognitiveServices",
+        sku: {
+          name: "S0",
+        },
+        identity: {
+          type: "SystemAssigned",
+        },
       },
-      identity: {
-        type: "SystemAssigned"
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, accountName);
   });
 
@@ -86,12 +90,21 @@ describe("CognitiveServices test", () => {
   });
 
   it("accounts update test", async function () {
-    const res = await client.accounts.beginUpdateAndWait(resourceGroup, accountName, { tags: { tag1: "value1" } }, testPollingOptions);
-    assert.equal(res.type, "Microsoft.CognitiveServices/accounts")
+    const res = await client.accounts.beginUpdateAndWait(
+      resourceGroup,
+      accountName,
+      { tags: { tag1: "value1" } },
+      testPollingOptions
+    );
+    assert.equal(res.type, "Microsoft.CognitiveServices/accounts");
   });
 
   it("accounts delete test", async function () {
-    const res = await client.accounts.beginDeleteAndWait(resourceGroup, accountName, testPollingOptions);
+    const res = await client.accounts.beginDeleteAndWait(
+      resourceGroup,
+      accountName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.accounts.listByResourceGroup(resourceGroup)) {
       resArray.push(item);

@@ -6,17 +6,14 @@ import {
   createTestSerializer,
   registerTestSchema,
 } from "./utils/mockedSerializer";
-import { assert, use as chaiUse } from "chai";
+import { assert } from "chai";
 import { testAvroType, testGroup, testSchema, testValue } from "./utils/dummies";
 import { Context } from "mocha";
 import { MessageContent } from "../../src/";
-import chaiPromises from "chai-as-promised";
 import { createTestRegistry } from "./utils/mockedRegistryClient";
 import { v4 as uuid } from "uuid";
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";
 import { SchemaRegistry } from "@azure/schema-registry";
-
-chaiUse(chaiPromises);
 
 describe("AvroSerializer", async function () {
   let noAutoRegisterOptions: CreateTestSerializerOptions<any>;

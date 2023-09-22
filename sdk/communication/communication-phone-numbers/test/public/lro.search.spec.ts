@@ -3,7 +3,7 @@
 
 import { matrix } from "@azure/test-utils";
 import { Recorder, env } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { PhoneNumbersClient, SearchAvailablePhoneNumbersRequest } from "../../src";
 import { createRecordedClient, createRecordedClientWithToken } from "./utils/recordedClient";

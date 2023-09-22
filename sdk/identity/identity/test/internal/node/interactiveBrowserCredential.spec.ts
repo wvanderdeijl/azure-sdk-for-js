@@ -10,7 +10,7 @@ import { Context } from "mocha";
 import { InteractiveBrowserCredential } from "../../../src";
 
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import http from "http";
 import { interactiveBrowserMockable } from "../../../src/msal/nodeFlows/msalOpenBrowser";
 

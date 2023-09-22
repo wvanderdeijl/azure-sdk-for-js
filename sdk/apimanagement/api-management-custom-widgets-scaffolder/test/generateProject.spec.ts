@@ -3,7 +3,7 @@
 
 import { TECHNOLOGIES, WidgetConfig, displayNameToName } from "../src/scaffolding";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { generateProject } from "../src";
 import { promises } from "fs";
 import sinon from "sinon";

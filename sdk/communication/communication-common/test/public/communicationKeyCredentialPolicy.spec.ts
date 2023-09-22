@@ -9,7 +9,7 @@ import {
   createPipelineRequest,
 } from "@azure/core-rest-pipeline";
 import { KeyCredential } from "@azure/core-auth";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createCommunicationAccessKeyCredentialPolicy } from "../../src";
 import { isNode } from "@azure/core-util";
 import { set } from "mockdate";

@@ -4,7 +4,7 @@
 import { AzureKeyCredential } from "@azure/core-auth";
 import { isNode } from "@azure/core-util";
 import { TokenCredential } from "@azure/identity";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import sinon from "sinon";
 import { PhoneNumbersClient } from "../../src/phoneNumbersClient";
 import { getPhoneNumberHttpClient } from "../public/utils/mockHttpClients";

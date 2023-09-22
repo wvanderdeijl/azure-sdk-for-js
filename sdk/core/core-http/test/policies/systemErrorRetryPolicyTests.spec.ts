@@ -6,7 +6,7 @@ import { HttpOperationResponse } from "../../src/httpOperationResponse";
 import { RetryError } from "../../src/util/exponentialBackoffStrategy";
 import { SystemErrorRetryPolicy } from "../../src/policies/systemErrorRetryPolicy";
 import { WebResource } from "../../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("SystemErrorRetryPolicy", () => {
   class PassThroughPolicy {

@@ -12,7 +12,7 @@ import {
   CALL_TARGET_ID_2,
 } from "./utils/connectionUtils";
 import { CommunicationIdentifier, CommunicationUserIdentifier } from "@azure/communication-common";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { CallAutomationClient, CallInvite, CallConnection } from "../src";
 import {

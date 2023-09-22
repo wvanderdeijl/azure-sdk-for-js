@@ -11,7 +11,7 @@ import { createClient, createRecorder } from "./utils/recordedClient";
 
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isNode } from "@azure/core-util";
 
 const startDateTime = new Date("2020-02-01T08:00:00.000Z");

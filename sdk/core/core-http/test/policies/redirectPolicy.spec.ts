@@ -5,7 +5,7 @@ import { HttpHeaders, RequestPolicyOptions } from "../../src";
 import { HttpOperationResponse } from "../../src/httpOperationResponse";
 import { RedirectPolicy } from "../../src/policies/redirectPolicy";
 import { WebResource } from "../../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("RedirectPolicy", () => {
   it("should not follow redirect if no location header", async () => {

@@ -4,7 +4,7 @@
 import { EmailClient, EmailMessage, KnownEmailSendStatus } from "../../src";
 import { Recorder, env } from "@azure-tools/test-recorder";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecordedEmailClientWithConnectionString } from "./utils/recordedClient";
 
 describe(`EmailClient [Playback/Live]`, function () {

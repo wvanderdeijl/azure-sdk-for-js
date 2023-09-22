@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 /* eslint-disable no-invalid-this */
 import { odata } from "../src/utils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Can parse odata to string", function () {
   it("can wrap different types as expected", async () => {

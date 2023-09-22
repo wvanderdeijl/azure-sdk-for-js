@@ -7,7 +7,7 @@ import { LogPolicy, LogPolicyOptions } from "../src/policies/logPolicy";
 import { RequestPolicy, RequestPolicyOptions } from "../src/policies/requestPolicy";
 import { HttpOperationResponse } from "../src/httpOperationResponse";
 import { WebResource } from "../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { fakeTestSecretPlaceholder } from "@azure/test-utils";
 
 function getNextPolicy(responseHeaders?: RawHttpHeaders): RequestPolicy {

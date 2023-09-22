@@ -3,7 +3,7 @@
 
 import { FullOperationResponse } from "@azure/core-client";
 import { PipelineRequest, PipelineResponse, createHttpHeaders } from "@azure/core-rest-pipeline";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createPhoneNumbersPagingPolicy } from "../../src/utils/customPipelinePolicies";
 
 describe("phoneNumbersPagingPolicy", function () {

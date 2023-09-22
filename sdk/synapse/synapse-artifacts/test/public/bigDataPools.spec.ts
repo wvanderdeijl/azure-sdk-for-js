@@ -1,7 +1,7 @@
 import { ArtifactsClient } from "../../src/artifactsClient";
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient } from "./utils/recordedClient";
 
 describe("BigDataPools", () => {

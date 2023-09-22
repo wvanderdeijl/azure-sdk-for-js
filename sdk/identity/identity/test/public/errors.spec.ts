@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AggregateAuthenticationError } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AggregateAuthenticationError", function () {
   it("produces a message containing details of the errors it contains", async () => {

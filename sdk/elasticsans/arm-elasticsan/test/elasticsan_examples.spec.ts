@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ElasticSanManagement } from "../src/elasticSanManagement";
 import { ElasticSan } from "../src/models";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -41,14 +41,18 @@ describe("elasticSan test", () => {
   let location: string;
   let resourceGroup: string;
   let elasticSanName: string;
-  let parameters: ElasticSan
+  let parameters: ElasticSan;
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ElasticSanManagement(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ElasticSanManagement(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus2stage";
     resourceGroup = "myjstest";
     elasticSanName = "ti7q-k952-1qB3J_5";
@@ -58,7 +62,7 @@ describe("elasticSan test", () => {
       extendedCapacitySizeTiB: 7,
       location: location,
       sku: { name: "Premium_LRS", tier: "Premium" },
-      tags: { key896: "aaaaaaaaaaaaaaaaaa" }
+      tags: { key896: "aaaaaaaaaaaaaaaaaa" },
     };
   });
 
@@ -73,4 +77,4 @@ describe("elasticSan test", () => {
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

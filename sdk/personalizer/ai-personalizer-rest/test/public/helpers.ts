@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { delay } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { PersonalizerClient, ServiceConfiguration } from "../../src";
 
 export async function isMultiSlotEnabled(client: PersonalizerClient): Promise<boolean> {

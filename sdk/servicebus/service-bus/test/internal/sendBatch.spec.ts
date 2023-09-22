@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 const should = chai.should();
-const assert = chai.assert;
-import chaiAsPromised from "chai-as-promised";
+const assert = assert;
 chai.use(chaiAsPromised);
 import {
   OperationOptions,

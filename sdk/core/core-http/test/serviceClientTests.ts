@@ -29,7 +29,7 @@ import { HttpClient } from "../src/httpClient";
 import { ParameterPath } from "../src/operationParameter";
 import { QueryCollectionFormat } from "../src/queryCollectionFormat";
 import { WebResource } from "../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { getCachedDefaultHttpClient } from "../src/httpClientCache";
 
 describe("ServiceClient", function () {

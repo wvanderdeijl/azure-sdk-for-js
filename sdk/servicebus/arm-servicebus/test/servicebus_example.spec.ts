@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { ServiceBusManagementClient } from "../src/serviceBusManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -47,10 +47,14 @@ describe("ServiceBus test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new ServiceBusManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new ServiceBusManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     namespacesName = "mynamespacexxx";
@@ -64,22 +68,29 @@ describe("ServiceBus test", () => {
   });
 
   it("namespaces create test", async function () {
-    const res = await client.namespaces.beginCreateOrUpdateAndWait(resourceGroup, namespacesName, {
-      sku: {
-        name: "Standard",
-        tier: "Standard",
+    const res = await client.namespaces.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      namespacesName,
+      {
+        sku: {
+          name: "Standard",
+          tier: "Standard",
+        },
+        location: location,
+        tags: {
+          tag1: "value1",
+          tag2: "value2",
+        },
       },
-      location: location,
-      tags: {
-        tag1: "value1",
-        tag2: "value2",
-      }
-    }, testPollingOptions)
+      testPollingOptions
+    );
     assert.equal(res.name, namespacesName);
   });
 
   it("queues create test", async function () {
-    const res = await client.queues.createOrUpdate(resourceGroup, namespacesName, queueName, { enablePartitioning: true });
+    const res = await client.queues.createOrUpdate(resourceGroup, namespacesName, queueName, {
+      enablePartitioning: true,
+    });
     assert.equal(res.name, queueName);
   });
 
@@ -98,8 +109,8 @@ describe("ServiceBus test", () => {
 
   it("topics create test", async function () {
     const res = await client.topics.createOrUpdate(resourceGroup, namespacesName, topicName, {
-      enableExpress: true
-    })
+      enableExpress: true,
+    });
     assert.equal(res.name, topicName);
   });
 
@@ -135,6 +146,10 @@ describe("ServiceBus test", () => {
   });
 
   it("namespaces delete test", async function () {
-    const res = await client.namespaces.beginDeleteAndWait(resourceGroup, namespacesName, testPollingOptions);
+    const res = await client.namespaces.beginDeleteAndWait(
+      resourceGroup,
+      namespacesName,
+      testPollingOptions
+    );
   });
 });

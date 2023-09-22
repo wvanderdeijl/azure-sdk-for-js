@@ -2,9 +2,9 @@
 // Licensed under the MIT license.
 
 import { parseServiceBusConnectionString } from "../../../src/util/connectionStringUtils";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 
-const assert = chai.assert;
+const assert = assert;
 
 describe("Connection String", () => {
   const expectedNamespace = "my.servicebus.windows.net";

@@ -22,7 +22,7 @@ import {
   errorInvalidMessageTypeSingle,
   errorInvalidMessageTypeSingleOrArray,
 } from "../../../src/util/errors";
-const assert = chai.assert;
+const assert = assert;
 
 describe("AMQP message encoding", () => {
   beforeEach(() => {

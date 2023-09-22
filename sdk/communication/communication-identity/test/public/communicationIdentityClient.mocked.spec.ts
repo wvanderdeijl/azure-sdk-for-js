@@ -8,7 +8,7 @@ import {
 import { getTokenForTeamsUserHttpClient, getTokenHttpClient } from "./utils/mockHttpClients";
 import { CommunicationIdentityClient } from "../../src";
 import { TestCommunicationIdentityClient } from "./utils/testCommunicationIdentityClient";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isNode } from "@azure/core-util";
 import sinon from "sinon";
 

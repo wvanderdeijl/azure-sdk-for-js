@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AbortController, AbortError, AbortSignal } from "../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("AbortController", () => {
   function doAsyncOperation(aborter: AbortSignal, runningTimeinMs: number = 100): Promise<void> {

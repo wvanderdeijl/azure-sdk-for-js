@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { extractReceiverArguments, ServiceBusClient } from "../../../src/serviceBusClient";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ServiceBusSessionReceiverOptions } from "../../../src/models";
 import { entityPathMisMatchError } from "../../../src/util/errors";
 import {
@@ -19,7 +19,7 @@ import {
 import { AbortController, AbortSignalLike } from "@azure/abort-controller";
 import { ServiceBusSenderImpl } from "../../../src/sender";
 import { MessageReceiver } from "../../../src/core/messageReceiver";
-const assert = chai.assert;
+const assert = assert;
 
 const allLockModes: ("peekLock" | "receiveAndDelete")[] = ["peekLock", "receiveAndDelete"];
 

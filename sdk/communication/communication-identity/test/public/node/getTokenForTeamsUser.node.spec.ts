@@ -14,7 +14,7 @@ import {
 import { PublicClientApplication } from "@azure/msal-node";
 import { matrix } from "@azure/test-utils";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 matrix([[true, false]], async function (useAad) {
   describe(`Get Token For Teams User [Playback/Live]${useAad ? " [AAD]" : ""}`, function () {

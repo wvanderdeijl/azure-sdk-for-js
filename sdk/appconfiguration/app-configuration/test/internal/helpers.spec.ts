@@ -25,7 +25,7 @@ import {
 import { FeatureFlagValue } from "../../src/featureFlag";
 import { WebResourceLike } from "@azure/core-http-compat";
 import { SecretReferenceValue } from "../../src/secretReference";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("helper methods", () => {
   it("checkAndFormatIfAndIfNoneMatch", () => {

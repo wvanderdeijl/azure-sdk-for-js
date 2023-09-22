@@ -8,8 +8,7 @@ import {
 import { StandardAbortMessage } from "@azure/core-amqp";
 import { AbortController, AbortError, AbortSignalLike } from "@azure/abort-controller";
 import { delay } from "rhea-promise";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import {
   extractSpanContextFromServiceBusMessage,
   TRACEPARENT_PROPERTY,
@@ -19,7 +18,7 @@ import Sinon from "sinon";
 import { tracingClient } from "../../../src/diagnostics/tracing";
 
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 describe("utils", () => {
   describe("waitForTimeoutAbortOrResolve", () => {

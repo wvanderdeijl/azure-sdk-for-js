@@ -13,7 +13,7 @@ import { Context } from "mocha";
 import { GetTokenOptions } from "@azure/core-auth";
 import { MsalNode } from "../../../src/msal/nodeFlows/msalNodeCommon";
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("ClientSecretCredential (internal)", function () {
   let cleanup: MsalTestCleanup;

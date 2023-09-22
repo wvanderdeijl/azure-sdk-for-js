@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { utf8ToBytes } from "../../../src/utf8.browser";
 
 describe("utf-8", function () {

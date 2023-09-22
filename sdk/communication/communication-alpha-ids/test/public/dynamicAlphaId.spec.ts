@@ -5,7 +5,7 @@ import { AlphaIdsClient } from "../../src";
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
 import { createRecordedClient } from "./utils/recordedClient";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { FullOperationResponse, OperationOptions } from "@azure/core-client";
 import { DynamicAlphaIdConfiguration } from "../../src";
 

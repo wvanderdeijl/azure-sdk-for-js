@@ -10,7 +10,7 @@ import {
   ReceivedEventData,
   SubscriptionEventHandlers,
 } from "../../../src";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { delay } from "@azure/core-amqp";
 import { loggerForTest } from "./logHelpers";
 import { loopUntil } from "./testUtils";

@@ -12,7 +12,7 @@ import {
 } from "./utils/recordedClient";
 import { CommunicationIdentityClient, TokenScope } from "../../src";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { matrix } from "@azure/test-utils";
 
 matrix([[true, false]], async function (useAad: boolean) {

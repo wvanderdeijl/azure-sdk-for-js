@@ -13,7 +13,7 @@ import {
   isPhoneNumberIdentifier,
   isUnknownIdentifier,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Identifier models", function () {
   it("type guards", function () {

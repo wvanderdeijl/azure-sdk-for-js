@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Sanitizer } from "../src/util/sanitizer";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Sanitizer", function () {
   it("Redacts query parameters in url properties", function () {

@@ -4,7 +4,7 @@
 import { SpanKind, SpanStatusCode } from "@opentelemetry/api";
 import { TestClient, tracingClientAttributes } from "../../public/util/testClient";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { inMemoryExporter } from "../../public/util/setup";
 
 describe("instrumentation end-to-end tests", () => {

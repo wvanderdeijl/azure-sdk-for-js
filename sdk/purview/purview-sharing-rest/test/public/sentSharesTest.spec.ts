@@ -13,7 +13,7 @@ import {
   UserInvitationOutput,
 } from "../../src";
 import { env, isPlaybackMode, Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient, createRecorder } from "./utils/recordedClient";
 import { Context } from "mocha";
 

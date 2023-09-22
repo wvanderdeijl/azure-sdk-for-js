@@ -9,7 +9,7 @@ import { tlsPolicy, tlsPolicyName } from "../../src/policies/tlsPolicy";
 
 import { HttpClient } from "../../src/interfaces";
 import { HttpsProxyAgent } from "https-proxy-agent";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createEmptyPipeline } from "../../src/pipeline";
 import { createHttpHeaders } from "../../src/httpHeaders";
 import { createNodeHttpClient } from "../../src/nodeHttpClient";

@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DnsResolverManagementClient } from "../src/dnsResolverManagementClient";
 import { DnsResolver } from "../src/models";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,10 +45,14 @@ describe("dnsresolve test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new DnsResolverManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new DnsResolverManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     resourceGroup = "myjstest";
     dnsResolverName = "sampleDnsResolver";
     parameters = {
@@ -56,8 +60,12 @@ describe("dnsresolve test", () => {
       tags: { key1: "value1" },
       virtualNetwork: {
         id:
-          "/subscriptions/" + subscriptionId + "/resourceGroups/" + resourceGroup + "/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork"
-      }
+          "/subscriptions/" +
+          subscriptionId +
+          "/resourceGroups/" +
+          resourceGroup +
+          "/providers/Microsoft.Network/virtualNetworks/sampleVirtualNetwork",
+      },
     };
   });
 
@@ -76,10 +84,7 @@ describe("dnsresolve test", () => {
   });
 
   it("dnsResolvers get clusters", async function () {
-    let res = await client.dnsResolvers.get(
-      resourceGroup,
-      dnsResolverName,
-    );
+    let res = await client.dnsResolvers.get(resourceGroup, dnsResolverName);
     assert.equal(res.name, dnsResolverName);
   });
 
@@ -93,7 +98,11 @@ describe("dnsresolve test", () => {
 
   it("dnsResolvers delete clusters", async function () {
     const resArray = new Array();
-    const res = await client.dnsResolvers.beginDeleteAndWait(resourceGroup, dnsResolverName, testPollingOptions)
+    const res = await client.dnsResolvers.beginDeleteAndWait(
+      resourceGroup,
+      dnsResolverName,
+      testPollingOptions
+    );
     for await (const item of client.dnsResolvers.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }

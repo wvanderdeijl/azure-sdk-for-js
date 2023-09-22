@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 import { DeviceUpdateClient, isUnexpected } from "../../src";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Recorder } from "@azure-tools/test-recorder";
 import { createRecordedClient, startRecorder } from "./utils/recordedClient";
 

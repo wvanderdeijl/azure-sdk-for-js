@@ -3,7 +3,7 @@
 
 import { AbortController } from "@azure/abort-controller";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { join } from "path";
 

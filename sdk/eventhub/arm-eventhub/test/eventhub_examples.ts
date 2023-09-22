@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { EventHubManagementClient } from "../src/eventHubManagementClient";
 import { StorageManagementClient, StorageAccountCreateParameters } from "@azure/arm-storage";
@@ -24,11 +24,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -52,12 +52,24 @@ describe("Eventhub test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new EventHubManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    storage_client = new StorageManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
-    network_client = new NetworkManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new EventHubManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    storage_client = new StorageManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
+    network_client = new NetworkManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroupName = "myjstest";
     subnetName = "subnetxxx";
@@ -80,8 +92,19 @@ describe("Eventhub test", () => {
         addressPrefixes: ["10.0.0.0/16"],
       },
     };
-    const network_create = await network_client.virtualNetworks.beginCreateOrUpdateAndWait(resourceGroupName, virtualNetworkName, parameter, testPollingOptions);
-    const subnet_info = await network_client.subnets.beginCreateOrUpdateAndWait(resourceGroupName, virtualNetworkName, subnetName, { addressPrefix: "10.0.0.0/24" }, testPollingOptions);
+    const network_create = await network_client.virtualNetworks.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      virtualNetworkName,
+      parameter,
+      testPollingOptions
+    );
+    const subnet_info = await network_client.subnets.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      virtualNetworkName,
+      subnetName,
+      { addressPrefix: "10.0.0.0/24" },
+      testPollingOptions
+    );
   }
 
   //storageAccounts.beginCreateAndWait
@@ -105,45 +128,55 @@ describe("Eventhub test", () => {
   it("namespaces create test", async function () {
     await createVirtualNetwork();
     await storageAccounts_beginCreateAndWait();
-    const res = await client.namespaces.beginCreateOrUpdateAndWait(resourceGroupName, namespaceName, {
-      sku: {
-        name: "Standard",
-        tier: "Standard",
+    const res = await client.namespaces.beginCreateOrUpdateAndWait(
+      resourceGroupName,
+      namespaceName,
+      {
+        sku: {
+          name: "Standard",
+          tier: "Standard",
+        },
+        location: location,
+        tags: {
+          tag1: "value1",
+          tag2: "value2",
+        },
       },
-      location: location,
-      tags: {
-        tag1: "value1",
-        tag2: "value2",
-      }
-    }, testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, "mynamespacexxx");
   });
 
   it("eventHubs create test", async function () {
-    const res = await client.eventHubs.createOrUpdate(resourceGroupName, namespaceName, eventhubName, {
-      messageRetentionInDays: 4,
-      partitionCount: 4,
-      status: "Active",
-      captureDescription: {
-        enabled: true,
-        encoding: "Avro",
-        intervalInSeconds: 120,
-        sizeLimitInBytes: 10485763,
-        destination: {
-          name: "EventHubArchive.AzureBlockBlob",
-          storageAccountResourceId:
-            "/subscriptions/" +
-            subscriptionId +
-            "/resourceGroups/" +
-            resourceGroupName +
-            "/providers/Microsoft.Storage/storageAccounts/" +
-            storageAccountName,
-          blobContainer: "container",
-          archiveNameFormat:
-            "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
-        }
+    const res = await client.eventHubs.createOrUpdate(
+      resourceGroupName,
+      namespaceName,
+      eventhubName,
+      {
+        messageRetentionInDays: 4,
+        partitionCount: 4,
+        status: "Active",
+        captureDescription: {
+          enabled: true,
+          encoding: "Avro",
+          intervalInSeconds: 120,
+          sizeLimitInBytes: 10485763,
+          destination: {
+            name: "EventHubArchive.AzureBlockBlob",
+            storageAccountResourceId:
+              "/subscriptions/" +
+              subscriptionId +
+              "/resourceGroups/" +
+              resourceGroupName +
+              "/providers/Microsoft.Storage/storageAccounts/" +
+              storageAccountName,
+            blobContainer: "container",
+            archiveNameFormat:
+              "{Namespace}/{EventHub}/{PartitionId}/{Year}/{Month}/{Day}/{Hour}/{Minute}/{Second}",
+          },
+        },
       }
-    });
+    );
     assert.equal(res.name, "myeventhubxxx");
   });
 
@@ -170,7 +203,11 @@ describe("Eventhub test", () => {
   });
 
   it("namespaces delete test", async function () {
-    const res = await client.namespaces.beginDeleteAndWait(resourceGroupName, namespaceName, testPollingOptions);
+    const res = await client.namespaces.beginDeleteAndWait(
+      resourceGroupName,
+      namespaceName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (const item of client.namespaces.listByResourceGroup(resourceGroupName)) {
       resArray.push(item);

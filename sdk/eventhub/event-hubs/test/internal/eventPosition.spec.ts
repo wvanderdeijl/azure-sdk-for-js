@@ -3,7 +3,7 @@
 
 import { earliestEventPosition, latestEventPosition } from "../../src";
 import { getEventPositionFilter, validateEventPositions } from "../../src/eventPosition";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 
 chai.should();

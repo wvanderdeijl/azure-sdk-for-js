@@ -11,7 +11,7 @@ import { CommunicationRelayClient } from "../../src";
 import { CommunicationUserIdentifier } from "@azure/communication-common";
 import { Context } from "mocha";
 import { GetRelayConfigurationOptions } from "../../src/models";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { matrix } from "@azure/test-utils";
 
 matrix([[true, false]], async function (useAad: boolean) {

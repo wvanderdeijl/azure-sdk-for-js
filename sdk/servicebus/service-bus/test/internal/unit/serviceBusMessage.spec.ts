@@ -13,12 +13,12 @@ import {
   DeliveryAnnotations,
   Message as RheaMessage,
 } from "rhea-promise";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { ConnectionConfig, Constants } from "@azure/core-amqp";
 import { defaultDataTransformer } from "../../../src/dataTransformer";
 import { ServiceBusMessageBatchImpl } from "../../../src/serviceBusMessageBatch";
 import { ConnectionContext } from "../../../src/connectionContext";
-const assert = chai.assert;
+const assert = assert;
 
 const fakeDelivery = {} as Delivery;
 

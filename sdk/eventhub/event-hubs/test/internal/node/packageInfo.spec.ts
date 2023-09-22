@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import fs from "fs";
 import { packageJsonInfo } from "../../../src/util/constants";
 import path from "path";

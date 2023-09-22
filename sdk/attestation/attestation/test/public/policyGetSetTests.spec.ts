@@ -5,12 +5,9 @@
 /// <reference path="../../src/jsrsasign.d.ts"/>
 import * as jsrsasign from "jsrsasign";
 
-import { assert, use as chaiUse, expect } from "chai";
+import { assert, expect } from "chai";
 import { Context } from "mocha";
-import chaiAsPromised from "chai-as-promised";
 /* eslint-disable @typescript-eslint/no-invalid-this */
-
-chaiUse(chaiAsPromised);
 
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";
 

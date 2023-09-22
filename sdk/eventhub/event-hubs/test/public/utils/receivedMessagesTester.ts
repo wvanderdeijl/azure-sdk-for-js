@@ -3,7 +3,7 @@
 
 import { CloseReason, EventHubProducerClient, ReceivedEventData } from "../../../src";
 import { PartitionContext, SubscriptionEventHandlers } from "../../../src";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { delay } from "@azure/core-amqp";
 
 const should = chai.should();

@@ -5,7 +5,7 @@ import { base64Decode, base64Encode } from "../../src/utils/bufferSerializer";
 
 import { ConnectionString } from "../../src/utils/internalModels";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { extractConnectionStringParts } from "../../src/utils/connectionString";
 import { isNode } from "@azure/test-utils";
 

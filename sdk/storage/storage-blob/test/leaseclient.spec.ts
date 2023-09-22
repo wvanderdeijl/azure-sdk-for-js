@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 import { getBSU, getUniqueName, recorderEnvSetup, uriSanitizers } from "./utils";
 import { delay, Recorder } from "@azure-tools/test-recorder";

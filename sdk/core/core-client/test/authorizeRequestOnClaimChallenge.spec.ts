@@ -14,7 +14,7 @@ import {
   authorizeRequestOnClaimChallenge,
   parseCAEChallenge,
 } from "../src/authorizeRequestOnClaimChallenge";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { encodeString } from "../src/base64";
 
 describe("authorizeRequestOnClaimChallenge", function () {

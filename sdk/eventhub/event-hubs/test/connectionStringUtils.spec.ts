@@ -5,9 +5,9 @@ import {
   EventHubConnectionStringProperties,
   parseEventHubConnectionString,
 } from "../src/util/connectionStringUtils";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 
-const assert = chai.assert;
+const assert = assert;
 
 describe("parseEventHubConnectionString", () => {
   const namespace = "my.servicebus.windows.net";

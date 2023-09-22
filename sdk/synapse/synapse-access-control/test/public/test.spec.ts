@@ -1,13 +1,13 @@
 import { AccessControlClient } from "../../src/accessControlClient";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
 describe("Access Control smoke", () => {
   let recorder: Recorder;
   let client: AccessControlClient;
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     recorder = await createRecorder(this);
     client = createClient(recorder.configureClientOptions({}));
   });

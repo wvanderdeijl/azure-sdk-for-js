@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { addTestStreamingReceiver } from "./unittestUtils";
 import { ProcessErrorArgs, ServiceBusReceivedMessage } from "../../../src";
 import { StreamingReceiver } from "../../../src/core/streamingReceiver";
@@ -13,7 +12,7 @@ import { AbortError } from "@azure/abort-controller";
 import { assertThrows } from "../../public/utils/testUtils";
 
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 describe("StreamingReceiver unit tests", () => {
   const createTestStreamingReceiver = addTestStreamingReceiver();

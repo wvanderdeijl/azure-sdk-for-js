@@ -3,7 +3,7 @@
 
 import { XhrHttpClient, parseHeaders } from "../src/xhrHttpClient";
 import { WebResource } from "../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("XhrHttpClient", function () {
   it("parses headers", function () {

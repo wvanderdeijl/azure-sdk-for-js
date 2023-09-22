@@ -10,7 +10,7 @@ import { BalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/
 import { ConnectionContext } from "../../src/connectionContext";
 import { GreedyLoadBalancingStrategy } from "../../src/loadBalancerStrategies/greedyStrategy";
 import { InMemoryCheckpointStore } from "../../src/inMemoryCheckpointStore";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 

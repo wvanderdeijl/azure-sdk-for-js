@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { AzureSphereManagementClient } from "../src/azureSphereManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -44,14 +44,17 @@ describe("Sphere test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new AzureSphereManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new AzureSphereManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     resourcename = "resourcetest";
-
   });
 
   afterEach(async function () {
@@ -63,13 +66,13 @@ describe("Sphere test", () => {
       resourceGroup,
       resourcename,
       { location: "global" },
-      testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, resourcename);
   });
 
   it("catalogs get test", async function () {
-    const res = await client.catalogs.get(resourceGroup,
-      resourcename);
+    const res = await client.catalogs.get(resourceGroup, resourcename);
     assert.equal(res.name, resourcename);
   });
 
@@ -90,12 +93,15 @@ describe("Sphere test", () => {
   });
 
   it.skip("catalogs delete test", async function () {
-    const res = await client.catalogs.beginDeleteAndWait(resourceGroup,
-      resourcename, testPollingOptions);
+    const res = await client.catalogs.beginDeleteAndWait(
+      resourceGroup,
+      resourcename,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.catalogs.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

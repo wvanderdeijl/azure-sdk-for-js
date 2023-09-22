@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { isRestError } from "@azure/core-rest-pipeline";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 import { TextAnalyticsErrorResult, TextAnalyticsSuccessResult } from "../../../src/";
 

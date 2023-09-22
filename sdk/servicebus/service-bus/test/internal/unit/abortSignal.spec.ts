@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 import { MessageSender } from "../../../src/core/messageSender";
 import { OperationOptionsBase } from "../../../src/modelsToBeSharedWithEventHubs";

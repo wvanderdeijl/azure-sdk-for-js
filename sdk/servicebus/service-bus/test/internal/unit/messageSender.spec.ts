@@ -4,7 +4,7 @@
 import { MessageSender } from "../../../src/core/messageSender";
 import { assertThrows } from "../../public/utils/testUtils";
 import { createConnectionContextForTests } from "./unittestUtils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("MessageSender unit tests", () => {
   it("getMaxMessageSize should retry (exhaust retries)", async () => {

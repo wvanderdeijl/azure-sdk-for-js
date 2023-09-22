@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { base64ToBytes, bufferToBase64 } from "../../../src/base64.browser";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Base64", function () {
   describe("base64ToBytes", function () {

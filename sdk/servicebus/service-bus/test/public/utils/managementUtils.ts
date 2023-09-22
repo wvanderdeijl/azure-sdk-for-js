@@ -7,7 +7,7 @@ import { CreateSubscriptionOptions } from "../../../src";
 import { ServiceBusAdministrationClient } from "../../../src";
 
 import { EnvVarNames, getEnvVars } from "./envVarUtils";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { CreateQueueOptions } from "../../../src";
 const should = chai.should();
 

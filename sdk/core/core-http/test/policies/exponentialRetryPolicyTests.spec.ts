@@ -5,7 +5,7 @@ import { HttpHeaders, RequestPolicyOptions } from "../../src";
 import { ExponentialRetryPolicy } from "../../src/policies/exponentialRetryPolicy";
 import { HttpOperationResponse } from "../../src/httpOperationResponse";
 import { WebResource } from "../../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("ExponentialRetryPolicy", () => {
   class PassThroughPolicy {

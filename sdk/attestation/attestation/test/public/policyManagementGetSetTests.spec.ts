@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert, use as chaiUse, expect } from "chai";
+import { assert, expect } from "chai";
 import { Context } from "mocha";
-import chaiAsPromised from "chai-as-promised";
-chaiUse(chaiAsPromised);
 /* eslint-disable @typescript-eslint/no-invalid-this */
 
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";

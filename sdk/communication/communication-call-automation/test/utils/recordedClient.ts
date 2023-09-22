@@ -33,7 +33,7 @@ import {
   parseCallAutomationEvent,
 } from "../../src";
 import { CommunicationIdentifierModel } from "../../src/generated/src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import {
   createDefaultHttpClient,
   createHttpHeaders,

@@ -13,7 +13,7 @@ import { MsalNode } from "../../../src/msal/nodeFlows/msalNodeCommon";
 import { PublicClientApplication } from "@azure/msal-node";
 import Sinon from "sinon";
 import { UsernamePasswordCredential } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("UsernamePasswordCredential (internal)", function () {
   let cleanup: MsalTestCleanup;

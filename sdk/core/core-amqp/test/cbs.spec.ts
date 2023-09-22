@@ -4,7 +4,7 @@
 import { CbsClient, TokenType, defaultCancellableLock } from "../src";
 import { AbortController } from "@azure/abort-controller";
 import { Connection } from "rhea-promise";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createConnectionStub } from "./utils/createConnectionStub";
 import { isError } from "@azure/core-util";
 import { stub } from "sinon";

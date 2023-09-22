@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { DevCenterClient } from "../src/devCenterClient";
 import { DevCenter } from "../src/models";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -46,7 +46,7 @@ describe("devcenter test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new DevCenterClient(credential, subscriptionId, recorder.configureClientOptions({}));
@@ -55,7 +55,7 @@ describe("devcenter test", () => {
     devCenterName = "Contoso1";
     body = {
       location,
-      tags: { costCode: "12345" }
+      tags: { costCode: "12345" },
     };
   });
 
@@ -68,7 +68,8 @@ describe("devcenter test", () => {
       resourceGroup,
       devCenterName,
       body,
-      testPollingOptions);
+      testPollingOptions
+    );
     assert.equal(res.name, devCenterName);
   });
 
@@ -87,10 +88,14 @@ describe("devcenter test", () => {
 
   it("devcenters delete test", async function () {
     const resArray = new Array();
-    const res = await client.devCenters.beginDeleteAndWait(resourceGroup, devCenterName, testPollingOptions)
+    const res = await client.devCenters.beginDeleteAndWait(
+      resourceGroup,
+      devCenterName,
+      testPollingOptions
+    );
     for await (let item of client.devCenters.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

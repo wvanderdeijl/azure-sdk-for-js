@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Recorder, isLiveMode } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { ChatClient, ChatThreadClient } from "../../src";
 import { createChatClient, createRecorder, createTestUser } from "./utils/recordedClient";
 import { isNode } from "@azure/core-util";

@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { SecurityCenter } from "../src/securityCenter";
 import { SecurityContact } from "../src/models";
@@ -23,11 +23,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -46,7 +46,7 @@ describe("security test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
     client = new SecurityCenter(credential, subscriptionId, recorder.configureClientOptions({}));
@@ -57,32 +57,27 @@ describe("security test", () => {
       alertNotifications: { minimalSeverity: "Low", state: "On" },
       emails: "john@contoso.com;jane@contoso.com",
       notificationsByRole: { roles: ["Owner"], state: "On" },
-      phone: "+214-2754038"
+      phone: "+214-2754038",
     };
-  })
+  });
 
   afterEach(async function () {
     await recorder.stop();
   });
 
   it("SecurityContact create test", async function () {
-    const res = await client.securityContacts.create(
-      securityContactName,
-      securityContact
-    );
+    const res = await client.securityContacts.create(securityContactName, securityContact);
     assert.equal(res.name, securityContactName);
   });
 
   it("SecurityContact get test", async function () {
-    const res = await client.securityContacts.get(
-      securityContactName
-    );
+    const res = await client.securityContacts.get(securityContactName);
     assert.equal(res.name, securityContactName);
   });
 
   it("SecurityContact list test", async function () {
     const resArray = new Array();
-    const res = client.securityContacts.list()
+    const res = client.securityContacts.list();
     for await (let item of res.byPage()) {
       resArray.push(item);
     }
@@ -91,10 +86,10 @@ describe("security test", () => {
 
   it("SecurityContact delete test", async function () {
     const resArray = new Array();
-    const res = await client.securityContacts.delete(securityContactName)
+    const res = await client.securityContacts.delete(securityContactName);
     for await (let item of client.securityContacts.list()) {
       resArray.push(item);
     }
     assert.equal(resArray.length, 0);
   });
-})
+});

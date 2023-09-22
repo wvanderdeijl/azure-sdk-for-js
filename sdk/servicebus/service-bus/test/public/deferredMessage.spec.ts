@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 const should = chai.should();
-import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import { delay, ServiceBusMessage } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";

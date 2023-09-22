@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { extractConnectionStringParts } from "../../src/utils/utils.common";
 import { Recorder } from "@azure-tools/test-recorder";
 import { recorderEnvSetup } from "../utils";

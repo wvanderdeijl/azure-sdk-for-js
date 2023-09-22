@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { NotificationHubsManagementClient } from "../src/notificationHubsManagementClient";
 
@@ -22,11 +22,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,10 +45,14 @@ describe("NotificationHubs test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new NotificationHubsManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new NotificationHubsManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "eastus";
     resourceGroup = "myjstest";
     nameSpaceName = "mynamespacexxx";
@@ -60,7 +64,9 @@ describe("NotificationHubs test", () => {
   });
 
   it("namespaces create test", async function () {
-    const res = await client.namespaces.createOrUpdate(resourceGroup, nameSpaceName, { location: location });
+    const res = await client.namespaces.createOrUpdate(resourceGroup, nameSpaceName, {
+      location: location,
+    });
     assert.equal(res.name, nameSpaceName);
   });
 
@@ -70,12 +76,21 @@ describe("NotificationHubs test", () => {
   });
 
   it("notificationHubs create test", async function () {
-    const res = await client.notificationHubs.createOrUpdate(resourceGroup, nameSpaceName, notificationhubsName, { location: location });
+    const res = await client.notificationHubs.createOrUpdate(
+      resourceGroup,
+      nameSpaceName,
+      notificationhubsName,
+      { location: location }
+    );
     assert.equal(res.name, notificationhubsName);
   });
 
   it("notificationHubs get test", async function () {
-    const res = await client.notificationHubs.get(resourceGroup, nameSpaceName, notificationhubsName);
+    const res = await client.notificationHubs.get(
+      resourceGroup,
+      nameSpaceName,
+      notificationhubsName
+    );
     assert.equal(res.name, notificationhubsName);
   });
 
@@ -88,7 +103,11 @@ describe("NotificationHubs test", () => {
   });
 
   it("notificationHubs delete test", async function () {
-    const res = await client.notificationHubs.delete(resourceGroup, nameSpaceName, notificationhubsName);
+    const res = await client.notificationHubs.delete(
+      resourceGroup,
+      nameSpaceName,
+      notificationhubsName
+    );
     const resArray = new Array();
     for await (let item of client.notificationHubs.list(resourceGroup, nameSpaceName)) {
       resArray.push(item);
@@ -97,6 +116,10 @@ describe("NotificationHubs test", () => {
   });
 
   it("namespaces delete test", async function () {
-    const res = await client.namespaces.beginDeleteAndWait(resourceGroup, nameSpaceName, testPollingOptions);
+    const res = await client.namespaces.beginDeleteAndWait(
+      resourceGroup,
+      nameSpaceName,
+      testPollingOptions
+    );
   });
 });

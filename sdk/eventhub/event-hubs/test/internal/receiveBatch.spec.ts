@@ -10,8 +10,7 @@ import {
   MessagingError,
 } from "../../src";
 import { createReceiver } from "../../src/partitionReceiver";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { translate } from "@azure/core-amqp";

@@ -14,7 +14,7 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { CommunicationServiceManagementClient } from "../src/communicationServiceManagementClient";
 import { hostname } from "os";
@@ -25,11 +25,11 @@ const replaceableVariables: Record<string, string> = {
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
   SUBSCRIPTION_ID: "88888888-8888-8888-8888-888888888888",
   COMMUNICATION_AZURE_AUTHORITY_HOST: "COMMUNICATION_AZURE_AUTHORITY_HOST",
-  COMMUNICATION_RESOURCE_MANAGER_URL: "COMMUNICATION_RESOURCE_MANAGER_URL"
+  COMMUNICATION_RESOURCE_MANAGER_URL: "COMMUNICATION_RESOURCE_MANAGER_URL",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -47,10 +47,14 @@ describe("CommunicationService test", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new CommunicationServiceManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new CommunicationServiceManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     location = "global";
     resourceGroup = "myjstest";
     communicationServiceName = "mycommunicationServicexxx";
@@ -61,7 +65,12 @@ describe("CommunicationService test", () => {
   });
 
   it("communicationService create test", async function () {
-    const res = await client.communicationServices.beginCreateOrUpdateAndWait(resourceGroup, communicationServiceName, { location: location, dataLocation: "UnitedStates" }, testPollingOptions);
+    const res = await client.communicationServices.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      communicationServiceName,
+      { location: location, dataLocation: "UnitedStates" },
+      testPollingOptions
+    );
     assert.notEqual(res.id, undefined);
   });
 
@@ -75,15 +84,19 @@ describe("CommunicationService test", () => {
     for await (let item of client.communicationServices.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 2);//have existing resource when testing in this release time
+    assert.equal(resArray.length, 2); //have existing resource when testing in this release time
   });
 
   it("communicationService delete test", async function () {
-    const res = await client.communicationServices.beginDeleteAndWait(resourceGroup, communicationServiceName, testPollingOptions);
+    const res = await client.communicationServices.beginDeleteAndWait(
+      resourceGroup,
+      communicationServiceName,
+      testPollingOptions
+    );
     const resArray = new Array();
     for await (let item of client.communicationServices.listByResourceGroup(resourceGroup)) {
       resArray.push(item);
     }
-    assert.equal(resArray.length, 1);//have existing resource when testing in this release time
+    assert.equal(resArray.length, 1); //have existing resource when testing in this release time
   });
 });

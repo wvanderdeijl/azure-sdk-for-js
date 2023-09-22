@@ -4,7 +4,7 @@
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
 import { TollFreeVerificationClient } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecordedClient } from "./utils/recordedClient";
 
 describe(`TollFreeVerificationClient - lists Campaign Briefs`, function () {

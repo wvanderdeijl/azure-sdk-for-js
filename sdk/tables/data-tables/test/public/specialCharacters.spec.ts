@@ -4,7 +4,7 @@
 import { TableClient, TableEntityResult, TransactionAction, odata } from "../../src";
 
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTableClient } from "./utils/recordedClient";
 import { isLiveMode } from "@azure-tools/test-recorder";
 import { isNode } from "@azure/test-utils";

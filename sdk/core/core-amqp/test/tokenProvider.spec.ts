@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AzureNamedKeyCredential, AzureSASCredential } from "@azure/core-auth";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createSasTokenProvider } from "../src/index";
 
 const should = chai.should();

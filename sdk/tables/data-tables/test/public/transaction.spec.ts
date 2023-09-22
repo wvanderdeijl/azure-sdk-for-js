@@ -8,7 +8,7 @@ import { TableClient, TableTransaction, TransactionAction, odata } from "../../s
 
 import { Context } from "mocha";
 import { Uuid } from "../../src/utils/uuid";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createTableClient } from "./utils/recordedClient";
 import { isNode } from "@azure/test-utils";
 

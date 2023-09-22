@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-// import chai from "chai";
-// const assert = chai.assert;
-// import chaiAsPromised from "chai-as-promised";
-// import { delay } from "../src";
+// import { assert } from "@azure/test-utils";
+// const assert = assert;
+// // import { delay } from "../src";
 // import { ServiceBusClientForTests, createServiceBusClientForTests } from "./utils/testutils2";
 // import { defaultLock } from "@azure/core-amqp";
 // import { TestClientType } from "./utils/testUtils";

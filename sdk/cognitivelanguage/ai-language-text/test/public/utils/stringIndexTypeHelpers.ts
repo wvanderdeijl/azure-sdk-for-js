@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Entity, StringIndexType, TextAnalysisClient } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 /**
  * calls the recognizePiiEntities on the input document and checks wether the

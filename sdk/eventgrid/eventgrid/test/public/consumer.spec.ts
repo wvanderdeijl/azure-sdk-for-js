@@ -1,13 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert, use as chaiUse } from "chai";
-import chaiPromises from "chai-as-promised";
+import { assert } from "chai";
 
 import { EventGridDeserializer } from "../../src";
 import * as testData from "./utils/testData";
-
-chaiUse(chaiPromises);
 
 describe("EventGridDeserializer", function () {
   const consumer = new EventGridDeserializer();

@@ -3,7 +3,7 @@
 
 import { AccessToken, ChainedTokenCredential, TokenCredential } from "../../../src";
 import Sinon from "sinon";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { logger as chainedTokenCredentialLogger } from "../../../src/credentials/chainedTokenCredential";
 
 class TestMockCredential implements TokenCredential {

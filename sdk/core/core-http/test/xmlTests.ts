@@ -3,7 +3,7 @@
 
 import * as msAssert from "./msAssert";
 import { parseXML, stringifyXML } from "../src/util/xml";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("XML serializer", function () {
   describe("parseXML(string)", function () {

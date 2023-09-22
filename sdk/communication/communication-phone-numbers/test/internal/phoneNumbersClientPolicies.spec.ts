@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AzureKeyCredential } from "@azure/core-auth";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { PhoneNumbersClient } from "../../src/phoneNumbersClient";
 import { mockListPhoneNumbersHttpClient } from "../public/utils/mockHttpClients";
 

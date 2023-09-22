@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { convertFieldsToGenerated, convertFieldsToPublic } from "../../src/serviceUtils";
 import { SearchField as GeneratedSearchField } from "../../src/generated/service/models/index";
 import { KnownLexicalAnalyzerName } from "../../src/index";

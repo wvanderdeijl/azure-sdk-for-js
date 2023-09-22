@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { AzureKeyCredential } from "@azure/core-auth";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { parseClientArguments } from "../../src";
 import { parseConnectionString } from "../../src";
 import { assertPropertyNames } from "./utils/credentialUtils";

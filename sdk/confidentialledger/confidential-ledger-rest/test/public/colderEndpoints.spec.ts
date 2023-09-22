@@ -4,7 +4,7 @@ import { ConfidentialLedgerClient, isUnexpected } from "../../src";
 import { createClient, createRecorder } from "./utils/recordedClient";
 
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 describe("Colder endpoints", function () {

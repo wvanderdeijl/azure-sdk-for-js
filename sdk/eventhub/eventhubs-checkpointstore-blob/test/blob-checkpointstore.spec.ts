@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 const should = chai.should();
-import chaiAsPromised from "chai-as-promised";
 chai.use(chaiAsPromised);
 import chaiString from "chai-string";
 chai.use(chaiString);
@@ -788,7 +787,7 @@ describe("Blob Checkpoint Store", function (): void {
   });
 
   it("blob prefix is always lowercased for case-insensitive fields", () => {
-    chai.assert.equal(
+    assert.equal(
       "namespace/eventhubname/consumergroupname/ownership/",
       BlobCheckpointStore["getBlobPrefix"]({
         type: "ownership",
@@ -799,7 +798,7 @@ describe("Blob Checkpoint Store", function (): void {
       })
     );
 
-    chai.assert.equal(
+    assert.equal(
       "namespace/eventhubname/consumergroupname/checkpoint/0",
       BlobCheckpointStore["getBlobPrefix"]({
         type: "checkpoint",

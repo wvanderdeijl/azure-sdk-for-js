@@ -8,7 +8,7 @@ import {
   deserializeCommunicationIdentifier,
   serializeCommunicationIdentifier,
 } from "../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 const assertSerialize = (
   identifier: CommunicationIdentifier,

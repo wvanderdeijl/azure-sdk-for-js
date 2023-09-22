@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { GetLanguagesParameters, GetLanguagesResultOutput, TextTranslationClient } from "../../src";
 import { createLanguageClient, startRecorder } from "./utils/recordedClient";
 import { Context } from "mocha";

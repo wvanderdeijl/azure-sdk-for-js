@@ -10,7 +10,7 @@ import { createClient, createRecorder, getRecorderUniqueVariable } from "./utils
 
 import { Context } from "mocha";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("Post transaction", function () {
   let recorder: Recorder;

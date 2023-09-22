@@ -19,7 +19,7 @@ import {
 } from "../src/requestResponseLink";
 import { SinonSpy, fake, stub } from "sinon";
 import EventEmitter from "events";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createConnectionStub } from "./utils/createConnectionStub";
 import { isError } from "@azure/core-util";
 

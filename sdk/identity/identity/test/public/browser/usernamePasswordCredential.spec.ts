@@ -4,7 +4,7 @@
 import { IdentityTestContextInterface, createResponse } from "../../httpRequestsCommon";
 import { IdentityTestContext } from "../../httpRequests";
 import { UsernamePasswordCredential } from "../../../src";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { assertClientCredentials } from "../../authTestUtils";
 import { fakeTestPasswordPlaceholder } from "@azure/test-utils";
 

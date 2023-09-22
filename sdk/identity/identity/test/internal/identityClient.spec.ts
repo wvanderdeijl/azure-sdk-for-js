@@ -11,7 +11,7 @@ import { IdentityTestContextInterface, createResponse } from "../httpRequestsCom
 import { ClientSecretCredential } from "../../src";
 import { Context } from "mocha";
 import { PlaybackTenantId } from "../msalTestUtils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { isExpectedError } from "../authTestUtils";
 import { isNode } from "@azure/core-util";
 

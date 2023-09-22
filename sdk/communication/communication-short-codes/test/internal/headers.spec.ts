@@ -7,7 +7,7 @@ import { PipelineRequest } from "@azure/core-rest-pipeline";
 import { SDK_VERSION } from "../../src/utils/constants";
 import { ShortCodesClient } from "../../src/shortCodesClient";
 import { TokenCredential } from "@azure/identity";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockToken } from "../public/utils/recordedClient";
 import { getUSProgramBriefHttpClient } from "../public/utils/mockHttpClients";
 import { isNode } from "@azure/test-utils";

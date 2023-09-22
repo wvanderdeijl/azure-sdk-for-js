@@ -4,7 +4,7 @@
 import { HttpHeaders } from "../../src/httpHeaders";
 import { RequestPolicyOptions } from "../../src/policies/requestPolicy";
 import { WebResource } from "../../src/webResource";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { ndJsonPolicy } from "../../src/policies/ndJsonPolicy";
 
 describe("NdJsonPolicy", function () {

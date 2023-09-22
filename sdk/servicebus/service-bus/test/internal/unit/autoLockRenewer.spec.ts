@@ -2,10 +2,9 @@
 // Licensed under the MIT license.
 
 import { MessagingError } from "@azure/core-amqp";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 import * as sinon from "sinon";
 import { LockRenewer } from "../../../src/core/autoLockRenewer";
 import { ManagementClient, SendManagementRequestOptions } from "../../../src/core/managementClient";

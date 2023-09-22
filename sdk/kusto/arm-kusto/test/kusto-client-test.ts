@@ -14,19 +14,25 @@ import {
   isPlaybackMode,
 } from "@azure-tools/test-recorder";
 import { createTestCredential } from "@azure-tools/test-credential";
-import { Cluster, ClustersGetOptionalParams, ClustersListOptionalParams, ClusterUpdate, KustoManagementClient } from "../src";
-import { assert } from "chai";
+import {
+  Cluster,
+  ClustersGetOptionalParams,
+  ClustersListOptionalParams,
+  ClusterUpdate,
+  KustoManagementClient,
+} from "../src";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 const replaceableVariables: Record<string, string> = {
   AZURE_CLIENT_ID: "azure_client_id",
   AZURE_CLIENT_SECRET: "azure_client_secret",
   AZURE_TENANT_ID: "88888888-8888-8888-8888-888888888888",
-  SUBSCRIPTION_ID: "azure_subscription_id"
+  SUBSCRIPTION_ID: "azure_subscription_id",
 };
 
 const recorderOptions: RecorderStartOptions = {
-  envSetupForPlayback: replaceableVariables
+  envSetupForPlayback: replaceableVariables,
 };
 
 export const testPollingOptions = {
@@ -45,21 +51,25 @@ describe("KustoManagementClient", () => {
   beforeEach(async function (this: Context) {
     recorder = new Recorder(this.currentTest);
     await recorder.start(recorderOptions);
-    subscriptionId = env.SUBSCRIPTION_ID || '';
+    subscriptionId = env.SUBSCRIPTION_ID || "";
     // This is an example of how the environment variables are used
     const credential = createTestCredential();
-    client = new KustoManagementClient(credential, subscriptionId, recorder.configureClientOptions({}));
+    client = new KustoManagementClient(
+      credential,
+      subscriptionId,
+      recorder.configureClientOptions({})
+    );
     resourceGroup = "myjstest";
     clusterName_1 = "mytestclustername5";
     clusterName_2 = "mytestclustername6";
     clusterParameters = {
-      "location": "westeurope",
-      "sku": {
-        "name": "Standard_L8s_v2",
-        "tier": "Standard"
+      location: "westeurope",
+      sku: {
+        name: "Standard_L8s_v2",
+        tier: "Standard",
       },
-      "identity": {
-        "type": "SystemAssigned"
+      identity: {
+        type: "SystemAssigned",
       },
     };
   });
@@ -70,9 +80,19 @@ describe("KustoManagementClient", () => {
 
   //kusto_client.clusters.beginCreateOrUpdateAndWait
   it("could create clusters", async function () {
-    let res = await client.clusters.beginCreateOrUpdateAndWait(resourceGroup, clusterName_1, clusterParameters, testPollingOptions);
+    let res = await client.clusters.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      clusterName_1,
+      clusterParameters,
+      testPollingOptions
+    );
     assert.strictEqual(res.name, clusterName_1);
-    res = await client.clusters.beginCreateOrUpdateAndWait(resourceGroup, clusterName_2, clusterParameters, testPollingOptions);
+    res = await client.clusters.beginCreateOrUpdateAndWait(
+      resourceGroup,
+      clusterName_2,
+      clusterParameters,
+      testPollingOptions
+    );
     assert.strictEqual(res.name, clusterName_2);
   }).timeout(3600000);
 
@@ -108,10 +128,17 @@ describe("KustoManagementClient", () => {
 
   //kusto_client.clusters.beginDeleteAndWait
   it("could delete clusters", async () => {
-    let res: any = await client.clusters.beginDeleteAndWait(resourceGroup, clusterName_1, testPollingOptions);
+    let res: any = await client.clusters.beginDeleteAndWait(
+      resourceGroup,
+      clusterName_1,
+      testPollingOptions
+    );
     assert.strictEqual(res?.body?.status, "Succeeded");
-    res = await client.clusters.beginDeleteAndWait(resourceGroup, clusterName_2, testPollingOptions);
+    res = await client.clusters.beginDeleteAndWait(
+      resourceGroup,
+      clusterName_2,
+      testPollingOptions
+    );
     assert.strictEqual(res?.body?.status, "Succeeded");
   });
-
 });

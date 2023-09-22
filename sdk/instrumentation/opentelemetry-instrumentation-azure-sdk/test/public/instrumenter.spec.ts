@@ -8,7 +8,7 @@ import { TracingSpan, TracingSpanKind } from "@azure/core-tracing";
 import { Context } from "mocha";
 import { OpenTelemetrySpanWrapper } from "../../src/spanWrapper";
 import { Span } from "@opentelemetry/sdk-trace-base";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { environmentCache } from "../../src/configuration";
 import { inMemoryExporter } from "./util/setup";
 import { isTracingSuppressed } from "@opentelemetry/core";

@@ -16,7 +16,6 @@ import {
 } from "../../src/diagnostics/instrumentEventData";
 import { SubscriptionHandlerForTests } from "../public/utils/subscriptionHandlerForTests";
 import chai, { assert } from "chai";
-import chaiAsPromised from "chai-as-promised";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";

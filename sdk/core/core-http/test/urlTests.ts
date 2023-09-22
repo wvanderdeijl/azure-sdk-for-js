@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { URLBuilder, URLQuery, URLToken, URLTokenizer } from "../src/url";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("URLQuery", () => {
   it(`constructor()`, () => {

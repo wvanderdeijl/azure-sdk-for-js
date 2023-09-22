@@ -16,7 +16,7 @@ import { fakeTestPasswordPlaceholder, fakeTestSecretPlaceholder } from "@azure/t
 import { AbortController } from "@azure/abort-controller";
 import { DefaultHttpClient } from "../src/defaultHttpClient";
 import { OperationSpec } from "../src/operationSpec";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("defaultHttpClient (node)", function () {
   let httpMock: HttpMockFacade;

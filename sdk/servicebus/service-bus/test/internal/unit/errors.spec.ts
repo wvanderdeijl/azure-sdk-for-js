@@ -4,11 +4,10 @@
 import * as sinon from "sinon";
 import { MessagingError } from "@azure/core-amqp";
 import { AbortError } from "@azure/abort-controller";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import { createServiceBusLogger } from "../../../src/log";
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 describe("errors", () => {
   let verboseSpy: sinon.SinonSpy<any[], void>;

@@ -8,7 +8,7 @@ import {
   createHttpHeaders,
 } from "@azure/core-rest-pipeline";
 import { apiVersionPolicy } from "../../src/utils/apiVersionPolicy";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("apiVersionPolicy", function () {
   it("should override the default api-version", async function () {

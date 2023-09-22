@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Recorder, isPlaybackMode } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createRecorder, createClient } from "./utils/recordedClient";
 import { Context } from "mocha";
 import { ContentSafetyClient, isUnexpected, paginate, TextBlockItemOutput } from "../../src";

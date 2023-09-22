@@ -20,7 +20,7 @@ import {
 import { Context } from "mocha";
 import { DeveloperSignOnClientId } from "../../../src/constants";
 import { IdentityClient } from "../../../src/client/identityClient";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { authorizeRequestOnClaimChallenge } from "@azure/core-client";
 
 /**

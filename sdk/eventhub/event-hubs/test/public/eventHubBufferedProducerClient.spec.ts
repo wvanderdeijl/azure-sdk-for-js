@@ -9,11 +9,11 @@ import {
   OnSendEventsSuccessContext,
 } from "../../src/index";
 import { AmqpAnnotatedMessage } from "@azure/core-amqp";
-import chai from "chai";
+import { assert } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 
-const assert = chai.assert;
+const assert = assert;
 
 type ResultError = { type: "error"; context: OnSendEventsErrorContext };
 type ResultSuccess = { type: "success"; context: OnSendEventsSuccessContext };

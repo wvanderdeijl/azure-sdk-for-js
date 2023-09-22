@@ -14,7 +14,7 @@ import { AppConfigurationClient } from "../../../src";
 import { Context } from "mocha";
 import { InternalAppConfigurationClientOptions } from "../../../src/appConfigurationClient";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import nock from "nock";
 
 describe("http request related tests", function () {

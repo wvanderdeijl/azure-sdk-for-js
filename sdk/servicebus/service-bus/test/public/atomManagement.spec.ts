@@ -4,8 +4,7 @@
 import { isNode } from "@azure/core-util";
 import { PageSettings } from "@azure/core-paging";
 import { DefaultAzureCredential } from "@azure/identity";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import chaiExclude from "chai-exclude";
 import * as dotenv from "dotenv";
 import { parseServiceBusConnectionString } from "../../src";
@@ -26,7 +25,7 @@ import { versionsToTest } from "@azure/test-utils";
 chai.use(chaiAsPromised);
 chai.use(chaiExclude);
 const should = chai.should();
-const assert = chai.assert;
+const assert = assert;
 
 dotenv.config();
 

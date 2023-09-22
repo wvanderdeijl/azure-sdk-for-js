@@ -3,7 +3,7 @@
 
 import { isAggregateLogsUploadError, LogsIngestionClient, LogsUploadFailure } from "../../src";
 import { Context } from "mocha";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { AdditionalPolicyConfig } from "@azure/core-client";
 import {
   RecorderAndLogsClient,

@@ -9,7 +9,7 @@ import {
   toColonDelimitedLatLonString,
 } from "../../src";
 import { Recorder, isPlaybackMode } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { createClient, createRecorder, testLogger } from "./utils/recordedClient";
 import {
   MapsRouteClient,

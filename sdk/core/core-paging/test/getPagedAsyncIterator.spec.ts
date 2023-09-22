@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { getPagedAsyncIterator, PagedResult, PageSettings } from "../src";
 
 function buildIterator<T>(input: T) {

@@ -3,7 +3,7 @@
 
 import { TokenCredential } from "@azure/core-auth";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 import { DataLakeFileSystemClient, FileSystemSASPermissions, newPipeline } from "../../src";

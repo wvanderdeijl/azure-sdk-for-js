@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { shaHMAC, shaHash } from "../../src/credential/cryptoUtils";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("CryptoUtils", function () {
   it("calculates correct hash", async function () {

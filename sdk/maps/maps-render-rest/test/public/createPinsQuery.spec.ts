@@ -3,7 +3,7 @@
 
 import { Recorder } from "@azure-tools/test-recorder";
 import { LatLon } from "@azure/maps-common";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 import { createPinsQuery, isUnexpected, MapsRenderClient } from "../../src";
 import { createClient, createRecorder } from "./utils/recordedClient";

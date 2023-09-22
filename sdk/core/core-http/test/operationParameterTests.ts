@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { OperationParameter, getPathStringFromParameter } from "../src/operationParameter";
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 
 describe("getParameterPathString()", () => {
   it("should throw when given undefined", () => {

@@ -10,15 +10,14 @@ import {
   SqlRuleFilter,
 } from "../../src";
 import { TestClientType } from "../public/utils/testUtils";
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
+import { assert } from "@azure/test-utils";
 import {
   ServiceBusClientForTests,
   createServiceBusClientForTests,
 } from "../public/utils/testutils2";
 import { recreateSubscription } from "./utils/managementUtils";
 chai.use(chaiAsPromised);
-const assert = chai.assert;
+const assert = assert;
 
 const defaultRuleName = "$Default";
 interface Order {
