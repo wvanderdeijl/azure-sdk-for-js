@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-chai.use(chaiAsPromised);
+
 const should = chai.should();
 import { TestClientType, TestMessage } from "../public/utils/testUtils";
 import {

@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import sinon from "sinon";
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import { ChatClient, ChatClientOptions, CreateChatThreadRequest } from "../../src";
 import * as RestModel from "../../src/generated/src/models";
 import { apiVersion } from "../../src/generated/src/models/parameters";

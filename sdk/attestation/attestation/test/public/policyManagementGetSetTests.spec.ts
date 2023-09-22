@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import { Context } from "mocha";
 /* eslint-disable @typescript-eslint/no-invalid-this */
 

@@ -10,11 +10,9 @@ import { BalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/
 import { ConnectionContext } from "../../src/connectionContext";
 import { GreedyLoadBalancingStrategy } from "../../src/loadBalancerStrategies/greedyStrategy";
 import { InMemoryCheckpointStore } from "../../src/inMemoryCheckpointStore";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-const should = chai.should();
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

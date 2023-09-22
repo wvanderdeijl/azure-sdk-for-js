@@ -21,7 +21,6 @@ import {
 import { testLogger } from "./utils/misc";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 const noSessionTestClientType = getRandomTestClientTypeWithNoSessions();
 // const withSessionTestClientType = getRandomTestClientTypeWithSessions();

@@ -17,7 +17,6 @@ import { ServiceBusReceivedMessage } from "../../../src";
 import Sinon from "sinon";
 import { tracingClient } from "../../../src/diagnostics/tracing";
 
-chai.use(chaiAsPromised);
 const assert = assert;
 
 describe("utils", () => {

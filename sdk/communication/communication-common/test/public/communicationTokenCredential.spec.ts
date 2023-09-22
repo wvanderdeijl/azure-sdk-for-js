@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert, use } from "chai";
+import { assert } from "@azure/test-utils";
 import { AbortSignal } from "@azure/abort-controller";
 import { AzureCommunicationTokenCredential } from "../../src";
 import { isNode } from "@azure/core-util";
 import sinon from "sinon";
-
-use(chaiAsPromised);
 
 declare function btoa(stringToEncode: string): string;
 

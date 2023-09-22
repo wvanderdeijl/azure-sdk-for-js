@@ -26,7 +26,6 @@ import sinon from "sinon";
 import { isNode } from "@azure/core-util";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 let errorWasThrown: boolean;
 let unexpectedError: Error | undefined;

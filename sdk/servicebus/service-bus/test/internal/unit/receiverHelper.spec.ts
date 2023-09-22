@@ -6,7 +6,7 @@ import { Receiver, ReceiverEvents, delay } from "rhea-promise";
 import { ReceiverHelper } from "../../../src/core/receiverHelper";
 import { assertThrows } from "../../public/utils/testUtils";
 import { createRheaReceiverForTests } from "./unittestUtils";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 describe("ReceiverHelper unit tests", () => {

@@ -3,7 +3,7 @@
 
 import * as lib from "../../../src/dtmiConventions";
 
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 
 interface TestCase {
   dtmi: string;

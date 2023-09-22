@@ -14,7 +14,7 @@ import { StreamingReceiver } from "../../../src/core/streamingReceiver";
 import { receiverLogger } from "../../../src/log";
 import { MessageSession } from "../../../src/session/messageSession";
 import { createConnectionContextForTests, createRheaReceiverForTests } from "./unittestUtils";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 describe("LinkEntity unit tests", () => {

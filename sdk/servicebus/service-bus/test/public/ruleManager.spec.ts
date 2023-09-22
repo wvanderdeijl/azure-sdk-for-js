@@ -16,7 +16,7 @@ import {
   createServiceBusClientForTests,
 } from "../public/utils/testutils2";
 import { recreateSubscription } from "./utils/managementUtils";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 const defaultRuleName = "$Default";

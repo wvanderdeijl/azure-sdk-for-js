@@ -5,13 +5,10 @@ import { EnvVarKeys, getEnvVars } from "../public/utils/testUtils";
 import { AbortController } from "@azure/abort-controller";
 import { createReceiver, PartitionReceiver } from "../../src/partitionReceiver";
 import { EventHubSender } from "../../src/eventHubSender";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createConnectionContext } from "../../src/connectionContext";
 import { createMockServer } from "../public/utils/mockService";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-const should = chai.should();
-chai.use(chaiAsPromised);
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

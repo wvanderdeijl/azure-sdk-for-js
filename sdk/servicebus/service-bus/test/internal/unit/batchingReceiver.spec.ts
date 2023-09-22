@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 import * as sinon from "sinon";

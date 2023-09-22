@@ -24,7 +24,7 @@ import Sinon from "sinon";
 import { getRandomName } from "../../src/util/utils";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 const debug = debugModule("azure:event-hubs:misc-spec");
 
 testWithServiceTypes((serviceVersion) => {

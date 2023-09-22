@@ -9,7 +9,6 @@ import { Message as RheaMessage } from "rhea-promise";
 import { Constants } from "@azure/core-amqp";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 describe("Message translations", () => {
   describe("expiresAtUtc is not invalid on received message", function (): void {

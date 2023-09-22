@@ -2,9 +2,8 @@
 // Licensed under the MIT license.
 
 import { EventHubConnectionConfig } from "../../src/eventhubConnectionConfig";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-const should = chai.should();
 
 testWithServiceTypes(() => {
   describe("ConnectionConfig", function () {

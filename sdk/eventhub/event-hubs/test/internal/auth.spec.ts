@@ -9,12 +9,10 @@ import {
   EventHubProducerClient,
   parseEventHubConnectionString,
 } from "../../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import { createSasTokenProvider } from "@azure/core-amqp";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-const should = chai.should();
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

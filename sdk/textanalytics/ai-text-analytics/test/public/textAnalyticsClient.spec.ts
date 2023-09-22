@@ -3,7 +3,7 @@
 
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context, Suite } from "mocha";
 
 import { matrix } from "@azure/test-utils";

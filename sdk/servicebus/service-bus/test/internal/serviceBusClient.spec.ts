@@ -32,7 +32,6 @@ import {
 import { ServiceBusReceiver, ServiceBusReceiverImpl } from "../../src/receivers/receiver";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 dotenv.config();
 

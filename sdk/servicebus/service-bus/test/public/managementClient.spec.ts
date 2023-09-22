@@ -6,7 +6,6 @@ import { ServiceBusSender, ServiceBusReceiver } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
 import { ServiceBusClientForTests, createServiceBusClientForTests } from "./utils/testutils2";
 chai.should();
-chai.use(chaiAsPromised);
 
 describe("ManagementClient - disconnects", function (): void {
   let serviceBusClient: ServiceBusClientForTests;

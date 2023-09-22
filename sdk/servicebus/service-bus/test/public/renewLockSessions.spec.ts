@@ -3,7 +3,7 @@
 
 import { assert } from "@azure/test-utils";
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 import { ServiceBusMessage, delay, ProcessErrorArgs, isServiceBusError } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
 import {

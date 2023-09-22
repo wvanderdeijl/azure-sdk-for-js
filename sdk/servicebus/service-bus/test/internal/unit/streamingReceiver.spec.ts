@@ -11,7 +11,6 @@ import { Constants } from "@azure/core-amqp";
 import { AbortError } from "@azure/abort-controller";
 import { assertThrows } from "../../public/utils/testUtils";
 
-chai.use(chaiAsPromised);
 const assert = assert;
 
 describe("StreamingReceiver unit tests", () => {

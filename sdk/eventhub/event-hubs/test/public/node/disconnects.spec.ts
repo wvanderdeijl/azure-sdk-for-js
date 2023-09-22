@@ -8,7 +8,6 @@ import { createMockServer } from "../utils/mockService";
 import { testWithServiceTypes } from "../utils/testWithServiceTypes";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 testWithServiceTypes((serviceVersion, onVersions) => {
   const env = getEnvVars();

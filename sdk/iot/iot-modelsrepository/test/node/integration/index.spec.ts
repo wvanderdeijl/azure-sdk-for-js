@@ -4,7 +4,7 @@
 
 import { ModelsRepositoryClient, ModelsRepositoryClientOptions } from "../../../src";
 
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import * as sinon from "sinon";
 
 import { dependencyResolutionType } from "../../../src/dependencyResolutionType";

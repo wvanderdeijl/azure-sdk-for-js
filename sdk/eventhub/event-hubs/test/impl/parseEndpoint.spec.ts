@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { parseEndpoint } from "../../src/util/parseEndpoint";
-
-const should = chai.should();
 
 describe("parseEndpoint", () => {
   it("throws an error for invalid inputs", () => {

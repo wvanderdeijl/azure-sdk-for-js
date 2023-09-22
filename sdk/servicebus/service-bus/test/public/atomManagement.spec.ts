@@ -22,7 +22,6 @@ import { AzureNamedKeyCredential } from "@azure/core-auth";
 import { createServiceBusClientForTests, ServiceBusClientForTests } from "./utils/testutils2";
 import { versionsToTest } from "@azure/test-utils";
 
-chai.use(chaiAsPromised);
 chai.use(chaiExclude);
 const should = chai.should();
 const assert = assert;

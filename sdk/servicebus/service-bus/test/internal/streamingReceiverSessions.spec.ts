@@ -29,7 +29,6 @@ import { singleMessagePromise } from "./streamingReceiver.spec";
 import { defer } from "./unit/unittestUtils";
 const should = chai.should();
 const assert = assert;
-chai.use(chaiAsPromised);
 
 describe("Streaming with sessions", () => {
   let sender: ServiceBusSender;

@@ -16,7 +16,7 @@ import {
   ServiceBusClientForTests,
   createServiceBusClientForTests,
 } from "../public/utils/testutils2";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 /**

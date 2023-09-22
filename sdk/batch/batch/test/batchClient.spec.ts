@@ -8,7 +8,7 @@ import {
   PoolGetResponse,
   TaskGetResponse,
 } from "../src/models";
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import { BatchServiceClient, BatchServiceModels } from "../src/batchServiceClient";
 import moment from "moment";
 import { createClient } from "./utils/recordedClient";

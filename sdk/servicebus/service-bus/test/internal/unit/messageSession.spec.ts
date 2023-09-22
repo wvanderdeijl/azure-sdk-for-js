@@ -25,7 +25,6 @@ import { ReceiveMode } from "../../../src/models";
 import { Constants } from "@azure/core-amqp";
 import { AbortError } from "@azure/abort-controller";
 
-chai.use(chaiAsPromised);
 const assert = assert;
 
 describe("Message session unit tests", () => {

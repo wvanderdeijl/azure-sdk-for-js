@@ -28,7 +28,7 @@ import { BatchingReceiver } from "../../src/core/batchingReceiver";
 import { testLogger } from "./utils/misc";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 const noSessionTestClientType = getRandomTestClientTypeWithNoSessions();

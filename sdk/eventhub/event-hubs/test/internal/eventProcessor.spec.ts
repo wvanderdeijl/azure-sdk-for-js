@@ -29,7 +29,7 @@ import { GreedyLoadBalancingStrategy } from "../../src/loadBalancerStrategies/gr
 import { InMemoryCheckpointStore } from "../../src/inMemoryCheckpointStore";
 import { PartitionContext } from "../../src/eventHubConsumerClientModels";
 import { UnbalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/unbalancedStrategy";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { delay } from "@azure/core-amqp";
@@ -39,8 +39,6 @@ import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { getRandomName } from "../../src/util/utils";
 import { randomUUID } from "@azure/core-util";
 
-const should = chai.should();
-chai.use(chaiAsPromised);
 const debug = debugModule("azure:event-hubs:partitionPump");
 
 testWithServiceTypes((serviceVersion) => {

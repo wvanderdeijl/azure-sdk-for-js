@@ -7,8 +7,6 @@ import {
 } from "../src/util/connectionStringUtils";
 import { assert } from "@azure/test-utils";
 
-const assert = assert;
-
 describe("parseEventHubConnectionString", () => {
   const namespace = "my.servicebus.windows.net";
   const sharedAccessKey = "shared-access-key";

@@ -19,7 +19,7 @@ import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { EventDataBatchImpl } from "../../src/eventDataBatch";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 const debug = debugModule("azure:event-hubs:sender-spec");
 
 testWithServiceTypes((serviceVersion) => {

@@ -5,7 +5,7 @@
 /// <reference path="../../src/jsrsasign.d.ts"/>
 import * as jsrsasign from "jsrsasign";
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { Context } from "mocha";
 
 import { Recorder } from "@azure-tools/test-recorder";

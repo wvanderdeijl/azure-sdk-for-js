@@ -4,14 +4,12 @@
 import { EnvVarKeys, getEnvVars } from "../../public/utils/testUtils";
 import { EnvironmentCredential, TokenCredential } from "@azure/identity";
 import { EventHubConsumerClient, EventHubProducerClient } from "../../../src";
-import { assert, should as shouldFn } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 
 import Sinon from "sinon";
 import { createMockServer } from "../../public/utils/mockService";
 import { testWithServiceTypes } from "../../public/utils/testWithServiceTypes";
 import { tracingClient } from "../../../src/diagnostics/tracing";
-
-const should = shouldFn();
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

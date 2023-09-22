@@ -4,7 +4,7 @@
 import chai, { assert } from "chai";
 import Long from "long";
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 import {
   ServiceBusReceivedMessage,
   delay,

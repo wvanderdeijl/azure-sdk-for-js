@@ -5,10 +5,8 @@ import { BalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/
 import { GreedyLoadBalancingStrategy } from "../../src/loadBalancerStrategies/greedyStrategy";
 import { PartitionOwnership } from "../../src";
 import { UnbalancedLoadBalancingStrategy } from "../../src/loadBalancerStrategies/unbalancedStrategy";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-const should = chai.should();
 
 testWithServiceTypes(() => {
   describe("LoadBalancingStrategy", () => {

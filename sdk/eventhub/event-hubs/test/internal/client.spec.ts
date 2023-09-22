@@ -10,17 +10,13 @@ import {
 } from "../../src";
 import { ConnectionContext } from "../../src/connectionContext";
 import { MessagingError } from "@azure/core-amqp";
-import { assert } from "@azure/test-utils";
-import chaiString from "chai-string";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { getRuntimeInfo } from "../../src/util/runtimeInfo";
 import { packageJsonInfo } from "../../src/util/constants";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 
-const should = chai.should();
-chai.use(chaiAsPromised);
-chai.use(chaiString);
 const debug = debugModule("azure:event-hubs:client-spec");
 
 const testFailureMessage = "Test failure";

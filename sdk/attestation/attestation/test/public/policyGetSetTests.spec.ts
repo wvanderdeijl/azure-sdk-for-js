@@ -5,7 +5,7 @@
 /// <reference path="../../src/jsrsasign.d.ts"/>
 import * as jsrsasign from "jsrsasign";
 
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import { Context } from "mocha";
 /* eslint-disable @typescript-eslint/no-invalid-this */
 

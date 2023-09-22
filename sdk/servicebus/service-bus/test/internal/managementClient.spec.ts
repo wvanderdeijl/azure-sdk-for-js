@@ -5,7 +5,6 @@ import { ManagementClient } from "../../src/core/managementClient";
 import { createConnectionContextForTests } from "./unit/unittestUtils";
 import { delay } from "rhea-promise";
 import { assert } from "@azure/test-utils";
-chai.use(chaiAsPromised);
 
 describe("ManagementClient unit tests", () => {
   it("actionAfterTimeout throws error that can be caught on timeout", async () => {

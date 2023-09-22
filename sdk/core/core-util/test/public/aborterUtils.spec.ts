@@ -6,9 +6,6 @@ import { AbortController, AbortSignalLike } from "@azure/abort-controller";
 import { assert } from "@azure/test-utils";
 import { cancelablePromiseRace, createAbortablePromise } from "../../src";
 
-chai.use(chaiAsPromised);
-const { assert } = chai;
-
 describe("createAbortablePromise", function () {
   let token: ReturnType<typeof setTimeout>;
   const delayTime = 2500;

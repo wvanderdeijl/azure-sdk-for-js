@@ -10,12 +10,10 @@ import {
   ReceivedEventData,
   SubscriptionEventHandlers,
 } from "../../../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { delay } from "@azure/core-amqp";
 import { loggerForTest } from "./logHelpers";
 import { loopUntil } from "./testUtils";
-
-const should = chai.should();
 
 export interface HandlerAndPositions {
   startPosition: { [partitionId: string]: EventPosition };

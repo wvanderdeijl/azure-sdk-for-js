@@ -3,7 +3,7 @@
 
 import { assert } from "@azure/test-utils";
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 import chaiString from "chai-string";
 chai.use(chaiString);
 import debugModule from "debug";

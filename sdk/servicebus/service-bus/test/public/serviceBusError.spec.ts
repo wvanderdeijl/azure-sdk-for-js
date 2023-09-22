@@ -5,7 +5,6 @@ import { assert } from "@azure/test-utils";
 import { MessagingError, ServiceBusError, ServiceBusErrorCode } from "../../src";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
 
 describe("ServiceBusError", () => {
   describe("constructor", () => {

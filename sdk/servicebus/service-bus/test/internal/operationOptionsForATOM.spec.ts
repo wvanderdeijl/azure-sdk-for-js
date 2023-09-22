@@ -12,7 +12,6 @@ import { createPipelineRequest } from "@azure/core-rest-pipeline";
 import { executeAtomXmlOperation } from "../../src/util/atomXmlHelper";
 import { NamespaceResourceSerializer } from "../../src/serializers/namespaceResourceSerializer";
 
-chai.use(chaiAsPromised);
 chai.use(chaiExclude);
 
 dotenv.config();

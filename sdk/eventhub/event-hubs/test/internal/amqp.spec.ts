@@ -6,8 +6,6 @@ import { Constants } from "@azure/core-amqp";
 import { assert } from "@azure/test-utils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 
-const assert = assert;
-
 testWithServiceTypes(() => {
   describe("AMQP message encoding", () => {
     it("isAmqpAnnotatedMessage", () => {

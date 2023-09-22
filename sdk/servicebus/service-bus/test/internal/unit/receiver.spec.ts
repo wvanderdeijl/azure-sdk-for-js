@@ -3,7 +3,7 @@
 
 import { assert } from "@azure/test-utils";
 import { ReceiverOptions } from "rhea-promise";
-chai.use(chaiAsPromised);
+
 const assert = assert;
 
 import { BatchingReceiver } from "../../../src/core/batchingReceiver";

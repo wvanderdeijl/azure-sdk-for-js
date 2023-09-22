@@ -17,7 +17,7 @@ import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 const debug = debugModule("azure:event-hubs:receiver-spec");
 
 testWithServiceTypes((serviceVersion) => {

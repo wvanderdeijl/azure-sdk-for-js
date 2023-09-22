@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import fs from "fs";
 import { packageJsonInfo } from "../../../src/util/constants";
 import path from "path";
 import { testWithServiceTypes } from "../../public/utils/testWithServiceTypes";
-
-const should = chai.should();
 
 // Since we currently hardcode package name and version in `constants.ts` file,
 // following test is in place to ensure the values in package.json and in this file are consistent

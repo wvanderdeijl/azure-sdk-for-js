@@ -16,7 +16,6 @@ import { DEFAULT_RULE_NAME } from "../../src/util/constants";
 import { recreateSubscription, recreateTopic } from "../public/utils/managementUtils";
 import { getConnectionString } from "../public/utils/testutils2";
 
-chai.use(chaiAsPromised);
 chai.use(chaiExclude);
 const should = chai.should();
 

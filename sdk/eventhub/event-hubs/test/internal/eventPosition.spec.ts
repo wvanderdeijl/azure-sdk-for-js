@@ -3,10 +3,8 @@
 
 import { earliestEventPosition, latestEventPosition } from "../../src";
 import { getEventPositionFilter, validateEventPositions } from "../../src/eventPosition";
-import { assert } from "@azure/test-utils";
+import "@azure/test-utils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-chai.should();
 
 testWithServiceTypes(() => {
   describe("EventPosition", function (): void {

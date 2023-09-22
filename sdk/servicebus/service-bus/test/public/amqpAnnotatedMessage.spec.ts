@@ -9,7 +9,7 @@ import { v4 as generateUuid } from "uuid";
 import { TestClientType } from "./utils/testUtils";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 chai.use(chaiExclude);
 const assert = assert;
 

@@ -5,7 +5,7 @@ import { assert } from "@azure/test-utils";
 import Long from "long";
 const should = chai.should();
 const expect = chai.expect;
-chai.use(chaiAsPromised);
+
 import { TestClientType, TestMessage } from "./utils/testUtils";
 import { ServiceBusClientForTests, createServiceBusClientForTests } from "./utils/testutils2";
 import { ServiceBusSender } from "../../src";

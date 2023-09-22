@@ -4,7 +4,7 @@
 import { assert } from "@azure/test-utils";
 const should = chai.should();
 const expect = chai.expect;
-chai.use(chaiAsPromised);
+
 import {
   ServiceBusReceivedMessage,
   ServiceBusMessage,

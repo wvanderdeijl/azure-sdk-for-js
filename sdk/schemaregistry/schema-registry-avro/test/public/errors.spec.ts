@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "chai";
+import { assert } from "@azure/test-utils";
 import { AvroSerializer } from "../../src";
 import { Context } from "mocha";
 import { SchemaRegistry } from "@azure/schema-registry";

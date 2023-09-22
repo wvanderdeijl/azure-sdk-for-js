@@ -10,7 +10,7 @@
 // import { ServiceBusSenderImpl } from "../src/sender";
 // import { AbortController } from "@azure/abort-controller";
 
-// chai.use(chaiAsPromised);
+//
 
 // describe("controlled connection initialization", () => {
 //   let sender: ServiceBusSenderImpl;

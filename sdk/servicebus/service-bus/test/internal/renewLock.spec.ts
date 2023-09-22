@@ -4,7 +4,7 @@
 import { assert } from "@azure/test-utils";
 const should = chai.should();
 const assert = assert;
-chai.use(chaiAsPromised);
+
 import { delay } from "rhea-promise";
 import { checkWithTimeout, TestMessage } from "../public/utils/testUtils";
 import {

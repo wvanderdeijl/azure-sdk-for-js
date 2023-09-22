@@ -4,8 +4,7 @@
 import { AbortController } from "@azure/abort-controller";
 import { EventData, EventHubProducerClient } from "../../src/index";
 import { delay } from "@azure/core-amqp";
-import { assert } from "@azure/test-utils";
-const should = chai.should();
+import { should } from "@azure/test-utils";
 
 import { createMockServer } from "../public/utils/mockService";
 import { EnvVarKeys, getEnvVars } from "../public/utils/testUtils";

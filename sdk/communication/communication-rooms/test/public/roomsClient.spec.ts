@@ -3,7 +3,7 @@
 
 import { Recorder, isPlaybackMode } from "@azure-tools/test-recorder";
 import { createRecordedRoomsClient, createTestUser } from "./utils/recordedClient";
-import { assert, expect } from "chai";
+import { assert, expect } from "@azure/test-utils";
 import { Context } from "mocha";
 import sinon from "sinon";
 import { RoomsClient } from "../../src/roomsClient";

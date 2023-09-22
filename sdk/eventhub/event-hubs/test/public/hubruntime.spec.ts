@@ -15,7 +15,7 @@ import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 const debug = debugModule("azure:event-hubs:hubruntime-spec");
 
 type ClientCommonMethods = Pick<

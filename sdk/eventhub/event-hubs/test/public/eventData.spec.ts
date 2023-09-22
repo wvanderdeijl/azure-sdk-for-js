@@ -17,7 +17,7 @@ import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 import { randomUUID } from "@azure/core-util";
 
 const should = chai.should();
-chai.use(chaiAsPromised);
+
 chai.use(chaiExclude);
 
 testWithServiceTypes((serviceVersion) => {
