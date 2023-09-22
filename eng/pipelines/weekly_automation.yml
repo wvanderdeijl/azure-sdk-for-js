@@ -46,9 +46,9 @@ jobs:
 
   - script: |
       node common/scripts/install-run-rush.js install
-      node common/scripts/install-run-rush.js unlink
+      node common/scripts/install-run-rush.js purge || cd .
       git clean -xdf
-    displayName: "Rush Unlink"
+    displayName: "Rush Purge"
 
   - task: PowerShell@2
     displayName: 'Check Dependency Warnings and File GitHub Issues'

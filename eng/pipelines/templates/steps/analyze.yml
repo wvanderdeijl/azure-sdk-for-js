@@ -88,11 +88,11 @@ steps:
     condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
     displayName: "Component Detection"
 
-    # Unlink node_modules folders to significantly improve performance of subsequent tasks
+    # Purge node_modules folders to significantly improve performance of subsequent tasks
     # which need to walk the directory tree (and are hardcoded to follow symlinks).
   - script: |
-      node eng/tools/rush-runner.js unlink
-    displayName: "Unlink dependencies"
+      node eng/tools/rush-runner.js purge || cd .
+    displayName: "Purge temporary files"
 
     # It's important for performance to pass "sdk" as "sourceFolder" rather than as a prefix in "contents".
     # The task first enumerates all files under "sourceFolder", then matches them against the "contents" pattern.

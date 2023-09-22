@@ -66,11 +66,11 @@ steps:
       node eng/tools/rush-runner.js pack "${{parameters.ServiceDirectory}}" -packages "$(ArtifactPackageNames)" --verbose
     displayName: "Pack libraries"
 
-  # Unlink node_modules folders to significantly improve performance of subsequent tasks
+  # Purge node_modules folders to significantly improve performance of subsequent tasks
   # which need to walk the directory tree (and are hardcoded to follow symlinks).
   - script: |
-      node eng/tools/rush-runner.js unlink
-    displayName: "Unlink dependencies"
+      node eng/tools/rush-runner.js purge || cd .
+    displayName: "Purge temporary files"
 
   - template: ../steps/generate-doc.yml
     parameters:

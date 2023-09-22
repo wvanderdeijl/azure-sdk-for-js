@@ -53,22 +53,14 @@ steps:
       displayName: 'Dump Test Proxy logs'
       condition: succeededOrFailed()
       
-  # Unlink node_modules folders to significantly improve performance of subsequent tasks
+  # Purge node_modules folders to significantly improve performance of subsequent tasks
   # which need to walk the directory tree (and are hardcoded to follow symlinks).
   # Retry for 30 seconds, since this command may fail with error "Another rush command is already
   # running in this repository" if the previous rush command was killed.
   - pwsh: |
-      for ($i=0; $i -lt 30; $i++) {
-        node eng/tools/rush-runner.js unlink
-        if ($lastexitcode -eq 0) {
-          break
-        }
-        else {
-          start-sleep 1
-        }
-      }
+      node eng/tools/rush-runner.js purge || cd .
     condition: always()
-    displayName: "Unlink dependencies"
+    displayName: "Purge temporary files"
 
   # It's important for performance to pass "sdk" as "searchFolder" to avoid looking under root "node_modules".
   # PublishTestResults.searchFolder only supports absolute paths, not relative.
