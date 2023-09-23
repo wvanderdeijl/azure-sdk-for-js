@@ -95,7 +95,7 @@ export async function parseXML(str: string, opts: XmlOptions = {}): Promise<any>
   }
 
   const parser = new XMLParser(getParserOptions(opts));
-  const parsedXml = parser.parse(str);
+  const parsedXml = parser.parse<Record<string, any>>(str);
 
   // Remove the <?xml version="..." ?> node.
   // This is a change in behavior on fxp v4. Issue #424
