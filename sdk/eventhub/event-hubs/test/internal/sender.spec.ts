@@ -10,15 +10,12 @@ import {
   ReceivedEventData,
   SendBatchOptions,
 } from "../../src";
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import { SubscriptionHandlerForTests } from "../public/utils/subscriptionHandlerForTests";
-import { assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { EventDataBatchImpl } from "../../src/eventDataBatch";
-
-const should = chai.should();
 
 const debug = debugModule("azure:event-hubs:sender-spec");
 

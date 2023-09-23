@@ -10,15 +10,10 @@ import {
   ReceivedEventData,
   Subscription,
 } from "../../src";
-import { assert } from "@azure/test-utils";
-import chaiExclude from "chai-exclude";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 import { randomUUID } from "@azure/core-util";
-
-const should = chai.should();
-
-chai.use(chaiExclude);
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

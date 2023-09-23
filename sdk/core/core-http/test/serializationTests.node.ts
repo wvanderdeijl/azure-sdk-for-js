@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import "chai/register-should";
+import "@azure/test-utils";
 import { Mappers } from "./data/TestClient/src/models/mappers";
 import { TestClient } from "./data/TestClient/src/testClient";
 

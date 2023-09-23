@@ -7,7 +7,6 @@ import { assertThrows } from "../../public/utils/testUtils";
 import { createConnectionContextForTests, getPromiseResolverForTest } from "./unittestUtils";
 import { assert } from "@azure/test-utils";
 import { InternalMessageHandlers } from "../../../src/models";
-const assert = assert;
 
 describe("ServiceBusReceiver unit tests", () => {
   let receiver: ServiceBusReceiverImpl;

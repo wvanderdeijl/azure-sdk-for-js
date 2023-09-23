@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import {
   ServiceBusClientForTests,
   createServiceBusClientForTests,
@@ -11,7 +11,6 @@ import {
 import { ServiceBusSender } from "../../src";
 import { ServiceBusMessage, ServiceBusSessionReceiver } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
-const should = chai.should();
 
 // NOTE: these tests should be reworked, if possible. Since they need to be deterministic
 // and only grab the "expected" next session you need to ensure the entity (queue, sub)

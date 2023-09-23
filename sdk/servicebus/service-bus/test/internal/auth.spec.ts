@@ -12,7 +12,6 @@ import {
   ServiceBusClientForTests,
   ServiceBusTestHelpers,
 } from "../public/utils/testutils2";
-const assert = assert;
 
 type UnpackReturnType<T extends (...args: any) => any> = ReturnType<T> extends Promise<infer U>
   ? U

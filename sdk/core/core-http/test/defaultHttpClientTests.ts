@@ -3,9 +3,9 @@
 
 /* eslint-disable no-unused-expressions */
 
-import "chai/register-should";
+import "@azure/test-utils";
 import * as sinon from "sinon";
-import { AssertionError, assert } from "chai";
+import { assert, AssertionError } from "@azure/test-utils";
 import { HttpMockFacade, getHttpMock } from "./mockHttp";
 import { TransferProgressEvent, WebResource } from "../src/webResource";
 import { AbortController } from "@azure/abort-controller";

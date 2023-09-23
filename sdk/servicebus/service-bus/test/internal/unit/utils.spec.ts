@@ -17,8 +17,6 @@ import { ServiceBusReceivedMessage } from "../../../src";
 import Sinon from "sinon";
 import { tracingClient } from "../../../src/diagnostics/tracing";
 
-const assert = assert;
-
 describe("utils", () => {
   describe("waitForTimeoutAbortOrResolve", () => {
     let abortController: AbortController;

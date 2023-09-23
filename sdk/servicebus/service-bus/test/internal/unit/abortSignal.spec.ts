@@ -2,9 +2,6 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-
-const assert = assert;
-
 import { MessageSender } from "../../../src/core/messageSender";
 import { OperationOptionsBase } from "../../../src/modelsToBeSharedWithEventHubs";
 import { AwaitableSender, delay, ReceiverOptions } from "rhea-promise";

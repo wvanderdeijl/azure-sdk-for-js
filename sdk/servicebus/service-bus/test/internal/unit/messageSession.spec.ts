@@ -25,8 +25,6 @@ import { ReceiveMode } from "../../../src/models";
 import { Constants } from "@azure/core-amqp";
 import { AbortError } from "@azure/abort-controller";
 
-const assert = assert;
-
 describe("Message session unit tests", () => {
   describe("receiveMessages", () => {
     const receiveModes: ReceiveMode[] = ["peekLock", "receiveAndDelete"];

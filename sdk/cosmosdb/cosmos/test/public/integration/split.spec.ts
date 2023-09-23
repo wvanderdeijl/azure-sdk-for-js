@@ -7,8 +7,7 @@ import { Constants, CosmosClient, PluginOn, CosmosClientOptions, PluginConfig } 
 import { endpoint } from "../common/_testConfig";
 import { masterKey } from "../common/_fakeTestSecrets";
 import { SubStatusCodes } from "../../../src/common";
-import assert from "assert";
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 
 const splitError = new Error("Fake Partition Split") as any;
 splitError.code = 410;

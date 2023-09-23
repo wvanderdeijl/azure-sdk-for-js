@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
-const should = chai.should();
-
+import { should, assert } from "@azure/test-utils";
 import { ServiceBusMessage, delay, ProcessErrorArgs, isServiceBusError } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
 import {

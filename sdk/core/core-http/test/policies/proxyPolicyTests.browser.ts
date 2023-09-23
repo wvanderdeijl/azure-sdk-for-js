@@ -1,14 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import "chai/register-should";
 import { ProxyPolicy, getDefaultProxySettings } from "../../src/policies/proxyPolicy";
 import { HttpHeaders } from "../../src/httpHeaders";
 import { ProxySettings } from "../../src/serviceClient";
 import { RequestPolicyOptions } from "../../src/policies/requestPolicy";
 import { WebResource } from "../../src/webResource";
-import { fakeTestSecretPlaceholder } from "@azure/test-utils";
-import { should } from "chai";
+import { fakeTestSecretPlaceholder, should } from "@azure/test-utils";
 
 describe("ProxyPolicy (browser)", function () {
   const proxySettings: ProxySettings = {
@@ -44,7 +42,7 @@ describe("getDefaultProxySettings", () => {
       (proxyUrl) => {
         it(`should return undefined for ${proxyUrl}`, () => {
           const proxySettings = getDefaultProxySettings(proxyUrl);
-          should().not.exist(proxySettings);
+          should.not.exist(proxySettings);
         });
       }
     );

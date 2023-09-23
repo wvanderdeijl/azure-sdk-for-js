@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai, { assert } from "chai";
 import { dataSectionTypeCode, defaultDataTransformer } from "../../src/dataTransformer";
 import { Buffer } from "buffer";
 import isBuffer from "is-buffer";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-const should = chai.should();
+import { should, assert } from "@azure/test-utils";
 
 testWithServiceTypes(() => {
   describe("DataTransformer", function () {

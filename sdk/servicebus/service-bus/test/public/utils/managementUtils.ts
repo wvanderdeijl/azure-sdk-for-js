@@ -7,9 +7,8 @@ import { CreateSubscriptionOptions } from "../../../src";
 import { ServiceBusAdministrationClient } from "../../../src";
 
 import { EnvVarNames, getEnvVars } from "./envVarUtils";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { CreateQueueOptions } from "../../../src";
-const should = chai.should();
 
 let client: ServiceBusAdministrationClient;
 

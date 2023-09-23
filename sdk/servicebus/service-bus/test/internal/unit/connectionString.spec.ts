@@ -4,8 +4,6 @@
 import { parseServiceBusConnectionString } from "../../../src/util/connectionStringUtils";
 import { assert } from "@azure/test-utils";
 
-const assert = assert;
-
 describe("Connection String", () => {
   const expectedNamespace = "my.servicebus.windows.net";
   const expectedEndpoint = `sb://${expectedNamespace}`;

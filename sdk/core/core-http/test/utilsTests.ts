@@ -3,7 +3,7 @@
 
 /* eslint-disable no-unused-expressions */
 
-import { expect } from "chai";
+import { expect } from "@azure/test-utils";
 import { isValidUuid } from "../src/util/utils";
 
 describe("utils", function () {

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import * as chai from "chai";
+import { should } from "@azure/test-utils";
 import {
   Constants,
   MessagingError,
@@ -16,7 +16,6 @@ import { AbortController } from "@azure/abort-controller";
 import debugModule from "debug";
 
 const debug = debugModule("azure:core-amqp:retry-spec");
-const should = chai.should();
 
 [RetryMode.Exponential, RetryMode.Fixed].forEach((mode) => {
   describe(`retry function for "${

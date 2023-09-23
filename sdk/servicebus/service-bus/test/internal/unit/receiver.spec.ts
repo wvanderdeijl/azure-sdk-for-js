@@ -4,8 +4,6 @@
 import { assert } from "@azure/test-utils";
 import { ReceiverOptions } from "rhea-promise";
 
-const assert = assert;
-
 import { BatchingReceiver } from "../../../src/core/batchingReceiver";
 import { StreamingReceiver } from "../../../src/core/streamingReceiver";
 import { ServiceBusReceiverImpl } from "../../../src/receivers/receiver";

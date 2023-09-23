@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 /* eslint-disable no-unused-expressions */
-import assert from "assert";
 import { Suite } from "mocha";
 import { ClientContext, Container, PluginConfig, PluginOn } from "../../src";
 import { OperationType, ResourceType } from "../../src/common";
@@ -13,7 +12,7 @@ import { masterKey } from "../public/common/_fakeTestSecrets";
 import { addEntropy, getTestDatabase, removeAllDatabases } from "../public/common/TestHelpers";
 import { RequestContext } from "../../src";
 import { Response } from "../../src/request/Response";
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 
 describe("New session token", function () {
   it("preserves tokens", async function () {

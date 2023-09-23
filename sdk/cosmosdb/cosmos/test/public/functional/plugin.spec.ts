@@ -5,9 +5,8 @@ import { CosmosClient, CosmosClientOptions } from "../../../src";
 import { RequestContext } from "../../../src";
 import { Plugin, Next, PluginConfig } from "../../../src";
 
-import * as assert from "assert";
 import { DiagnosticNodeInternal } from "../../../src/diagnostics/DiagnosticNodeInternal";
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 import { getEmptyCosmosDiagnostics } from "../../../src/utils/diagnostics";
 
 describe("Plugin", function () {
@@ -53,7 +52,7 @@ describe("Plugin", function () {
     assert.equal(requestCount, FAILCOUNT + 1); // Get Database Account + FAILED GET Database + Get Database
     assert.notEqual(response, undefined);
     assert.equal(response.statusCode, successResponse.code);
-    assert.deepEqual(response.resource, successResponse.result);
+    assert.deepEqual(response.resource, successResponse.result as any);
     client.dispose();
   });
 
@@ -96,7 +95,7 @@ describe("Plugin", function () {
     assert.equal(requestCount, 2); // Get Database Account + Get Database
     assert.notEqual(response, undefined);
     assert.equal(response.statusCode, successResponse.code);
-    assert.deepEqual(response.resource, successResponse.result);
+    assert.deepEqual(response.resource, successResponse.result as any);
     client.dispose();
   });
 
@@ -148,7 +147,7 @@ describe("Plugin", function () {
     assert.equal(innerRequestCount, 2); // Get Database Account + Get Database
     assert.notEqual(response, undefined);
     assert.equal(response.statusCode, successResponse.code);
-    assert.deepEqual(response.resource, successResponse.result);
+    assert.deepEqual(response.resource, successResponse.result as any);
     client.dispose();
   });
 });

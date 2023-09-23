@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { EventData, ReceivedEventData, fromRheaMessage, toRheaMessage } from "../../src/eventData";
-import chai, { assert, should } from "chai";
+import { should, assert } from "@azure/test-utils";
 import {
   dataSectionTypeCode,
   sequenceSectionTypeCode,
@@ -11,8 +11,6 @@ import {
 import { AmqpAnnotatedMessage } from "@azure/core-amqp";
 import { Message } from "rhea-promise";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
-
-chai.should();
 
 const testAnnotations = {
   "x-opt-enqueued-time": Date.now(),
@@ -60,13 +58,13 @@ testWithServiceTypes(() => {
           },
           false
         );
-        should().equal(testEventData.messageId, 1, "Unexpected messageId found.");
-        should().equal(
+        should.equal(testEventData.messageId, 1, "Unexpected messageId found.");
+        should.equal(
           testEventData.contentType,
           "application/json",
           "Unexpected contentType found."
         );
-        should().equal(testEventData.correlationId, "cid", "Unexpected correlationId found.");
+        should.equal(testEventData.correlationId, "cid", "Unexpected correlationId found.");
       });
 
       describe("properties", function (): void {
@@ -210,12 +208,12 @@ testWithServiceTypes(() => {
     describe("toAmqpMessage", function (): void {
       it("populates body with the message body encoded", function (): void {
         const expectedTestBodyContents = Buffer.from(JSON.stringify(testBody));
-        should().equal(
+        should.equal(
           expectedTestBodyContents.equals(messageFromED.body.content),
           true,
           "Encoded body does not match expected result."
         );
-        should().equal(
+        should.equal(
           messageFromED.body.typecode,
           dataSectionTypeCode,
           "Unexpected typecode encountered on body."
@@ -227,9 +225,9 @@ testWithServiceTypes(() => {
           ...testSourceEventData,
           ...{ contentType: "application/json", correlationId: "cid", messageId: 1 },
         });
-        should().equal(message.message_id, 1, "Unexpected message_id found.");
-        should().equal(message.content_type, "application/json", "Unexpected content_type found.");
-        should().equal(message.correlation_id, "cid", "Unexpected correlation_id found.");
+        should.equal(message.message_id, 1, "Unexpected message_id found.");
+        should.equal(message.content_type, "application/json", "Unexpected content_type found.");
+        should.equal(message.correlation_id, "cid", "Unexpected correlation_id found.");
       });
 
       it("populates application_properties of the message", function (): void {

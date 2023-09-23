@@ -3,11 +3,9 @@
 
 import { EnvVarKeys, getEnvVars } from "../utils/testUtils";
 import { EventHubConsumerClient, EventHubProducerClient, Subscription } from "../../../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "../utils/mockService";
 import { testWithServiceTypes } from "../utils/testWithServiceTypes";
-
-const should = chai.should();
 
 testWithServiceTypes((serviceVersion, onVersions) => {
   const env = getEnvVars();

@@ -4,12 +4,9 @@
 import { DigitalTwinsClient } from "../../src";
 import { authenticate } from "../utils/testAuthentication";
 import { isLiveMode, Recorder } from "@azure-tools/test-recorder";
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import { delay } from "@azure/core-util";
 import { isRestError } from "@azure/core-rest-pipeline";
-
-const assert = assert;
-const should = chai.should();
 
 const MODEL_ID = "dtmi:samples:DTModelTestsModel;1";
 const COMPONENT_ID = "dtmi:samples:DTModelTestsComponent;1";

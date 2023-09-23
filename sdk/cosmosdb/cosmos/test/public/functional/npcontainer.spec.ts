@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 /* eslint-disable no-unused-expressions */
-import assert from "assert";
 import {
   CosmosClient,
   Constants,
@@ -13,7 +12,7 @@ import { removeAllDatabases, getTestContainer } from "../common/TestHelpers";
 import { endpoint } from "../common/_testConfig";
 import { masterKey } from "../common/_fakeTestSecrets";
 import { ResourceType, HTTPMethod, StatusCodes } from "../../../src";
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 
 const plugins: PluginConfig[] = [
   {

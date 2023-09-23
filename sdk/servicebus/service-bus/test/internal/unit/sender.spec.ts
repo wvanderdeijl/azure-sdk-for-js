@@ -13,8 +13,6 @@ import {
   PartitionKeySessionIdMismatchError,
 } from "../../../src/util/errors";
 
-const assert = assert;
-
 describe("Sender helper unit tests", () => {
   it("isServiceBusMessageBatch", () => {
     assert.isTrue(

@@ -15,15 +15,13 @@ import {
   extractSpanContextFromEventData,
 } from "../../src/diagnostics/instrumentEventData";
 import { SubscriptionHandlerForTests } from "../public/utils/subscriptionHandlerForTests";
-import chai, { assert } from "chai";
+import { should, assert } from "@azure/test-utils";
 import { createMockServer } from "../public/utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";
 import { tracingClient } from "../../src/diagnostics/tracing";
 import Sinon from "sinon";
 import { getRandomName } from "../../src/util/utils";
-
-const should = chai.should();
 
 const debug = debugModule("azure:event-hubs:misc-spec");
 

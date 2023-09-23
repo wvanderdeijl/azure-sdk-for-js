@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
-import chaiExclude from "chai-exclude";
+import { assert, should } from "@azure/test-utils";
 import * as dotenv from "dotenv";
 import {
   CorrelationRuleFilter,
@@ -15,9 +14,6 @@ import {
 import { DEFAULT_RULE_NAME } from "../../src/util/constants";
 import { recreateSubscription, recreateTopic } from "../public/utils/managementUtils";
 import { getConnectionString } from "../public/utils/testutils2";
-
-chai.use(chaiExclude);
-const should = chai.should();
 
 dotenv.config();
 

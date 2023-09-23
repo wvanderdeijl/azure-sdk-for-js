@@ -1,11 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
-const should = chai.should();
+import { assert, should } from "@azure/test-utils";
 
-import chaiString from "chai-string";
-chai.use(chaiString);
 import debugModule from "debug";
 const debug = debugModule("azure:event-hubs:partitionPump");
 import { EnvVarKeys, getEnvVars } from "./utils/testUtils";

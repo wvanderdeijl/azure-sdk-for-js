@@ -3,7 +3,7 @@
 
 /* eslint-disable no-unused-expressions */
 
-import "chai/register-should";
+import "@azure/test-utils";
 import { CompositeMapper, Serializer } from "../src/serializer";
 import { HttpMockFacade, getHttpMock } from "./mockHttp";
 import { TransferProgressEvent, WebResource } from "../src/webResource";

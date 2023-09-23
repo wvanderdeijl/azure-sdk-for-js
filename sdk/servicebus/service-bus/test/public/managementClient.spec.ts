@@ -1,11 +1,10 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import "@azure/test-utils";
 import { ServiceBusSender, ServiceBusReceiver } from "../../src";
 import { TestClientType, TestMessage } from "./utils/testUtils";
 import { ServiceBusClientForTests, createServiceBusClientForTests } from "./utils/testutils2";
-chai.should();
 
 describe("ManagementClient - disconnects", function (): void {
   let serviceBusClient: ServiceBusClientForTests;

@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { AssertionError, assert } from "chai";
+import { AssertionError, assert } from "@azure/test-utils";
 import { Constants, HttpHeaders, RequestPolicyOptions } from "../../src";
 import { AbortController } from "@azure/abort-controller";
 import { HttpOperationResponse } from "../../src/httpOperationResponse";

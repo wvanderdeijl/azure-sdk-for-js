@@ -1,14 +1,12 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { ServiceBusMessage } from "../../../src";
 import { TestMessage } from "../../public/utils/testUtils";
 import { fromRheaMessage, toRheaMessage } from "../../../src/serviceBusMessage";
 import { Message as RheaMessage } from "rhea-promise";
 import { Constants } from "@azure/core-amqp";
-
-const should = chai.should();
 
 describe("Message translations", () => {
   describe("expiresAtUtc is not invalid on received message", function (): void {

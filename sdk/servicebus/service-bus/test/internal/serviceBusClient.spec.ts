@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { EnvironmentCredential } from "@azure/identity";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import * as dotenv from "dotenv";
 import { Constants as CoreAmqpConstants } from "@azure/core-amqp";
 import { isObjectWithProperties } from "@azure/core-util";
@@ -30,8 +30,6 @@ import {
   getRandomTestClientTypeWithNoSessions,
 } from "../public/utils/testutils2";
 import { ServiceBusReceiver, ServiceBusReceiverImpl } from "../../src/receivers/receiver";
-
-const should = chai.should();
 
 dotenv.config();
 

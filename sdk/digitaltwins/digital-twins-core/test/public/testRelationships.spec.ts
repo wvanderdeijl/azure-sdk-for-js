@@ -4,11 +4,8 @@
 import { DigitalTwinsClient, DigitalTwinsAddRelationshipOptionalParams } from "../../src";
 import { authenticate } from "../utils/testAuthentication";
 import { Recorder } from "@azure-tools/test-recorder";
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import { isRestError } from "@azure/core-rest-pipeline";
-
-const assert = assert;
-const should = chai.should();
 
 const BUILDING_MODEL_ID = "dtmi:samples:DTRelationshipsTestsBuilding;1";
 const FLOOR_MODEL_ID = "dtmi:samples:DTRelationshipsTestsFloor;1";

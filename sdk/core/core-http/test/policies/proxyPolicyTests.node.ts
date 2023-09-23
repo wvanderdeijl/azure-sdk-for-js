@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import "chai/register-should";
 import {
   ProxyPolicy,
   getDefaultProxySettings,
@@ -14,8 +13,7 @@ import { HttpHeaders } from "../../src/httpHeaders";
 import { ProxySettings } from "../../src/serviceClient";
 import { RequestPolicyOptions } from "../../src/policies/requestPolicy";
 import { WebResource } from "../../src/webResource";
-import { fakeTestSecretPlaceholder } from "@azure/test-utils";
-import { should } from "chai";
+import { fakeTestSecretPlaceholder, should } from "@azure/test-utils";
 
 describe("ProxyPolicy (node)", function () {
   const proxySettings: ProxySettings = {
@@ -82,23 +80,23 @@ describe("ProxyPolicy (node)", function () {
         const policy = new ProxyPolicy(emptyRequestPolicy, emptyPolicyOptions, proxySettings);
         request.url = "http://foo.com";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.url = "https://www.foo.com";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.url = "http://test.foo.com";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.url = "http://test.foo.com/path1";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.url = "http://test.foo.com/path2";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.proxySettings = undefined;
         request.url = "http://abcfoo.com";
@@ -108,7 +106,7 @@ describe("ProxyPolicy (node)", function () {
         request.proxySettings = undefined;
         request.url = "http://test.com";
         await policy.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.proxySettings = undefined;
         request.url = "http://www.test.com";
@@ -139,7 +137,7 @@ describe("ProxyPolicy (node)", function () {
         request.url = "http://test.com";
         request.proxySettings = undefined;
         await policy1.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.proxySettings = undefined;
         request.url = "http://another.com";
@@ -152,7 +150,7 @@ describe("ProxyPolicy (node)", function () {
         request.url = "http://foo.com";
         request.proxySettings = undefined;
         await policy2.sendRequest(request);
-        should().not.exist(request.proxySettings);
+        should.not.exist(request.proxySettings);
 
         request.url = "http://test.com";
         request.proxySettings = undefined;
@@ -260,7 +258,7 @@ describe("getDefaultProxySettings", () => {
 
       it("should return undefined when no proxy passed and environment variable is not set", () => {
         const proxySettings: ProxySettings | undefined = getDefaultProxySettings();
-        should().not.exist(proxySettings);
+        should.not.exist(proxySettings);
       });
 
       it("should load settings from environment variables when no proxyUrl passed", () => {

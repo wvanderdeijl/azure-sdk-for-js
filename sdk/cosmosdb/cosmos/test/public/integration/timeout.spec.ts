@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 /* eslint-disable no-unused-expressions */
-import assert from "assert";
 import { Container, CosmosClient } from "../../../src";
 import { addEntropy, removeAllDatabases } from "../common/TestHelpers";
 import { endpoint } from "../common/_testConfig";
 import { masterKey } from "../common/_fakeTestSecrets";
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 
 describe("Timeout", function () {
   beforeEach(async function () {

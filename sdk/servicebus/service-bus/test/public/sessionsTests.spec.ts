@@ -1,9 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import chai, { assert } from "chai";
+import { should, assert } from "@azure/test-utils";
 import Long from "long";
-const should = chai.should();
 
 import {
   ServiceBusReceivedMessage,

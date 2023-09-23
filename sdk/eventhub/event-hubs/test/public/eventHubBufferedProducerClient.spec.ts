@@ -13,8 +13,6 @@ import { assert } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 
-const assert = assert;
-
 type ResultError = { type: "error"; context: OnSendEventsErrorContext };
 type ResultSuccess = { type: "success"; context: OnSendEventsSuccessContext };
 type ResultEnqueue = { type: "enqueue"; event: EventData | AmqpAnnotatedMessage };

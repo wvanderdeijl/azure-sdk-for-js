@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import {
   ServiceBusReceivedMessage,
   delay,
@@ -24,8 +24,6 @@ import { getDeliveryProperty } from "./utils/misc";
 import { verifyMessageCount } from "../public/utils/managementUtils";
 import sinon from "sinon";
 import { isNode } from "@azure/core-util";
-
-const should = chai.should();
 
 let errorWasThrown: boolean;
 let unexpectedError: Error | undefined;

@@ -3,7 +3,7 @@
 
 import * as cnst from "../../../src/utils/constants";
 import { readFileSync } from "fs";
-import { expect } from "chai";
+import { expect } from "@azure/test-utils";
 describe("constants", function () {
   it("uses same version as package.json", function () {
     const pkgjson = readFileSync("./package.json", "utf-8");

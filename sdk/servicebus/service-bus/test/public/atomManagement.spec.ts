@@ -4,8 +4,7 @@
 import { isNode } from "@azure/core-util";
 import { PageSettings } from "@azure/core-paging";
 import { DefaultAzureCredential } from "@azure/identity";
-import { assert } from "@azure/test-utils";
-import chaiExclude from "chai-exclude";
+import { assert, should } from "@azure/test-utils";
 import * as dotenv from "dotenv";
 import { parseServiceBusConnectionString } from "../../src";
 import { CreateQueueOptions } from "../../src";
@@ -21,10 +20,6 @@ import { TestConstants } from "./fakeTestSecrets";
 import { AzureNamedKeyCredential } from "@azure/core-auth";
 import { createServiceBusClientForTests, ServiceBusClientForTests } from "./utils/testutils2";
 import { versionsToTest } from "@azure/test-utils";
-
-chai.use(chaiExclude);
-const should = chai.should();
-const assert = assert;
 
 dotenv.config();
 

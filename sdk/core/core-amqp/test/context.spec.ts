@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import * as chai from "chai";
-const should = chai.should();
+import { should } from "@azure/test-utils";
 import { CbsClient, ConnectionConfig, ConnectionContextBase } from "../src";
 import { Connection } from "rhea-promise";
 import { ConnectionOptions as TlsConnectionOptions } from "tls";

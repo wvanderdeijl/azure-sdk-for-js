@@ -17,8 +17,6 @@ import {
   createServiceBusClientForTests,
 } from "../public/utils/testutils2";
 
-const assert = assert;
-
 /**
  * A basic suite that exercises most of the core functionality.
  */

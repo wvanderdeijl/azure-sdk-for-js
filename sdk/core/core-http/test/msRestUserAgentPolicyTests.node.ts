@@ -3,7 +3,7 @@
 
 /* eslint-disable no-unused-expressions */
 
-import "chai/register-should";
+import "@azure/test-utils";
 import { RequestPolicy, RequestPolicyOptions } from "../src/policies/requestPolicy";
 import { Constants } from "../src/util/constants";
 import { HttpOperationResponse } from "../src/httpOperationResponse";

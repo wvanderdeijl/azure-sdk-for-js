@@ -9,7 +9,6 @@ import {
   ServiceBusReceivedMessage,
   toRheaMessage,
 } from "../../../src/serviceBusMessage";
-import * as chai from "chai";
 import { Delivery, Message } from "rhea-promise";
 import { AmqpAnnotatedMessage, Constants } from "@azure/core-amqp";
 import {
@@ -22,7 +21,7 @@ import {
   errorInvalidMessageTypeSingle,
   errorInvalidMessageTypeSingleOrArray,
 } from "../../../src/util/errors";
-const assert = assert;
+import { assert } from "@azure/test-utils";
 
 describe("AMQP message encoding", () => {
   beforeEach(() => {

@@ -3,8 +3,6 @@
 
 import { MessagingError } from "@azure/core-amqp";
 import { assert } from "@azure/test-utils";
-
-const assert = assert;
 import * as sinon from "sinon";
 import { LockRenewer } from "../../../src/core/autoLockRenewer";
 import { ManagementClient, SendManagementRequestOptions } from "../../../src/core/managementClient";

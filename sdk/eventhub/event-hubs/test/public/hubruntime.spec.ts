@@ -8,13 +8,10 @@ import {
   EventHubProducerClient,
   MessagingError,
 } from "../../src";
-import { assert } from "@azure/test-utils";
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
-
-const should = chai.should();
 
 const debug = debugModule("azure:event-hubs:hubruntime-spec");
 

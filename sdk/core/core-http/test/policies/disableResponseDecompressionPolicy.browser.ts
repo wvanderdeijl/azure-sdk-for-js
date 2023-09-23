@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import "chai/register-should";
+import "@azure/test-utils";
 import {
   DisableResponseDecompressionPolicy,
   disableResponseDecompressionPolicy,

@@ -7,8 +7,6 @@ import { AbortError } from "@azure/abort-controller";
 import { assert } from "@azure/test-utils";
 import { createServiceBusLogger } from "../../../src/log";
 
-const assert = assert;
-
 describe("errors", () => {
   let verboseSpy: sinon.SinonSpy<any[], void>;
   let warningSpy: sinon.SinonSpy<any[], void>;

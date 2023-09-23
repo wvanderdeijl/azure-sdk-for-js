@@ -15,8 +15,6 @@ import { receiverLogger } from "../../../src/log";
 import { MessageSession } from "../../../src/session/messageSession";
 import { createConnectionContextForTests, createRheaReceiverForTests } from "./unittestUtils";
 
-const assert = assert;
-
 describe("LinkEntity unit tests", () => {
   class LinkForTests extends LinkEntity<Receiver> {
     private _removeLinkFromContextCalled: boolean = false;

@@ -2,7 +2,7 @@
 // Licensed under the MIT license.
 
 import { Buffer } from "buffer";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { EventData, EventDataBatch, EventHubProducerClient } from "../../src";
 import { PartitionPublishingProperties } from "../../src/models/private";
 
@@ -14,9 +14,6 @@ import {
 } from "../../src/util/constants";
 import { message, Message } from "rhea-promise";
 import { TRACEPARENT_PROPERTY } from "../../src/diagnostics/instrumentEventData";
-
-const should = chai.should();
-
 import { createMockServer } from "../public/utils/mockService";
 import { EnvVarKeys, getEnvVars } from "../public/utils/testUtils";
 import { testWithServiceTypes } from "../public/utils/testWithServiceTypes";

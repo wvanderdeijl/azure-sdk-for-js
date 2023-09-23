@@ -154,7 +154,6 @@
     "express": "^4.16.3",
     "fetch-mock": "^9.10.1",
     "karma": "^6.2.0",
-    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.0.0",
     "karma-firefox-launcher": "^1.1.0",
     "karma-mocha": "^2.0.1",

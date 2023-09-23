@@ -13,8 +13,8 @@ import chaiExclude from "chai-exclude";
 chai.use(chaiAzure);
 chai.use(chaiExclude);
 chai.use(chaiAsPromised);
-const { assert, expect, should: shouldFactory } = chai;
+const { assert, expect, should: shouldFactory, AssertionError } = chai;
 const should = shouldFactory();
 
-export { chai, assert, expect, should };
+export { chai, assert, expect, should, AssertionError };
 export type { chaiAzure, chaiExclude, chaiAsPromised };

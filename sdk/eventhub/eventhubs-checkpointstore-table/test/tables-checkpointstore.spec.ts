@@ -6,10 +6,9 @@ import { Checkpoint, PartitionOwnership } from "@azure/event-hubs";
 import { CheckpointEntity, PartitionOwnershipEntity } from "../src/tableCheckpointStore";
 import { EnvVarKeys, getEnvVars } from "./utils/testUtils";
 import { TableCheckpointStore } from "../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import debugModule from "debug";
 
-const should = chai.should();
 const debug = debugModule("azure:event-hubs:tableCheckpointStore");
 
 const env = getEnvVars();

@@ -1,10 +1,8 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { MessagingError, ServiceBusError, ServiceBusErrorCode } from "../../src";
-
-const should = chai.should();
 
 describe("ServiceBusError", () => {
   describe("constructor", () => {

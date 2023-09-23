@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { delay, ServiceBusMessage, ServiceBusSender } from "../../src";
 import { TestClientType, TestMessage } from "../public/utils/testUtils";
 import { ServiceBusReceiver, ServiceBusReceiverImpl } from "../../src/receivers/receiver";
@@ -19,8 +19,6 @@ import {
   ServiceBusReceivedMessage,
 } from "../../src/serviceBusMessage";
 import { testLogger } from "./utils/misc";
-
-const should = chai.should();
 
 const noSessionTestClientType = getRandomTestClientTypeWithNoSessions();
 // const withSessionTestClientType = getRandomTestClientTypeWithSessions();

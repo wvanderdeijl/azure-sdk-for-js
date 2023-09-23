@@ -20,13 +20,12 @@ import {
   recreateTopic,
   verifyMessageCount,
 } from "./managementUtils";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { ServiceBusReceivedMessage, ServiceBusMessage } from "../../../src";
 import { ServiceBusReceiverOptions, ServiceBusSessionReceiverOptions } from "../../../src";
 
 dotenv.config();
 const env = getEnvVars();
-const should = chai.should();
 
 /**
  * Identifier of an auto-generated entity.

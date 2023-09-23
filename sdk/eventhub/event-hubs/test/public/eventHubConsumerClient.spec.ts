@@ -18,13 +18,12 @@ import { EnvVarKeys, getEnvVars, getStartingPositionsForTests, loopUntil } from 
 import { LogTester } from "./utils/logHelpers";
 import { ReceivedMessagesTester } from "./utils/receivedMessagesTester";
 import { TestInMemoryCheckpointStore } from "./utils/testInMemoryCheckpointStore";
-import chai, { expect } from "chai";
+import { should, expect } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 
 const debug = debugModule("azure:event-hubs:receiver-spec");
-const should = chai.should();
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

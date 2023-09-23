@@ -2,7 +2,6 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-const assert = assert;
 import { ServiceBusReceivedMessage, ServiceBusMessage, delay } from "../../../src";
 import * as dotenv from "dotenv";
 dotenv.config();

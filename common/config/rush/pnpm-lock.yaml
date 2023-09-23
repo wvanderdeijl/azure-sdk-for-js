@@ -823,7 +823,7 @@ dependencies:
     version: file:projects/eslint-plugin-azure-sdk-helper.tgz
   '@rush-temp/event-hubs':
     specifier: file:./projects/event-hubs.tgz
-    version: file:projects/event-hubs.tgz(chai@4.3.8)
+    version: file:projects/event-hubs.tgz
   '@rush-temp/eventgrid':
     specifier: file:./projects/eventgrid.tgz
     version: file:projects/eventgrid.tgz
@@ -17930,6 +17930,7 @@ packages:
       cross-env: 7.0.3
       downlevel-dts: 0.10.1
       eslint: 8.48.0
+      esm: 3.2.25
       inherits: 2.0.4
       karma: 6.4.2(debug@4.3.4)
       karma-chrome-launcher: 3.2.0
@@ -18687,13 +18688,13 @@ packages:
       - supports-color
     dev: false
 
-  file:projects/event-hubs.tgz(chai@4.3.8):
-    resolution: {integrity: sha512-i6wWV7qF1/nNkphKfflAVL2okOg6rfzlmUdNpOl9zrJBGjVg61Nh5Oz2+ybyXdOuq1oiZWpqn+KhpvH7kwgnvg==, tarball: file:projects/event-hubs.tgz}
-    id: file:projects/event-hubs.tgz
+  file:projects/event-hubs.tgz:
+    resolution: {integrity: sha512-S7nyuu67Pn6DPcKZLLCmCkiUvDUz/hSzqHCueDOxY+BkPZsb09i2zUg+09zHB/Aw1GALnDQ2R2yJONf+z+hbDg==, tarball: file:projects/event-hubs.tgz}
     name: '@rush-temp/event-hubs'
     version: 0.0.0
     dependencies:
       '@azure/core-amqp': 3.3.0
+      '@azure/identity': 2.1.0
       '@microsoft/api-extractor': 7.36.4(@types/node@14.18.56)
       '@rollup/plugin-commonjs': 24.1.0(rollup@2.79.1)
       '@rollup/plugin-inject': 5.0.3(rollup@2.79.1)
@@ -18702,6 +18703,8 @@ packages:
       '@rollup/plugin-node-resolve': 13.3.0(rollup@2.79.1)
       '@rollup/plugin-replace': 5.0.2(rollup@2.79.1)
       '@types/async-lock': 1.4.0
+      '@types/chai': 4.3.6
+      '@types/chai-as-promised': 7.1.5
       '@types/chai-string': 1.4.2
       '@types/debug': 4.1.8
       '@types/mocha': 7.0.2
@@ -18709,6 +18712,8 @@ packages:
       '@types/sinon': 10.0.16
       '@types/ws': 7.4.7
       buffer: 6.0.3
+      chai: 4.3.8
+      chai-as-promised: 7.1.1(chai@4.3.8)
       chai-exclude: 2.1.0(chai@4.3.8)
       chai-string: 1.5.0(chai@4.3.8)
       copyfiles: 2.4.1
@@ -18751,7 +18756,6 @@ packages:
       - '@swc/core'
       - '@swc/wasm'
       - bufferutil
-      - chai
       - encoding
       - supports-color
       - utf-8-validate

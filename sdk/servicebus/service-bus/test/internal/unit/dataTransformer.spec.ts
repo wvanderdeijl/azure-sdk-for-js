@@ -2,8 +2,7 @@
 // Licensed under the MIT license.
 
 import { Buffer } from "buffer";
-import chai, { assert } from "chai";
-const should = chai.should();
+import { should, assert } from "@azure/test-utils";
 import isBuffer from "is-buffer";
 import { defaultDataTransformer } from "../../../src/dataTransformer";
 

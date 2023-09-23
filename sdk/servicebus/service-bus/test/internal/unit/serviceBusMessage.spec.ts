@@ -18,7 +18,6 @@ import { ConnectionConfig, Constants } from "@azure/core-amqp";
 import { defaultDataTransformer } from "../../../src/dataTransformer";
 import { ServiceBusMessageBatchImpl } from "../../../src/serviceBusMessageBatch";
 import { ConnectionContext } from "../../../src/connectionContext";
-const assert = assert;
 
 const fakeDelivery = {} as Delivery;
 

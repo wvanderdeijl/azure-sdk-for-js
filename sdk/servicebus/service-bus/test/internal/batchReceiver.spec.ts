@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import Long from "long";
 import { ServiceBusMessage, delay, ServiceBusSender, ServiceBusReceivedMessage } from "../../src";
 import { InvalidOperationForPeekedMessage } from "../../src/util/errors";
@@ -26,10 +26,6 @@ import { LinkEntity } from "../../src/core/linkEntity";
 import { StandardAbortMessage } from "@azure/core-amqp";
 import { BatchingReceiver } from "../../src/core/batchingReceiver";
 import { testLogger } from "./utils/misc";
-
-const should = chai.should();
-
-const assert = assert;
 
 const noSessionTestClientType = getRandomTestClientTypeWithNoSessions();
 const withSessionTestClientType = getRandomTestClientTypeWithSessions();

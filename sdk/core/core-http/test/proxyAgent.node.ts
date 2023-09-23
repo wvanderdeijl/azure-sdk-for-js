@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import "chai/register-should";
 import { HttpHeaders, ProxySettings } from "../src";
 import { createProxyAgent, createTunnel } from "../src/proxyAgent";
 import Tunnel from "tunnel";
-import { fakeTestSecretPlaceholder } from "@azure/test-utils";
+import { fakeTestSecretPlaceholder, should } from "@azure/test-utils";
 import https from "https";
-import { should } from "chai";
 
 describe("proxyAgent", () => {
   describe("createProxyAgent", () => {
@@ -40,7 +38,7 @@ describe("proxyAgent", () => {
 
         proxyAgent.isHttps.should.equal(testCase.isProxyHttps);
         const agent = proxyAgent.agent as HttpsAgent;
-        should().equal(agent.defaultPort, testCase.port);
+        should.equal(agent.defaultPort, testCase.port);
         agent.options.proxy.host.should.equal(urlHost);
         agent.options.proxy.port.should.equal(proxySettings.port);
         done();
@@ -59,7 +57,7 @@ describe("proxyAgent", () => {
       const proxyAgent = createProxyAgent("http://example.com", proxySettings, headers);
 
       const agent = proxyAgent.agent as HttpsAgent;
-      should().exist(agent.proxyOptions.headers);
+      should.exist(agent.proxyOptions.headers);
       agent.proxyOptions.headers!.should.contain({ "User-Agent": "Node.js" });
       done();
     });
@@ -75,7 +73,7 @@ describe("proxyAgent", () => {
       const proxyAgent = createProxyAgent("http://example.com", proxySettings);
 
       const agent = proxyAgent.agent as HttpsAgent;
-      should().exist(agent.options.proxy.proxyAuth);
+      should.exist(agent.options.proxy.proxyAuth);
       agent.options.proxy.proxyAuth!.should.equal("username:SecretPlaceholder");
       done();
     });
@@ -90,7 +88,7 @@ describe("proxyAgent", () => {
       const proxyAgent = createProxyAgent("http://example.com", proxySettings);
 
       const agent = proxyAgent.agent as HttpsAgent;
-      should().exist(agent.options.proxy.proxyAuth);
+      should.exist(agent.options.proxy.proxyAuth);
       agent.options.proxy.proxyAuth!.should.equal("username");
       done();
     });
@@ -163,7 +161,7 @@ describe("proxyAgent", () => {
         const tunnel = createTunnel(false, value, tunnelConfig) as HttpsAgent;
         tunnel.options.proxy.host.should.equal(defaultProxySettings.host);
         tunnel.options.proxy.port.should.equal(defaultProxySettings.port);
-        should().not.exist(tunnel.defaultPort);
+        should.not.exist(tunnel.defaultPort);
       });
     });
 

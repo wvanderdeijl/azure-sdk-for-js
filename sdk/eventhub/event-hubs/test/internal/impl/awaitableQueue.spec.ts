@@ -2,10 +2,8 @@
 // Licensed under the MIT license.
 
 import { AwaitableQueue } from "../../../src/impl/awaitableQueue";
-import "@azure/test-utils";
 import { testWithServiceTypes } from "../../public/utils/testWithServiceTypes";
-
-const should = chai.should();
+import { should } from "@azure/test-utils";
 
 testWithServiceTypes(() => {
   describe("AwaitableQueue", () => {

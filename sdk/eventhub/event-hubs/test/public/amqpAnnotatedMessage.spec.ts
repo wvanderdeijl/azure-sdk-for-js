@@ -12,16 +12,10 @@ import {
 import { AmqpAnnotatedMessage } from "@azure/core-amqp";
 import { BodyTypes } from "../../src/dataTransformer";
 import { Buffer } from "buffer";
-import { assert } from "@azure/test-utils";
-import chaiExclude from "chai-exclude";
+import { assert, should } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
 import { randomUUID } from "@azure/core-util";
-
-const should = chai.should();
-
-chai.use(chaiExclude);
-const assert = assert;
 
 testWithServiceTypes((serviceVersion) => {
   const env = getEnvVars();

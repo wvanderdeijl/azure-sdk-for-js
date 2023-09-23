@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 /* eslint-disable no-unused-expressions */
-import assert from "assert";
+
 import {
   Container,
   CosmosClient,
@@ -26,7 +26,7 @@ import { endpoint } from "../common/_testConfig";
 import { masterKey } from "../common/_fakeTestSecrets";
 import { DatabaseRequest } from "../../../src";
 import { ContainerRequest } from "../../../src";
-import { AssertionError, expect } from "chai";
+import { AssertionError, expect, assert } from "@azure/test-utils";
 import {
   DiagnosticNodeInternal,
   DiagnosticNodeType,
@@ -635,7 +635,5 @@ export async function assertThrowsAsync(test: () => Promise<any>, error?: any): 
   } catch (e: any) {
     if (!error || e instanceof error) return "everything is fine";
   }
-  throw new assert.AssertionError({
-    message: "Missing rejection" + (error ? " with " + error.name : ""),
-  });
+  throw new AssertionError("Missing rejection" + (error ? " with " + error.name : ""));
 }

@@ -21,7 +21,7 @@ import {
   RequestOptions,
   Resource,
 } from "../../../src";
-import { expect } from "chai";
+import { expect } from "@azure/test-utils";
 import { getCurrentTimestampInMs } from "../../../src/utils/time";
 import {
   DiagnosticNodeInternal,

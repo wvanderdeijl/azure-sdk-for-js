@@ -2,9 +2,6 @@
 // Licensed under the MIT license.
 
 import { assert } from "@azure/test-utils";
-
-const assert = assert;
-
 import * as sinon from "sinon";
 import { EventEmitter } from "events";
 

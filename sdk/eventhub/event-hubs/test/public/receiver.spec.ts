@@ -11,12 +11,10 @@ import {
   earliestEventPosition,
   latestEventPosition,
 } from "../../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { createMockServer } from "./utils/mockService";
 import debugModule from "debug";
 import { testWithServiceTypes } from "./utils/testWithServiceTypes";
-
-const should = chai.should();
 
 const debug = debugModule("azure:event-hubs:receiver-spec");
 

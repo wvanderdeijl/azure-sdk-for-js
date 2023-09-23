@@ -3,10 +3,8 @@
 
 import { CloseReason, EventHubProducerClient, ReceivedEventData } from "../../../src";
 import { PartitionContext, SubscriptionEventHandlers } from "../../../src";
-import { assert } from "@azure/test-utils";
+import { should } from "@azure/test-utils";
 import { delay } from "@azure/core-amqp";
-
-const should = chai.should();
 
 interface ReceivedMessages {
   closeReason?: CloseReason;

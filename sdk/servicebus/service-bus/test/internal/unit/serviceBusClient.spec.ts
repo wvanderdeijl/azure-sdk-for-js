@@ -19,7 +19,6 @@ import {
 import { AbortController, AbortSignalLike } from "@azure/abort-controller";
 import { ServiceBusSenderImpl } from "../../../src/sender";
 import { MessageReceiver } from "../../../src/core/messageReceiver";
-const assert = assert;
 
 const allLockModes: ("peekLock" | "receiveAndDelete")[] = ["peekLock", "receiveAndDelete"];
 

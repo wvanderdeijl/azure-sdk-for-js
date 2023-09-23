@@ -1,9 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
-const should = chai.should();
-const assert = assert;
+import { assert, should } from "@azure/test-utils";
 
 import { delay } from "rhea-promise";
 import { checkWithTimeout, TestMessage } from "../public/utils/testUtils";

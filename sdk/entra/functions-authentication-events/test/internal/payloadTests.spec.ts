@@ -12,7 +12,7 @@ import {
   TokenIssuanceStartRequest,
 } from "@azure/functions-authentication-events";
 
-import { expect } from "chai";
+import { expect } from "@azure/test-utils";
 import { request } from "./payloads";
 import { createProvideClaimsForToken } from "../../src/tokenIssuanceStart";
 

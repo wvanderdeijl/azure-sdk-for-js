@@ -1,7 +1,7 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-import { assert } from "@azure/test-utils";
+import { assert, should } from "@azure/test-utils";
 import {
   ServiceBusReceivedMessage,
   delay,
@@ -27,8 +27,6 @@ import {
 import { getDeliveryProperty } from "./utils/misc";
 import { singleMessagePromise } from "./streamingReceiver.spec";
 import { defer } from "./unit/unittestUtils";
-const should = chai.should();
-const assert = assert;
 
 describe("Streaming with sessions", () => {
   let sender: ServiceBusSender;

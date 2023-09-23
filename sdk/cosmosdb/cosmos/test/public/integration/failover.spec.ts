@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 /* eslint-disable no-unused-expressions */
-import { expect } from "chai";
+import { expect, assert } from "@azure/test-utils";
 import { CosmosClient, PluginOn, CosmosClientOptions, PluginConfig } from "../../../src";
 import { masterKey } from "../common/_fakeTestSecrets";
-import assert from "assert";
 import { getEmptyCosmosDiagnostics } from "../../../src/utils/diagnostics";
 
 const endpoint = "https://failovertest.documents.azure.com/";

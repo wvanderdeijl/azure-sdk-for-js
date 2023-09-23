@@ -17,8 +17,6 @@ import {
 } from "../public/utils/testutils2";
 import { recreateSubscription } from "./utils/managementUtils";
 
-const assert = assert;
-
 const defaultRuleName = "$Default";
 interface Order {
   color: string;

@@ -1,8 +1,6 @@
 // Copyright (c) Microsoft Corporation.
 // Licensed under the MIT license.
 
-// Chai is the Azure SDK Team's preferred assertion library, and it is included
-// as part of our template project.
 import { ContainerRegistryClient, KnownContainerRegistryAudience } from "../../src";
 import { assert } from "@azure/test-utils";
 import { calculateDigest } from "../../src/utils/digest";
