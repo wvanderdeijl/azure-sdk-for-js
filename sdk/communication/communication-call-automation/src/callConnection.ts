@@ -24,6 +24,7 @@ import {
   MuteParticipantOption,
   RemoveParticipantsOption,
   TransferCallToParticipantOptions,
+  CancelAddParticipantOptions,
 } from "./models/options";
 import {
   ListParticipantsResult,
@@ -31,6 +32,7 @@ import {
   AddParticipantResult,
   RemoveParticipantResult,
   MuteParticipantResult,
+  CancelAddParticipantResult,
 } from "./models/responses";
 import {
   callParticipantConverter,
@@ -182,6 +184,7 @@ export class CallConnection {
       sourceDisplayName: targetParticipant.sourceDisplayName,
       invitationTimeoutInSeconds: options.invitationTimeoutInSeconds,
       operationContext: options.operationContext,
+      overrideCallbackUri: options.overrideCallbackUrl,
     };
     const optionsInternal = {
       ...options,
@@ -217,6 +220,8 @@ export class CallConnection {
     const transferToParticipantRequest: TransferToParticipantRequest = {
       targetParticipant: communicationIdentifierModelConverter(targetParticipant),
       operationContext: options.operationContext,
+      overrideCallbackUri: options.overrideCallbackUrl,
+      transferee: options.transferee && communicationIdentifierModelConverter(options.transferee),
     };
     const optionsInternal = {
       ...options,
@@ -244,6 +249,7 @@ export class CallConnection {
     const removeParticipantRequest: RemoveParticipantRequest = {
       participantToRemove: communicationIdentifierModelConverter(participant),
       operationContext: options.operationContext,
+      overrideCallbackUri: options.overrideCallbackUrl,
     };
     const optionsInternal = {
       ...options,
@@ -289,5 +295,36 @@ export class CallConnection {
       ...result,
     };
     return muteParticipantResult;
+  }
+
+  /** Cancel add participant request.
+   *
+   * @param invitationId - Invitation ID used to cancel the add participant request.
+   */
+  public cancelAddParticipant(
+    invitationId: string,
+    options: CancelAddParticipantOptions = {}
+  ): Promise<CancelAddParticipantResult> {
+    const {
+      operationContext,
+      overrideCallbackUrl: overrideCallbackUri,
+      ...operationOptions
+    } = options;
+    const cancelAddParticipantRequest = {
+      invitationId,
+      operationContext,
+      overrideCallbackUri,
+    };
+    const optionsInternal = {
+      ...operationOptions,
+      repeatabilityFirstSent: new Date(),
+      repeatabilityRequestID: uuidv4(),
+    };
+
+    return this.callConnection.cancelAddParticipant(
+      this.callConnectionId,
+      cancelAddParticipantRequest,
+      optionsInternal
+    ) as Promise<CancelAddParticipantResult>;
   }
 }
