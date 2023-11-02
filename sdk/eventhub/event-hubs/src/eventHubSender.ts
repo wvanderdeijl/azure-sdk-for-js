@@ -50,6 +50,7 @@ import { translateError } from "./util/error";
 import { TimerLoop } from "./util/timerLoop";
 import { withAuth } from "./withAuth";
 import { getRandomName } from "./util/utils";
+import { Constants } from "@azure/core-amqp";
 
 /**
  * @internal
@@ -429,7 +430,7 @@ export class EventHubSender {
     };
 
     if (this._isIdempotentProducer) {
-      srOptions.desired_capabilities = idempotentProducerAmqpPropertyNames.capability;
+      srOptions.desired_capabilities = [idempotentProducerAmqpPropertyNames.capability, Constants.enableGeoreplication];
       const idempotentProperties = generateIdempotentLinkProperties(
         this._userProvidedPublishingOptions,
         this._localPublishingProperties

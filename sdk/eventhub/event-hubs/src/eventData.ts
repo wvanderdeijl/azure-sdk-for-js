@@ -96,6 +96,12 @@ export interface EventDataInternal {
    */
   sequenceNumber?: number;
   /**
+   * The replication segment denotes the replication configuration.
+   *
+   * Note: It is also known as the replication epoch.
+   */
+  replicationSegment?: number;
+  /**
    * The application specific properties.
    */
   properties?: { [property: string]: any };

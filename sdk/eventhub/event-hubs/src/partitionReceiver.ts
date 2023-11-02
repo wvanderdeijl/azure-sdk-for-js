@@ -531,7 +531,7 @@ function createRheaOptions(
     rheaOptions.properties[Constants.attachEpoch] = types.wrap_long(ownerLevel);
   }
   if (options.trackLastEnqueuedEventProperties) {
-    rheaOptions.desired_capabilities = Constants.enableReceiverRuntimeMetricName;
+    rheaOptions.desired_capabilities = [Constants.enableReceiverRuntimeMetricName, Constants.enableGeoreplication];
   }
   const filterClause = getEventPositionFilter(
     obj.checkpoint > -1 ? { sequenceNumber: obj.checkpoint } : eventPosition
